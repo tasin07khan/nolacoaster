@@ -35,12 +35,7 @@ public final class BrickBoard {
 		this.screenHeight = screenHeight;
 		this.brickHeight = screenHeight / WACKY_SCREEN_HEIGHT_DIVISOR;
 		this.brickWidth = screenWidth / WACKY_SCREEN_WIDTH_DIVISOR;
-		
-		
 		this.currentScreenFull = new Screenful(bricksInFirstScreen, this.brickHeight);
-		
-		if( DEBUG )
-			System.err.print("BrickBoard constructed. Brick Width: " + brickWidth);
 	}
 	
 	/**
@@ -59,12 +54,6 @@ public final class BrickBoard {
 		Screenful(int numBricksInIntial, int brickHeight) {
 			this(BOTTOM_SCREENFUL, END_SCREENFUL, 
 					screenHeight - (numBricksInIntial * brickHeight), numBricksInIntial);
-			
-			if(DEBUG) {
-				System.err.println("numBricksInIntial: " + numBricksInIntial);
-				System.err.println("screenHeight: " + screenHeight);
-				System.err.println("brickHeight: " + brickHeight);
-			}
 		}
 		
 		// Call for subsequent screenfulls.
@@ -77,9 +66,6 @@ public final class BrickBoard {
 			this.next = next;
 			this.logicalYOfBottom = logicalYOfBottom;
 			
-			if(DEBUG)
-				System.err.println("logicalYOfBottom: " + logicalYOfBottom);
-			
 			this.brickHolder = new char[arraySize];
 			for( int i=0;i<this.brickHolder.length;i++) {
 				this.brickHolder[i] = '\u00FF';
@@ -91,7 +77,7 @@ public final class BrickBoard {
 		}
 		
 		int getLogicalYOfTop() {
-			return logicalYOfBottom * brickHolder.length * brickHeight;
+			return logicalYOfBottom + (brickHolder.length * brickHeight);
 		}
 		
 		Screenful getPrev() {
@@ -119,21 +105,11 @@ public final class BrickBoard {
 		}
 
 		private void drawChar(Graphics graphics, char row, int brick_bottom_y) {
-			if(DEBUG)
-			System.err.println("Drawing row " + row + " with bottom at " + brick_bottom_y);
 			
 			for( char i=0;i<8;i++ ) {
 				// is this bit on?
 				char MASK = (char) (1 << i);
 				if( (row&MASK) == MASK  ) {
-					
-					// The ith brick in this row is on!'
-					// Now draw it...
-//					graphics.setColor(Graphics.WHITE);
-//					graphics.fillRect(i * brickWidth, brick_bottom_y, brickWidth, brickHeight);
-//					graphics.setColor(Graphics.BLACK);
-//					graphics.drawRect(i * brickWidth, brick_bottom_y, brickWidth, brickHeight);
-					
 					// Let's try a bitmap
 					int x = i * brickWidth;
 					int y = brick_bottom_y;
@@ -329,33 +305,6 @@ public final class BrickBoard {
 		else
 			return bottomCollision;
 	}
-	
-//	/** Return the screen full that contains the ball on the Y axis. */
-//	private Screenful findScreenHoldingBall(HasBoundingBox ball,
-//			Screenful currentScreenFull) {
-//		
-//		while( ball.getY() < currentScreenFull.getLogicalYOfBottom() ||
-//			   ball.getY() >= currentScreenFull.getLogicalYOfTop() ) {
-//			
-//			if( ball.getY() < currentScreenFull.getLogicalYOfBottom() ) {
-//				Screenful prev = currentScreenFull.getPrev();
-//				if( prev == BOTTOM_SCREENFUL ) {
-//					return BOTTOM_SCREENFUL;
-//				}
-//				currentScreenFull = prev;
-//			}
-//			else {
-//				Screenful next = currentScreenFull.getNext();
-//				if( next == END_SCREENFUL ) {
-//					Screenful newScreenful = 
-//						new Screenful(currentScreenFull, END_SCREENFUL, currentScreenFull.getLogicalYOfTop() + 1);
-//					return newScreenful;
-//				}
-//				currentScreenFull = next;
-//			}
-//		}
-//		return currentScreenFull;
-//	}
 
 	/**
 	 * Draw this gameboard starting at the given logical y location. This logical
@@ -373,15 +322,15 @@ public final class BrickBoard {
 	// 1.) find the first screenful such that logicalY is in between its top & bottom OR
 	//     its bottom is equal to logicalY.
 	private Screenful findLowestScreenfulOnScreen(int logicalY, Screenful currentScreenful) {
-		
 		while( logicalY > currentScreenful.getLogicalYOfTop() ||
 			   logicalY < currentScreenful.getLogicalYOfBottom() ) {
 			if( logicalY > currentScreenful.getLogicalYOfTop() ) {
 				// Go up the chain...
 				Screenful next = currentScreenful.getNext();
 				if( next == END_SCREENFUL ) {
-					Screenful newScreenful = new Screenful(next, END_SCREENFUL, next.getLogicalYOfTop() + 1);
-					next.setNext(newScreenful);
+					System.err.println("Creating a new Screenful");
+					Screenful newScreenful = new Screenful(currentScreenful, END_SCREENFUL, currentScreenful.getLogicalYOfTop());
+					currentScreenful.setNext(newScreenful);
 					currentScreenful = newScreenful;
 				}
 				else {

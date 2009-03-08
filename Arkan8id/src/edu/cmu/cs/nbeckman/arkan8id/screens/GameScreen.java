@@ -5,6 +5,7 @@ import net.rim.device.api.ui.Graphics;
 import net.rim.device.api.ui.container.FullScreen;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Ball;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.BrickBoard;
+import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Camera;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Collision;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.HasBoundingBox;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Spaceship;
@@ -36,6 +37,8 @@ public class GameScreen extends FullScreen {
 	
 	private final Ball ball;
 	
+	private final Camera camera;
+	
 	/**
 	 * Has the game not yet ended? True until the game is over, including during
 	 * initialization.
@@ -46,8 +49,9 @@ public class GameScreen extends FullScreen {
 	}
 	
 	protected void paint(Graphics graphics) {
-		this.graphics.draw(graphics, spaceship, ball);
-		this.bricks.drawBoard(graphics, 0);
+		final int logicalYOfScreenBottom = this.camera.getLogicalYOfScreenBottom();
+		this.graphics.draw(graphics, spaceship, ball, logicalYOfScreenBottom);
+		this.bricks.drawBoard(graphics, logicalYOfScreenBottom);
 	}
 	
 	public GameScreen(int screenWidth, int screenHeight) {
@@ -56,6 +60,7 @@ public class GameScreen extends FullScreen {
 		this.ball = new Ball(40,40,5,5);
 		this.bricks = new BrickBoard(screenWidth, screenHeight, 5);
 		this.screenWidth = screenWidth;
+		this.camera = new Camera(screenHeight);
 		// Start the thread that will update graphics
 		// and move the ball.
 		(new LoopingThread()).start();
@@ -113,6 +118,9 @@ public class GameScreen extends FullScreen {
 				// See if ball collided with a brick
 				Collision collision = GameScreen.this.bricks.ballMovedCheckCollision(GameScreen.this.ball);
 				GameScreen.this.ball.respondToCollision(collision);
+				GameScreen.this.camera.step(GameScreen.this.ball);
+				
+				
 				// See if ball collided with a wall
 				if( checkCollisionWithLeftWall(GameScreen.this.ball) ) {
 					GameScreen.this.ball.respondToCollision(Collision.VERTICAL_COLLISION);

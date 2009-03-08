@@ -1,7 +1,6 @@
 package edu.cmu.cs.nbeckman.arkan8id.gameobjects;
 
 import net.rim.device.api.system.Bitmap;
-import net.rim.device.api.ui.Graphics;
 
 public class Ball implements HasBoundingBox {
 
