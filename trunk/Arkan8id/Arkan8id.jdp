@@ -25,6 +25,7 @@ src\BlueBall.png
 src\edu\cmu\cs\nbeckman\arkan8id\Arkan8id.java
 src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\Ball.java
 src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\BrickBoard.java
+src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\Camera.java
 src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\Collision.java
 src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\HasBoundingBox.java
 src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\Spaceship.java

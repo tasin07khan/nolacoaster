@@ -19,7 +19,7 @@ public class Spaceship {
 	private int x;
 	
 	public Spaceship(int screenWidth, int screenHeight) {
-		shipY = screenHeight - 30;
+		shipY = 30;
 		maxX = screenWidth - image.getWidth();
 		x = (screenWidth / 2) - (image.getWidth() / 2);
 	}

@@ -27,22 +27,23 @@ public final class GraphicOps {
 	 * Draw one step of the game to the given graphics object.
 	 * @param graphics
 	 * @param ball 
+	 * @param logicalYOfScreenBottom 
 	 */
-	public void draw(Graphics graphics, Spaceship spaceship, Ball ball) {
+	public void draw(Graphics graphics, Spaceship spaceship, Ball ball, int logicalYOfScreenBottom) {
 		graphics.drawBitmap(0, 0, 
 				this.screenWidth, 
 				this.screenHeight, 
 				this.backgroundImage, 0, 0);
 		
 		graphics.drawBitmap(spaceship.getX(), 
-				spaceship.getY(), 
+				this.screenHeight - spaceship.getY() - spaceship.getImage().getHeight() + logicalYOfScreenBottom, 
 				spaceship.getImage().getWidth(), 
 				spaceship.getImage().getHeight(), 
 				spaceship.getImage(), 
 				0, 0);
 		
 		graphics.drawBitmap(ball.getX(), 
-				this.screenHeight - ball.getY() - ball.getHeight(), 
+				this.screenHeight - ball.getY() - ball.getHeight() + logicalYOfScreenBottom, 
 				ball.getImage().getWidth(), 
 				ball.getImage().getWidth(), 
 				ball.getImage(), 
