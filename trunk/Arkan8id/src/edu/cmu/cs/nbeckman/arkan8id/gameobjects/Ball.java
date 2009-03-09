@@ -26,6 +26,7 @@ public class Ball implements HasBoundingBox {
 	private int velX;
 	private int velY;
 	
+	private int ballsLost;
 	
 	public Ball(int posX, int posY, int velX, int velY) {
 		super();
@@ -38,6 +39,8 @@ public class Ball implements HasBoundingBox {
 		this.initialPoxY = posY;
 		this.initialVelX = velX;
 		this.initialVelY = velY;
+		
+		this.ballsLost = 0;
 	}
 
 	public int getHeight() {
@@ -72,6 +75,8 @@ public class Ball implements HasBoundingBox {
 		this.posY = initialPoxY;
 		this.velX = initialVelX;
 		this.velY = initialVelY;
+		
+		this.ballsLost ++;
 	}
 	
 	public int getVelX() {
@@ -108,5 +113,9 @@ public class Ball implements HasBoundingBox {
 				   collision == Collision.NO_COLLISION) {
 			// keep same velocity
 		}
+	}
+
+	public int ballsLost() {
+		return this.ballsLost;
 	}
 }
