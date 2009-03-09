@@ -104,6 +104,9 @@ public class Ball implements HasBoundingBox {
 		}
 		else if( collision == Collision.VERTICAL_COLLISION ) {
 			setVelX(-getVelX());
+		} else if( collision == Collision.GLANCING_BLOW || 
+				   collision == Collision.NO_COLLISION) {
+			// keep same velocity
 		}
 	}
 }
