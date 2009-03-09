@@ -55,4 +55,16 @@ public class Spaceship {
 		return image;
 	}
 	
+	/**
+	 * Does the given object collide with the ship? 
+	 * @return
+	 */
+	public Collision collidesWithShip(HasBoundingBox ball) {
+		if( getX() <= ball.getX() && (ball.getX()+ball.getWidth()) <= (getX()+image.getWidth()) ) {
+			if( getY() <= ball.getX() && (ball.getY()+ball.getHeight()) <= (getY()+image.getHeight()) ) {
+				return Collision.HORIZONTAL_COLLISION;
+			}
+		}
+		return Collision.NO_COLLISION;
+	}
 }

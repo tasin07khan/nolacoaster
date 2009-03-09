@@ -129,6 +129,10 @@ public class GameScreen extends FullScreen {
 					GameScreen.this.ball.respondToCollision(Collision.VERTICAL_COLLISION);
 				}
 				
+				// See if ball collided with the paddle
+				Collision paddle_collision = GameScreen.this.spaceship.collidesWithShip(ball);
+				GameScreen.this.ball.respondToCollision(paddle_collision);
+				
 				// If the ball goes off the bottom, just start the whole thing over
 				// again. This will work just fine for now.
 				if( isBallLost(ball) ) {
