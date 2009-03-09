@@ -214,22 +214,22 @@ public final class BrickBoard {
 			else if(bot_l_collided) {
 				// Single point
 				turnOffIfOn(bot_l_x, bot_l_y);
-				return Collision.ANGLE_COLLISION;	
+				return Collision.GLANCING_BLOW;	
 			}
 			else if(top_l_collided) {
 				// Single point
 				turnOffIfOn(top_l_x, top_l_y);
-				return Collision.ANGLE_COLLISION;	
+				return Collision.GLANCING_BLOW;	
 			}
 			else if(top_r_collided) {
 				// Single point
 				turnOffIfOn(top_r_x, top_r_y);
-				return Collision.ANGLE_COLLISION;	
+				return Collision.GLANCING_BLOW;	
 			}
 			else if(bot_r_collided) {
 				// Single point
 				turnOffIfOn(bot_r_x, bot_r_y);
-				return Collision.ANGLE_COLLISION;	
+				return Collision.GLANCING_BLOW;	
 			}
 			else {
 				return Collision.NO_COLLISION;
@@ -351,9 +351,13 @@ public final class BrickBoard {
 			}
 		}
 		
+		// Right before we return, if the next screenful happens to be empty, create a new
+		// one. This will ensure that even if the first one is all the way to the bottom, there
+		// will always be something to see on the next screen full.
+		if( currentScreenful.getNext() == END_SCREENFUL ) {
+			currentScreenful.setNext(new Screenful(currentScreenful, END_SCREENFUL, currentScreenful.getLogicalYOfTop()));
+		}
+		
 		return currentScreenful;
-	}
-	 
-	
-	
+	}	
 }
