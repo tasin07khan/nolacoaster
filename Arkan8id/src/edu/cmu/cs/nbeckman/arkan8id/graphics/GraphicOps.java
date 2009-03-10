@@ -40,10 +40,16 @@ public final class GraphicOps {
 	 * @param logicalYOfScreenBottom 
 	 */
 	public void draw(Graphics graphics, Spaceship spaceship, Ball ball, int logicalYOfScreenBottom) {
+		
+		// Length of top to which we should draw.
+		// I have this crazy idea to make the background
+		// move one pixel every 10 that the y moves
+		int backPos = this.screenHeight - ((logicalYOfScreenBottom % 2600) / 10);
+		
 		graphics.drawBitmap(0, 0, 
 				this.screenWidth, 
 				this.screenHeight, 
-				this.backgroundImage, 0, 0);
+				this.backgroundImage, 0, backPos);
 		
 		graphics.drawBitmap(spaceship.getX(), 
 				this.screenHeight - spaceship.getY() - spaceship.getImage().getHeight() + logicalYOfScreenBottom, 
