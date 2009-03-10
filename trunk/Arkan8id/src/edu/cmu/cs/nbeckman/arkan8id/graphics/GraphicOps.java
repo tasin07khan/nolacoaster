@@ -71,7 +71,7 @@ public final class GraphicOps {
 		graphics.setColor(0xFFFFFF);
 		if( scoreFont != null ) 
 			graphics.setFont(scoreFont);
-		graphics.drawText("Score: " + score, this.screenHeight-93, 2);
+		graphics.drawText("Score: " + score, 7, 2);
 		graphics.drawText("Balls Lost: " + ball.ballsLost(), 7, this.screenHeight - 20);
 	}
 }
