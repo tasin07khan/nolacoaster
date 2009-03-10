@@ -45,7 +45,7 @@ public final class BrickBoard {
 	 */
 	private final class Screenful {
 		private final int logicalYOfBottom;
-		private final char[] brickHolder;
+		private final byte[] brickHolder;
 				
 		private Screenful next;
 		final private Screenful prev;
@@ -66,9 +66,9 @@ public final class BrickBoard {
 			this.next = next;
 			this.logicalYOfBottom = logicalYOfBottom;
 			
-			this.brickHolder = new char[arraySize];
+			this.brickHolder = new byte[arraySize];
 			for( int i=0;i<this.brickHolder.length;i++) {
-				this.brickHolder[i] = '\u00FF';
+				this.brickHolder[i] = (byte) 0xFF;
 			}
 		}
 		
@@ -97,18 +97,18 @@ public final class BrickBoard {
 		// from every point that you would draw.
 		void draw(Graphics graphics, int logicalY) {
 			for(int i = 0; i < brickHolder.length; i++) {
-				char row = brickHolder[i];
+				byte row = brickHolder[i];
 				int brick_bottom_y = (this.getLogicalYOfBottom() + i * brickHeight) - logicalY;
 				int flipped_bottom_y = screenHeight - brick_bottom_y - brickHeight;
-				drawChar(graphics, row, flipped_bottom_y);
+				drawbyte(graphics, row, flipped_bottom_y);
 			}
 		}
 
-		private void drawChar(Graphics graphics, char row, int brick_bottom_y) {
+		private void drawbyte(Graphics graphics, byte row, int brick_bottom_y) {
 			
-			for( char i=0;i<8;i++ ) {
+			for( byte i=0;i<8;i++ ) {
 				// is this bit on?
-				char MASK = (char) (1 << i);
+				byte MASK = (byte) (1 << i);
 				if( (row&MASK) == MASK  ) {
 					// Let's try a bitmap
 					int x = i * brickWidth;
@@ -263,7 +263,7 @@ public final class BrickBoard {
 		 * PRE: Point must be in this screenful.
 		 * */
 		private boolean doesCollide(int x, int y) {
-			char row = brickHolder[getArrayIndexFromY(y)];
+			byte row = brickHolder[getArrayIndexFromY(y)];
 			
 			int MASK = 1 << getBitShiftFromX(x);
 			return (row&MASK) == MASK;
@@ -276,10 +276,10 @@ public final class BrickBoard {
 		private int turnOffIfOn(int x, int y) {
 			final int result = doesCollide(x, y) ? 1 : 0;
 			final int array_index = getArrayIndexFromY(y);
-			char row = brickHolder[array_index];
+			byte row = brickHolder[array_index];
 			
 			int MASK = 1 << getBitShiftFromX(x);
-			brickHolder[array_index] = (char) (row & (~MASK));
+			brickHolder[array_index] = (byte) (row & (~MASK));
 			
 			return result;
 		}
