@@ -1,5 +1,6 @@
 package edu.cmu.cs.nbeckman.arkan8id.gameobjects;
 
+import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Collision.CollisionType;
 import net.rim.device.api.system.Bitmap;
 
 public class Ball implements HasBoundingBox {
@@ -99,18 +100,18 @@ public class Ball implements HasBoundingBox {
 		return BALL_IMAGE;
 	}
 
-	public void respondToCollision(Collision collision) {
-		if( collision == Collision.ANGLE_COLLISION ) {
+	public void respondToCollision(CollisionType collision) {
+		if( collision == Collision.CollisionType.ANGLE_COLLISION ) {
 			setVelX(-getVelX());
 			setVelY(-getVelY());
 		}
-		else if( collision == Collision.HORIZONTAL_COLLISION ) {
+		else if( collision == Collision.CollisionType.HORIZONTAL_COLLISION ) {
 			setVelY(-getVelY());
 		}
-		else if( collision == Collision.VERTICAL_COLLISION ) {
+		else if( collision == Collision.CollisionType.VERTICAL_COLLISION ) {
 			setVelX(-getVelX());
-		} else if( collision == Collision.GLANCING_BLOW || 
-				   collision == Collision.NO_COLLISION) {
+		} else if( collision == Collision.CollisionType.GLANCING_BLOW || 
+				   collision == Collision.CollisionType.NO_COLLISION) {
 			// keep same velocity
 		}
 	}

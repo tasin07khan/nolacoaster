@@ -9,6 +9,7 @@ import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Camera;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Collision;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.HasBoundingBox;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Spaceship;
+import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Collision.CollisionType;
 import edu.cmu.cs.nbeckman.arkan8id.graphics.GraphicOps;
 
 
@@ -39,6 +40,8 @@ public class GameScreen extends FullScreen {
 	
 	private final Camera camera;
 	
+	private int bricksDestroyed;
+	
 	/**
 	 * Has the game not yet ended? True until the game is over, including during
 	 * initialization.
@@ -52,6 +55,7 @@ public class GameScreen extends FullScreen {
 		final int logicalYOfScreenBottom = this.camera.getLogicalYOfScreenBottom();
 		this.graphics.draw(graphics, spaceship, ball, logicalYOfScreenBottom);
 		this.bricks.drawBoard(graphics, logicalYOfScreenBottom);
+		this.graphics.drawStats(graphics, ball, bricksDestroyed);
 	}
 	
 	public GameScreen(int screenWidth, int screenHeight) {
@@ -61,6 +65,7 @@ public class GameScreen extends FullScreen {
 		this.bricks = new BrickBoard(screenWidth, screenHeight, 5);
 		this.screenWidth = screenWidth;
 		this.camera = new Camera(screenHeight);
+		this.bricksDestroyed = 0;
 		// Start the thread that will update graphics
 		// and move the ball.
 		(new LoopingThread()).start();
@@ -117,20 +122,20 @@ public class GameScreen extends FullScreen {
 				GameScreen.this.ball.step();
 				// See if ball collided with a brick
 				Collision collision = GameScreen.this.bricks.ballMovedCheckCollision(GameScreen.this.ball);
-				GameScreen.this.ball.respondToCollision(collision);
+				GameScreen.this.ball.respondToCollision(collision.getType());
 				GameScreen.this.camera.step(GameScreen.this.ball);
-				
+				GameScreen.this.bricksDestroyed += collision.getNumDestroyed();
 				
 				// See if ball collided with a wall
 				if( checkCollisionWithLeftWall(GameScreen.this.ball) ) {
-					GameScreen.this.ball.respondToCollision(Collision.VERTICAL_COLLISION);
+					GameScreen.this.ball.respondToCollision(Collision.CollisionType.VERTICAL_COLLISION);
 				}
 				else if( checkCollosionWithRightWall(GameScreen.this.ball)) {
-					GameScreen.this.ball.respondToCollision(Collision.VERTICAL_COLLISION);
+					GameScreen.this.ball.respondToCollision(Collision.CollisionType.VERTICAL_COLLISION);
 				}
 				
 				// See if ball collided with the paddle
-				Collision paddle_collision = GameScreen.this.spaceship.collidesWithShip(ball);
+				CollisionType paddle_collision = GameScreen.this.spaceship.collidesWithShip(ball);
 				GameScreen.this.ball.respondToCollision(paddle_collision);
 				
 				// If the ball goes off the bottom, just start the whole thing over
