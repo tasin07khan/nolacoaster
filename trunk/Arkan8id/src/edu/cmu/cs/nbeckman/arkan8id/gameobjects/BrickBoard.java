@@ -153,86 +153,99 @@ public final class BrickBoard {
 			if( bot_l_collided && bot_r_collided && top_l_collided && top_r_collided ) {
 				// Hope this never happens because it doesn't make too much sense.
 				// Just return something...
-				turnOffIfOn(bot_l_x, bot_l_y);
-				turnOffIfOn(bot_r_x, bot_r_y);
-				turnOffIfOn(top_l_x, top_l_y);
-				turnOffIfOn(top_r_x, top_r_y);
-				return Collision.HORIZONTAL_COLLISION;
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				return new Collision(Collision.CollisionType.HORIZONTAL_COLLISION, bricks_destroyed);
 			}
 			else if(bot_l_collided&&top_l_collided&&top_r_collided) {
 				// Every group of three...
-				turnOffIfOn(bot_l_x, bot_l_y);
-				turnOffIfOn(top_l_x, top_l_y);
-				turnOffIfOn(top_r_x, top_r_y);
-				return Collision.ANGLE_COLLISION;
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				return new Collision(Collision.CollisionType.ANGLE_COLLISION, bricks_destroyed);
 			}
 			else if(top_l_collided&&top_r_collided&&bot_r_collided) {
 				// Every group of three...
-				turnOffIfOn(top_l_x, top_l_y);
-				turnOffIfOn(top_r_x, top_r_y);
-				turnOffIfOn(bot_r_x, bot_r_y);
-				return Collision.ANGLE_COLLISION;
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				return new Collision(Collision.CollisionType.ANGLE_COLLISION, bricks_destroyed);
 			}
 			else if(top_r_collided&&bot_r_collided&&bot_l_collided) {
 				// Every group of three...
-				turnOffIfOn(top_r_x, top_r_y);
-				turnOffIfOn(bot_r_x, bot_r_y);
-				turnOffIfOn(bot_l_x, bot_l_y);
-				return Collision.ANGLE_COLLISION;				
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				return new Collision(Collision.CollisionType.ANGLE_COLLISION, bricks_destroyed);				
 			}
 			else if(bot_r_collided&&bot_l_collided&&top_l_collided) {
 				// Every group of three...
-				turnOffIfOn(bot_r_x, bot_r_y);
-				turnOffIfOn(bot_l_x, bot_l_y);
-				turnOffIfOn(top_l_x, top_l_y);
-				return Collision.ANGLE_COLLISION;				
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				return new Collision(Collision.CollisionType.ANGLE_COLLISION, bricks_destroyed);				
 			}
 			else if(bot_r_collided && top_r_collided) {
 				// Either both rs or both ls
-				turnOffIfOn(bot_r_x, bot_r_y);
-				turnOffIfOn(top_r_x, top_r_y);
-				return Collision.VERTICAL_COLLISION;
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				return new Collision(Collision.CollisionType.VERTICAL_COLLISION, bricks_destroyed);
 			}
 			else if(top_l_collided && bot_l_collided) {
 				// Either both rs or both ls
-				turnOffIfOn(top_l_x, top_l_y);
-				turnOffIfOn(bot_l_x, bot_l_y);
-				return Collision.VERTICAL_COLLISION;				
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				return new Collision(Collision.CollisionType.VERTICAL_COLLISION, bricks_destroyed);				
 			}
 			else if(top_l_collided && top_r_collided) {
 				// Either both tops of both bottoms
-				turnOffIfOn(top_l_x, top_l_y);
-				turnOffIfOn(top_r_x, top_r_y);
-				return Collision.HORIZONTAL_COLLISION;
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				return new Collision(Collision.CollisionType.HORIZONTAL_COLLISION, bricks_destroyed);
 			}
 			else if(bot_r_collided && bot_l_collided) {
 				// Either both tops of both bottoms
-				turnOffIfOn(bot_r_x, bot_r_y);
-				turnOffIfOn(bot_l_x, bot_l_y);
-				return Collision.HORIZONTAL_COLLISION;				
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				return new Collision(Collision.CollisionType.HORIZONTAL_COLLISION, bricks_destroyed);				
 			}
 			else if(bot_l_collided) {
 				// Single point
-				turnOffIfOn(bot_l_x, bot_l_y);
-				return Collision.GLANCING_BLOW;	
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_l_x, bot_l_y);
+				return new Collision(Collision.CollisionType.GLANCING_BLOW, bricks_destroyed);	
 			}
 			else if(top_l_collided) {
 				// Single point
-				turnOffIfOn(top_l_x, top_l_y);
-				return Collision.GLANCING_BLOW;	
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(top_l_x, top_l_y);
+				return new Collision(Collision.CollisionType.GLANCING_BLOW, bricks_destroyed);	
 			}
 			else if(top_r_collided) {
 				// Single point
-				turnOffIfOn(top_r_x, top_r_y);
-				return Collision.GLANCING_BLOW;	
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(top_r_x, top_r_y);
+				return new Collision(Collision.CollisionType.GLANCING_BLOW, bricks_destroyed);	
 			}
 			else if(bot_r_collided) {
 				// Single point
-				turnOffIfOn(bot_r_x, bot_r_y);
-				return Collision.GLANCING_BLOW;	
+				int bricks_destroyed = 0;
+				bricks_destroyed += turnOffIfOn(bot_r_x, bot_r_y);
+				return new Collision(Collision.CollisionType.GLANCING_BLOW, bricks_destroyed);	
 			}
 			else {
-				return Collision.NO_COLLISION;
+				return Collision.emptyCollision();
 			}
 			
 		}
@@ -258,13 +271,17 @@ public final class BrickBoard {
 		
 		/** If this brick is on, turn it off.
 		 * PRE: Point must be in this screenful.
+		 * @return returns the number of bricks that were actually turned off.
 		 *  */
-		private void turnOffIfOn(int x, int y) {
+		private int turnOffIfOn(int x, int y) {
+			final int result = doesCollide(x, y) ? 1 : 0;
 			final int array_index = getArrayIndexFromY(y);
 			char row = brickHolder[array_index];
 			
 			int MASK = 1 << getBitShiftFromX(x);
 			brickHolder[array_index] = (char) (row & (~MASK));
+			
+			return result;
 		}
 
 		// Is the given point even in this screenfull?
@@ -300,7 +317,7 @@ public final class BrickBoard {
 		Collision bottomCollision = this.currentScreenFull.collide(ball);
 		Collision topCollision = this.currentScreenFull.getNext().collide(ball);
 		
-		if( bottomCollision == Collision.NO_COLLISION )
+		if( bottomCollision.getType() == Collision.CollisionType.NO_COLLISION )
 			return topCollision;
 		else
 			return bottomCollision;

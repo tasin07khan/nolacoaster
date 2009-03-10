@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 RIM-COD-Module-Name: Arkan8id
 RIM-COD-Module-Dependencies: net_rim_cldc
-MIDlet-Jar-Size: 34769
+MIDlet-Jar-Size: 36641
 MIDlet-1: ,,
-RIM-COD-Creation-Time: 1236568151
+RIM-COD-Creation-Time: 1236644341
 MIDlet-Jar-URL: Arkan8id.jar
 RIM-COD-URL: Arkan8id.cod
-RIM-COD-SHA1: ca 51 f9 73 53 36 2d 0b 1d 51 96 8a b5 eb 5f c6 1f 31 6b 97
-RIM-COD-Size: 21852
+RIM-COD-SHA1: 12 ae 9c 80 8b 3d 1d bd 1b 1c c3 6b 4a aa e2 7a a1 b6 64 3f
+RIM-COD-Size: 22544
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-Version: 0.0
 MIDlet-Name: Arkan8id

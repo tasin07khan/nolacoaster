@@ -59,12 +59,13 @@ public final class GraphicOps {
 				ball.getImage(), 
 				0, 
 				0);
-		
+	}
+
+	public void drawStats(Graphics graphics, Ball ball, int score) {
 		graphics.setColor(0xFFFFFF);
 		if( scoreFont != null ) 
 			graphics.setFont(scoreFont);
-        //passGraphics.drawText("Score: " + zeroPad + passScore, Graphics.getScreenWidth()-93, 2);
+		graphics.drawText("Score: " + score, this.screenHeight-93, 2);
 		graphics.drawText("Balls Lost: " + ball.ballsLost(), 7, this.screenHeight - 20);
 	}
-	
 }
