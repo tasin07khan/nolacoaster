@@ -376,5 +376,12 @@ public final class BrickBoard {
 		}
 		
 		return currentScreenful;
-	}	
+	}
+	
+	/**
+	 * This method will attempt to find any all-zero 
+	 */
+	public void garbageCollect() {
+		
+	}
 }
