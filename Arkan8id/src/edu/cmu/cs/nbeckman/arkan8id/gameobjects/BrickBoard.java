@@ -16,7 +16,6 @@ public final class BrickBoard {
 
 	private static final int WACKY_SCREEN_HEIGHT_DIVISOR = 13;
 	private static final int WACKY_SCREEN_WIDTH_DIVISOR = 8;
-	private static final boolean DEBUG = false;
 	
 	private static final Bitmap BRICK_IMAGE = Bitmap.getBitmapResource("RedBrick.png");
 	
@@ -26,7 +25,7 @@ public final class BrickBoard {
 	private final int brickHeight;
 	private final int brickWidth;
 	
-	private Screenful currentScreenFull;
+	private IScreenful currentScreenFull;
 	
 	
 	public BrickBoard(int screenWidth, int screenHeight, int bricksInFirstScreen) {
@@ -38,17 +37,141 @@ public final class BrickBoard {
 		this.currentScreenFull = new Screenful(bricksInFirstScreen, this.brickHeight);
 	}
 	
+	private interface IScreenful {
+		int getLogicalYOfBottom();
+		int getLogicalYOfTop();
+		IScreenful getPrev();
+		IScreenful getNext();
+		void setNext(IScreenful next);
+		void draw(Graphics graphics, int logicalY);
+		Collision collide(HasBoundingBox ball);
+		boolean isTerminator();
+		/**
+		 * Is every single row empty?
+		 */
+		boolean isCompletelyEmpty();
+		/**
+		 * Does this screenful contain an array of bricks?
+		 */
+		boolean containsBrickArray();
+		void setPrev(IScreenful new_sf);
+	}
+	
+	private final static class NullScreenful implements IScreenful {
+
+		public Collision collide(HasBoundingBox ball) {
+			return Collision.emptyCollision();
+		}
+
+		public void draw(Graphics graphics, int logicalY) {}
+
+		public int getLogicalYOfBottom() {
+			throw new UnsupportedOperationException();
+		}
+
+		public int getLogicalYOfTop() {
+			throw new UnsupportedOperationException();
+		}
+
+		public IScreenful getNext() {
+			throw new UnsupportedOperationException();
+		}
+
+		public IScreenful getPrev() {
+			throw new UnsupportedOperationException();
+		}
+
+		public void setNext(IScreenful next) {
+			throw new UnsupportedOperationException();
+		}
+
+		public boolean isCompletelyEmpty() {
+			throw new UnsupportedOperationException();
+		}
+
+		public boolean isTerminator() {
+			return true;
+		}
+
+		public boolean containsBrickArray() {
+			return false;
+		}
+
+		public void setPrev(IScreenful new_sf) {
+			throw new UnsupportedOperationException();
+		}
+	}
+	
+	private final static class EmptyScreenful implements IScreenful {
+
+		private final int top;
+		private final int bottom;
+		private IScreenful next;
+		private IScreenful prev;
+
+		public EmptyScreenful(int bottom, int top, IScreenful prev,
+				IScreenful next) {
+			super();
+			this.bottom = bottom;
+			this.top = top;
+			this.prev = prev;
+			this.next = next;
+		}
+
+		public Collision collide(HasBoundingBox ball) {
+			return Collision.emptyCollision();
+		}
+
+		public void draw(Graphics graphics, int logicalY) {}
+
+		public int getLogicalYOfBottom() {
+			return bottom;
+		}
+
+		public int getLogicalYOfTop() {
+			return top;
+		}
+
+		public IScreenful getNext() {
+			return next;
+		}
+
+		public IScreenful getPrev() {
+			return prev;
+		}
+
+		public void setNext(IScreenful next) {
+			this.next = next;
+		}
+
+		public boolean isCompletelyEmpty() {
+			return true;
+		}
+
+		public boolean isTerminator() {
+			return false;
+		}
+
+		public boolean containsBrickArray() {
+			return false;
+		}
+
+		public void setPrev(IScreenful prev) {
+			this.prev = prev;
+		}
+	}
+	
 	/**
 	 * This class holds the byte array, and is responsible for converting
 	 * bytes into logical locations. It is also essentially a linked list of
 	 * arrays.
 	 */
-	private final class Screenful {
+	private final class Screenful implements IScreenful {
 		private final int logicalYOfBottom;
 		private final byte[] brickHolder;
 				
-		private Screenful next;
-		final private Screenful prev;
+		private IScreenful next;
+		private IScreenful prev;
 		
 		// Call for the initial screen full
 		Screenful(int numBricksInIntial, int brickHeight) {
@@ -57,11 +180,11 @@ public final class BrickBoard {
 		}
 		
 		// Call for subsequent screenfulls.
-		Screenful(Screenful prev, Screenful next, int logicalYOfBottom) {
+		Screenful(IScreenful prev, IScreenful next, int logicalYOfBottom) {
 			this(prev, next, logicalYOfBottom, WACKY_SCREEN_HEIGHT_DIVISOR);
 		}
 		
-		Screenful(Screenful prev, Screenful next, int logicalYOfBottom, int arraySize) {
+		Screenful(IScreenful prev, IScreenful next, int logicalYOfBottom, int arraySize) {
 			this.prev = prev;
 			this.next = next;
 			this.logicalYOfBottom = logicalYOfBottom;
@@ -72,30 +195,30 @@ public final class BrickBoard {
 			}
 		}
 		
-		int getLogicalYOfBottom() {
+		public int getLogicalYOfBottom() {
 			return logicalYOfBottom;
 		}
 		
-		int getLogicalYOfTop() {
+		public int getLogicalYOfTop() {
 			return logicalYOfBottom + (brickHolder.length * brickHeight);
 		}
 		
-		Screenful getPrev() {
+		public IScreenful getPrev() {
 			return prev;
 		}
 
-		Screenful getNext() {
+		public IScreenful getNext() {
 			return next;
 		}
 		
-		void setNext(Screenful next) {
+		public void setNext(IScreenful next) {
 			this.next = next;
 		}
 
 		// Draw this entire screenful (even though it could be off screen)
 		// w.r.t. the logicalY, which basically means subtracting logicalY
 		// from every point that you would draw.
-		void draw(Graphics graphics, int logicalY) {
+		public void draw(Graphics graphics, int logicalY) {
 			for(int i = 0; i < brickHolder.length; i++) {
 				byte row = brickHolder[i];
 				int brick_bottom_y = (this.getLogicalYOfBottom() + i * brickHeight) - logicalY;
@@ -119,7 +242,7 @@ public final class BrickBoard {
 		}
 
 		// XXX So UGLY!
-		Collision collide(HasBoundingBox ball) {
+		public Collision collide(HasBoundingBox ball) {
 			// Go in order through the 4 points of the ball's bounding box.
 			int bot_l_x = ball.getX(); 
 			int bot_l_y = ball.getY();
@@ -290,12 +413,35 @@ public final class BrickBoard {
 			       (y >= this.getLogicalYOfBottom()) &&
 			       (y < this.getLogicalYOfTop());
 		}
+
+		
+		public boolean isCompletelyEmpty() {
+			for( int i = 0; i<this.brickHolder.length; i++ ) {
+				int row = this.brickHolder[i];
+				if( (row != ((byte)0x0000)) ) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public boolean isTerminator() {
+			return false;
+		}
+
+		public boolean containsBrickArray() {
+			return true;
+		}
+
+		public void setPrev(IScreenful prev) {
+			this.prev = prev;
+		}
 	}
 	
 	/** The terminator for the very top of the bricks */
-	private static final Screenful END_SCREENFUL = (new BrickBoard(0,0,0)).new Screenful(null,null,0,0);
+	private static final IScreenful END_SCREENFUL = new NullScreenful();
 	/** The terminator for the very bottom of the bricks, which is visible from the start */
-	private static final Screenful BOTTOM_SCREENFUL = (new BrickBoard(0,0,0)).new Screenful(null,null,0,0);
+	private static final IScreenful BOTTOM_SCREENFUL = new NullScreenful();
 	
 	/**
 	 * Calling this method reports to the BrickBoard that the ball has moved. The
@@ -338,13 +484,13 @@ public final class BrickBoard {
 
 	// 1.) find the first screenful such that logicalY is in between its top & bottom OR
 	//     its bottom is equal to logicalY.
-	private Screenful findLowestScreenfulOnScreen(int logicalY, Screenful currentScreenful) {
+	private IScreenful findLowestScreenfulOnScreen(int logicalY, IScreenful currentScreenful) {
 		while( logicalY > currentScreenful.getLogicalYOfTop() ||
 			   logicalY < currentScreenful.getLogicalYOfBottom() ) {
 			if( logicalY > currentScreenful.getLogicalYOfTop() ) {
 				// Go up the chain...
-				Screenful next = currentScreenful.getNext();
-				if( next == END_SCREENFUL ) {
+				IScreenful next = currentScreenful.getNext();
+				if( next.isTerminator() ) {
 					System.err.println("Creating a new Screenful");
 					Screenful newScreenful = new Screenful(currentScreenful, END_SCREENFUL, currentScreenful.getLogicalYOfTop());
 					currentScreenful.setNext(newScreenful);
@@ -356,8 +502,8 @@ public final class BrickBoard {
 			} 
 			else {
 				// Go down the chain...
-				Screenful prev = currentScreenful.getPrev();
-				if( prev == BOTTOM_SCREENFUL ) {
+				IScreenful prev = currentScreenful.getPrev();
+				if( prev.isTerminator() ) {
 					// The logical Y can be below the bottom-most screenful, in which case we should
 					// just draw the top one.
 					return currentScreenful;
@@ -371,7 +517,7 @@ public final class BrickBoard {
 		// Right before we return, if the next screenful happens to be empty, create a new
 		// one. This will ensure that even if the first one is all the way to the bottom, there
 		// will always be something to see on the next screen full.
-		if( currentScreenful.getNext() == END_SCREENFUL ) {
+		if( currentScreenful.getNext().isTerminator() ) {
 			currentScreenful.setNext(new Screenful(currentScreenful, END_SCREENFUL, currentScreenful.getLogicalYOfTop()));
 		}
 		
@@ -382,6 +528,48 @@ public final class BrickBoard {
 	 * This method will attempt to find any all-zero 
 	 */
 	public void garbageCollect() {
+		/*
+		 * Start with the very first screenful...
+		 */
+		IScreenful current = this.currentScreenFull;
+		while( !current.getPrev().isTerminator() ) {
+			current = current.getPrev();
+		}
+		
+		/*
+		 * Now go in the opposite direction.
+		 * As long as this is not a terminator, if it contains a brick array and
+		 * can the brick array is empty, we should replace it and move on.
+		 */
+		do {
+			if( current.isTerminator() ) {
+				return;
+			}
+			else if( current.containsBrickArray()) {
+				if( current.isCompletelyEmpty() ) {
+					// We can actually garbage collect!
+					// Create a new one, setting the correct parameters
+					IScreenful new_sf = new EmptyScreenful(current.getLogicalYOfBottom(),
+							current.getLogicalYOfTop(), current.getPrev(), current.getNext());
+					// Then adjust the next and prev of our two neighbors
+					if( !new_sf.getPrev().isTerminator() ) {
+						new_sf.getPrev().setNext(new_sf);
+					}
+					if( !new_sf.getNext().isTerminator() ) {
+						new_sf.getNext().setPrev(new_sf);
+					}
+					
+					this.currentScreenFull = new_sf;
+					current = new_sf.getNext();
+				}
+				else {
+					return;
+				}
+			}
+			else {
+				current = current.getNext();
+			}
+		} while(true);
 		
 	}
 }
