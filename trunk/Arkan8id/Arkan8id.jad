@@ -1,16 +1,20 @@
 Manifest-Version: 1.0
-RIM-COD-Module-Name: Arkan8id
-RIM-COD-Module-Dependencies: net_rim_cldc,net_rim_satsa
-MIDlet-Jar-Size: 41079
-MIDlet-1: ,,
-RIM-COD-Creation-Time: 1236820387
-MIDlet-Jar-URL: Arkan8id.jar
-RIM-COD-URL: Arkan8id.cod
-RIM-COD-SHA1: e6 63 fe 2b e7 43 d1 d0 6b 61 25 d8 38 f9 b7 a6 32 f0 39 49
-RIM-COD-Size: 24044
-MicroEdition-Configuration: CLDC-1.1
 MIDlet-Version: 0.0
-MIDlet-Name: Arkan8id
-MIDlet-Vendor: <unknown>
-MicroEdition-Profile: MIDP-2.0
+MIDlet-Jar-Size: 174074
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Jar-URL: Arkan8id.jar
+RIM-COD-Module-Dependencies: net_rim_cldc,net_rim_satsa
+RIM-COD-URL-1: Arkan8id-1.cod
+RIM-COD-SHA1-1: 42 a1 4c 20 7a b0 01 71 9c d9 6f d9 eb 67 a4 41 69 6d 3b 3b
 RIM-MIDlet-Flags-1: 0
+RIM-COD-Size-1: 40412
+RIM-COD-Module-Name: Arkan8id
+MIDlet-Name: Arkan8id
+RIM-COD-Size: 51812
+RIM-COD-Creation-Time: 1236827056
+MIDlet-1: ,,
+RIM-COD-URL: Arkan8id.cod
+MIDlet-Description: A inifinite brick-breaking game.
+RIM-COD-SHA1: 5f 89 a2 c4 25 4c 76 7a 89 70 34 5c a2 c5 a4 7d 26 14 bd 5c
+MicroEdition-Profile: MIDP-2.0
+MIDlet-Vendor: <unknown>
