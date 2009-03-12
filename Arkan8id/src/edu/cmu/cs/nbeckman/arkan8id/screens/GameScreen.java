@@ -52,7 +52,7 @@ public class GameScreen extends FullScreen {
 	}
 	
 	protected void paint(Graphics graphics) {
-		final int logicalYOfScreenBottom = this.camera.getLogicalYOfScreenBottom();
+		final long logicalYOfScreenBottom = this.camera.getLogicalYOfScreenBottom();
 		this.graphics.draw(graphics, spaceship, ball, logicalYOfScreenBottom);
 		this.bricks.drawBoard(graphics, logicalYOfScreenBottom);
 		this.graphics.drawStats(graphics, ball, bricksDestroyed);

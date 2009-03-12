@@ -55,7 +55,7 @@ public class Spaceship {
 		return image;
 	}
 	
-	private boolean isPointInShip(int x, int y) {
+	private boolean isPointInShip(int x, long y) {
 		if( getX() <= x && x <= (getX() + image.getWidth()) ) {
 			if( getY() <= y && y <= (getY() + image.getHeight()) ) {
 				return true;

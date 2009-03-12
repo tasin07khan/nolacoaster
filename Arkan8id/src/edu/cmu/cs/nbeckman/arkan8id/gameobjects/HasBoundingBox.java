@@ -10,7 +10,7 @@ package edu.cmu.cs.nbeckman.arkan8id.gameobjects;
 public interface HasBoundingBox {
 
 	public int getX();
-	public int getY();
+	public long getY();
 	
 	public int getHeight();
 	public int getWidth();

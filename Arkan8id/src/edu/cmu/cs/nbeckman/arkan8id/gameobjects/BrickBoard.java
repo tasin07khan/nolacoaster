@@ -38,12 +38,12 @@ public final class BrickBoard {
 	}
 	
 	private interface IScreenful {
-		int getLogicalYOfBottom();
-		int getLogicalYOfTop();
+		long getLogicalYOfBottom();
+		long getLogicalYOfTop();
 		IScreenful getPrev();
 		IScreenful getNext();
 		void setNext(IScreenful next);
-		void draw(Graphics graphics, int logicalY);
+		void draw(Graphics graphics, long logicalY);
 		Collision collide(HasBoundingBox ball);
 		boolean isTerminator();
 		/**
@@ -63,13 +63,13 @@ public final class BrickBoard {
 			return Collision.emptyCollision();
 		}
 
-		public void draw(Graphics graphics, int logicalY) {}
+		public void draw(Graphics graphics, long logicalY) {}
 
-		public int getLogicalYOfBottom() {
+		public long getLogicalYOfBottom() {
 			throw new UnsupportedOperationException();
 		}
 
-		public int getLogicalYOfTop() {
+		public long getLogicalYOfTop() {
 			throw new UnsupportedOperationException();
 		}
 
@@ -104,12 +104,12 @@ public final class BrickBoard {
 	
 	private final static class EmptyScreenful implements IScreenful {
 
-		private final int top;
-		private final int bottom;
+		private final long top;
+		private final long bottom;
 		private IScreenful next;
 		private IScreenful prev;
 
-		public EmptyScreenful(int bottom, int top, IScreenful prev,
+		public EmptyScreenful(long bottom, long top, IScreenful prev,
 				IScreenful next) {
 			super();
 			this.bottom = bottom;
@@ -122,13 +122,13 @@ public final class BrickBoard {
 			return Collision.emptyCollision();
 		}
 
-		public void draw(Graphics graphics, int logicalY) {}
+		public void draw(Graphics graphics, long logicalY) {}
 
-		public int getLogicalYOfBottom() {
+		public long getLogicalYOfBottom() {
 			return bottom;
 		}
 
-		public int getLogicalYOfTop() {
+		public long getLogicalYOfTop() {
 			return top;
 		}
 
@@ -167,7 +167,7 @@ public final class BrickBoard {
 	 * arrays.
 	 */
 	private final class Screenful implements IScreenful {
-		private final int logicalYOfBottom;
+		private final long logicalYOfBottom;
 		private final byte[] brickHolder;
 				
 		private IScreenful next;
@@ -180,11 +180,11 @@ public final class BrickBoard {
 		}
 		
 		// Call for subsequent screenfulls.
-		Screenful(IScreenful prev, IScreenful next, int logicalYOfBottom) {
+		Screenful(IScreenful prev, IScreenful next, long logicalYOfBottom) {
 			this(prev, next, logicalYOfBottom, WACKY_SCREEN_HEIGHT_DIVISOR);
 		}
 		
-		Screenful(IScreenful prev, IScreenful next, int logicalYOfBottom, int arraySize) {
+		Screenful(IScreenful prev, IScreenful next, long logicalYOfBottom, int arraySize) {
 			this.prev = prev;
 			this.next = next;
 			this.logicalYOfBottom = logicalYOfBottom;
@@ -195,11 +195,11 @@ public final class BrickBoard {
 			}
 		}
 		
-		public int getLogicalYOfBottom() {
+		public long getLogicalYOfBottom() {
 			return logicalYOfBottom;
 		}
 		
-		public int getLogicalYOfTop() {
+		public long getLogicalYOfTop() {
 			return logicalYOfBottom + (brickHolder.length * brickHeight);
 		}
 		
@@ -218,10 +218,10 @@ public final class BrickBoard {
 		// Draw this entire screenful (even though it could be off screen)
 		// w.r.t. the logicalY, which basically means subtracting logicalY
 		// from every point that you would draw.
-		public void draw(Graphics graphics, int logicalY) {
+		public void draw(Graphics graphics, long logicalY) {
 			for(int i = 0; i < brickHolder.length; i++) {
 				byte row = brickHolder[i];
-				int brick_bottom_y = (this.getLogicalYOfBottom() + i * brickHeight) - logicalY;
+				int brick_bottom_y = (int) ((int) (this.getLogicalYOfBottom() + ((long)i) * ((long)brickHeight)) - logicalY);
 				int flipped_bottom_y = screenHeight - brick_bottom_y - brickHeight;
 				drawbyte(graphics, row, flipped_bottom_y);
 			}
@@ -245,19 +245,19 @@ public final class BrickBoard {
 		public Collision collide(HasBoundingBox ball) {
 			// Go in order through the 4 points of the ball's bounding box.
 			int bot_l_x = ball.getX(); 
-			int bot_l_y = ball.getY();
+			long bot_l_y = ball.getY();
 			boolean bot_l_collided = false;
 			
 			int bot_r_x = ball.getX() + ball.getWidth(); 
-			int bot_r_y = bot_l_y;
+			long bot_r_y = bot_l_y;
 			boolean bot_r_collided = false;
 			
 			int top_l_x = bot_l_x;
-			int top_l_y = ball.getY() + ball.getHeight();
+			long top_l_y = ball.getY() + ball.getHeight();
 			boolean top_l_collided = false;
 			
 			int top_r_x = bot_r_x;
-			int top_r_y = top_l_y;
+			long top_r_y = top_l_y;
 			boolean top_r_collided = false;
 			
 			if( pointIsOnScreenful(bot_l_x, bot_l_y) ) {
@@ -374,8 +374,9 @@ public final class BrickBoard {
 		}
 		
 		
-		private int getArrayIndexFromY(int y) {
-			return (y - this.getLogicalYOfBottom()) / brickHeight;
+		private int getArrayIndexFromY(long y) {
+			int rel_y = (int)(y - this.getLogicalYOfBottom()); 
+			return  rel_y / brickHeight;
 		}
 		
 		private int getBitShiftFromX(int x) {
@@ -385,7 +386,7 @@ public final class BrickBoard {
 		/** This method just checks to see if the point collides. 
 		 * PRE: Point must be in this screenful.
 		 * */
-		private boolean doesCollide(int x, int y) {
+		private boolean doesCollide(int x, long y) {
 			byte row = brickHolder[getArrayIndexFromY(y)];
 			
 			int MASK = 1 << getBitShiftFromX(x);
@@ -396,7 +397,7 @@ public final class BrickBoard {
 		 * PRE: Point must be in this screenful.
 		 * @return returns the number of bricks that were actually turned off.
 		 *  */
-		private int turnOffIfOn(int x, int y) {
+		private int turnOffIfOn(int x, long y) {
 			final int result = doesCollide(x, y) ? 1 : 0;
 			final int array_index = getArrayIndexFromY(y);
 			byte row = brickHolder[array_index];
@@ -408,7 +409,7 @@ public final class BrickBoard {
 		}
 
 		// Is the given point even in this screenfull?
-		private boolean pointIsOnScreenful(int x, int y) {
+		private boolean pointIsOnScreenful(int x, long y) {
 			return (x >= 0) && (x < screenWidth) &&
 			       (y >= this.getLogicalYOfBottom()) &&
 			       (y < this.getLogicalYOfTop());
@@ -475,7 +476,7 @@ public final class BrickBoard {
 	 * before the ball starts moving, the logical y should be 0.
 	 * @param logicalY
 	 */
-	public void drawBoard(Graphics graphics, int logicalY) {
+	public void drawBoard(Graphics graphics, long logicalY) {
 		currentScreenFull = 
 			findLowestScreenfulOnScreen(logicalY, this.currentScreenFull);
 		currentScreenFull.draw(graphics, logicalY);
@@ -484,7 +485,7 @@ public final class BrickBoard {
 
 	// 1.) find the first screenful such that logicalY is in between its top & bottom OR
 	//     its bottom is equal to logicalY.
-	private IScreenful findLowestScreenfulOnScreen(int logicalY, IScreenful currentScreenful) {
+	private IScreenful findLowestScreenfulOnScreen(long logicalY, IScreenful currentScreenful) {
 		while( logicalY > currentScreenful.getLogicalYOfTop() ||
 			   logicalY < currentScreenful.getLogicalYOfBottom() ) {
 			if( logicalY > currentScreenful.getLogicalYOfTop() ) {
