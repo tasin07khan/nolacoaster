@@ -40,7 +40,7 @@ public class GameScreen extends FullScreen {
 	
 	private final Camera camera;
 	
-	private int bricksDestroyed;
+	private long bricksDestroyed;
 	
 	/**
 	 * Has the game not yet ended? True until the game is over, including during
@@ -65,7 +65,7 @@ public class GameScreen extends FullScreen {
 		this.bricks = new BrickBoard(screenWidth, screenHeight, 5);
 		this.screenWidth = screenWidth;
 		this.camera = new Camera(screenHeight);
-		this.bricksDestroyed = 0;
+		this.bricksDestroyed = 0L;
 		// Start the thread that will update graphics
 		// and move the ball.
 		(new LoopingThread()).start();

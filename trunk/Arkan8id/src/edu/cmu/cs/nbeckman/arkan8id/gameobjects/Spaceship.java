@@ -55,15 +55,26 @@ public class Spaceship {
 		return image;
 	}
 	
+	private boolean isPointInShip(int x, int y) {
+		if( getX() <= x && x <= (getX() + image.getWidth()) ) {
+			if( getY() <= y && y <= (getY() + image.getHeight()) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Does the given object collide with the ship? 
 	 * @return
 	 */
 	public Collision.CollisionType collidesWithShip(HasBoundingBox ball) {
-		if( getX() <= ball.getX() && (ball.getX()+ball.getWidth()) <= (getX()+image.getWidth()) ) {
-			if( getY() <= ball.getX() && (ball.getY()+ball.getHeight()) <= (getY()+image.getHeight()) ) {
-				return Collision.CollisionType.HORIZONTAL_COLLISION;
-			}
+		// if any of the four points is inside the ship...
+		if( isPointInShip(ball.getX(), ball.getY()) ||
+			isPointInShip(ball.getX(), ball.getY() + ball.getHeight()) ||
+			isPointInShip(ball.getX() + ball.getWidth(), ball.getY()) ||
+			isPointInShip(ball.getX() + ball.getWidth(), ball.getY() + ball.getHeight()) ) {
+			return Collision.CollisionType.HORIZONTAL_COLLISION;
 		}
 		return Collision.CollisionType.NO_COLLISION;
 	}
