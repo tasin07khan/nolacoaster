@@ -19,7 +19,7 @@ AutoRestart=0
 ]
 [DependsOn
 ]
-Description=A inifinite brick-breaking game.
+Description=A infinite brick-breaking game.
 ExcludeFromBuildAll=0
 [Files
 ..\..\Documents\Downloads\cover.jpg
