@@ -126,6 +126,11 @@ public class GameScreen extends FullScreen {
 				GameScreen.this.camera.step(GameScreen.this.ball);
 				GameScreen.this.bricksDestroyed += collision.getNumDestroyed();
 				
+				// Every 100 points, try to garbage collect the lower screenfulls...
+				if( (collision.getNumDestroyed() > 0) && (GameScreen.this.bricksDestroyed % 104 == 0) ) {
+					GameScreen.this.bricks.garbageCollect();
+				}
+				
 				// See if ball collided with a wall
 				if( checkCollisionWithLeftWall(GameScreen.this.ball) ) {
 					GameScreen.this.ball.respondToCollision(Collision.CollisionType.VERTICAL_COLLISION);
