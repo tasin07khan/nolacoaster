@@ -1,9 +1,10 @@
 MIDlet-Name: Arkan8id
-MIDlet-Version: 0.0
-MIDlet-Vendor: <unknown>
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: Nels E. Beckman
+MIDlet-Description: A inifinite brick-breaking game.
 MIDlet-Jar-URL: Arkan8id.jar
 MIDlet-Jar-Size: 0
 MicroEdition-Profile: MIDP-2.0
 MicroEdition-Configuration: CLDC-1.1
-MIDlet-1: ,,
+MIDlet-1: Arkan8id,src/arkan8id_logo.png,
 RIM-MIDlet-Flags-1: 0
