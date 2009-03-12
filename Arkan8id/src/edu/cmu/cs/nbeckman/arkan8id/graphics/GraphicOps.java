@@ -67,11 +67,11 @@ public final class GraphicOps {
 				0);
 	}
 
-	public void drawStats(Graphics graphics, Ball ball, int score) {
+	public void drawStats(Graphics graphics, Ball ball, long score) {
 		graphics.setColor(0xFFFFFF);
 		if( scoreFont != null ) 
 			graphics.setFont(scoreFont);
 		graphics.drawText("Score: " + score, 7, 2);
-		graphics.drawText("Balls Lost: " + ball.ballsLost(), 7, this.screenHeight - 20);
+		graphics.drawText("Balls Lost: " + Long.toString(ball.ballsLost()), 7, this.screenHeight - 20);
 	}
 }

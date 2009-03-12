@@ -18,7 +18,7 @@ public final class Collision {
 
 	private static final Collision EMPTY_COLLISION = new Collision(CollisionType.NO_COLLISION, 0);
 	
-	public static class CollisionType {
+	public static final class CollisionType {
 		private CollisionType() {};
 		
 		public static final CollisionType NO_COLLISION = new CollisionType();

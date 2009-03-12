@@ -27,7 +27,7 @@ public class Ball implements HasBoundingBox {
 	private int velX;
 	private int velY;
 	
-	private int ballsLost;
+	private long ballsLost;
 	
 	public Ball(int posX, int posY, int velX, int velY) {
 		super();
@@ -116,7 +116,7 @@ public class Ball implements HasBoundingBox {
 		}
 	}
 
-	public int ballsLost() {
+	public long ballsLost() {
 		return this.ballsLost;
 	}
 }
