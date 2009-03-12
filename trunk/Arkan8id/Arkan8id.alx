@@ -1,0 +1,31 @@
+<loader version="1.0">
+	<application id="Arkan8id">
+		<name >
+			Arkan8id
+		</name>
+		<description >
+			A inifinite brick-breaking game.
+		</description>
+		<version >
+			1.0.0
+		</version>
+		<vendor >
+			Nels E. Beckman
+		</vendor>
+		<copyright >
+			Copyright (c) 2009 Nels E. Beckman
+		</copyright>
+		<fileset Java="1.38">
+			<directory >
+				
+			</directory>
+			<files >
+				Arkan8id.cod
+
+			</files>
+
+		</fileset>
+
+	</application>
+
+</loader>

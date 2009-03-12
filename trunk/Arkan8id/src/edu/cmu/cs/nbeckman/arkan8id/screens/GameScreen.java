@@ -23,7 +23,7 @@ public class GameScreen extends FullScreen {
 
 	// Affects the speed of movement of the craft. 
 	// We multiple wheel movement by this amount.
-	private static final int MOVEMENT_MULTIPLIER = 4;
+	private static final int MOVEMENT_MULTIPLIER = 20;
 
 	// There is a race on this field, but one that will be benign.
 	private boolean gameNotYetEnded = true;
