@@ -19,7 +19,7 @@ public class Ball implements HasBoundingBox {
 	 * Current position
 	 */
 	private int posX;
-	private int posY;
+	private long posY;
 	
 	/*
 	 * Current velocity
@@ -56,7 +56,7 @@ public class Ball implements HasBoundingBox {
 		return posX;
 	}
 
-	public int getY() {
+	public long getY() {
 		return posY;
 	}
 	

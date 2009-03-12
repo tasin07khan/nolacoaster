@@ -18,10 +18,10 @@ public class Camera {
 	
 	private int velocity;
 	
-	private int logicalYOfScreenBottom;
+	private long logicalYOfScreenBottom;
 	
 	private boolean chasing;
-	private int chasePointY;
+	private long chasePointY;
 	
 	/**
 	 * Creates a new camera, with the assumption that 0 should be the
@@ -31,9 +31,9 @@ public class Camera {
 		this.screenHeight = screenHeight;
 		this.oneEighthOfScreenHeight = this.screenHeight / 8;
 		this.velocity = 0;
-		this.logicalYOfScreenBottom = 0;
+		this.logicalYOfScreenBottom = 0L;
 		this.chasing = false;
-		this.chasePointY = 0;
+		this.chasePointY = 0L;
 	}
 	
 	/**
@@ -59,15 +59,15 @@ public class Camera {
 		else {
 			// See if we need to chase. There are a couple of case.
 			if( ballPosition.getY() < this.screenHeight &&
-				this.logicalYOfScreenBottom != 0 ) {
+				this.logicalYOfScreenBottom != 0L ) {
 				// Check to see if the ball is entering the bottom screen.
 				// if so, chase to zero.
 				this.velocity = -CHASE_SPEED;
-				this.chasePointY = 0;
+				this.chasePointY = 0L;
 				this.chasing = true;
 			}
 			else if( ballPosition.getY() >= this.screenHeight && 
-					 this.logicalYOfScreenBottom == 0) {
+					 this.logicalYOfScreenBottom == 0L) {
 				// This should be the case when the ball first leaves the home screen.
 				chase(ballPosition, true);
 			}
@@ -77,7 +77,7 @@ public class Camera {
 				chase(ballPosition, true);
 			}
 			else if( ballPosition.getY() < (this.logicalYOfScreenBottom + this.oneEighthOfScreenHeight) &&
-					 this.logicalYOfScreenBottom != 0 ) {
+					 this.logicalYOfScreenBottom != 0L ) {
 				// normal chase, see if ball has gone below the 1/8 from the bottom
 				chase(ballPosition, false);
 			}
@@ -87,7 +87,8 @@ public class Camera {
 	private void chase(HasBoundingBox ballPosition, boolean chaseUp) {
 		this.velocity = chaseUp ? CHASE_SPEED : -CHASE_SPEED;
 		// Put the ball in the middle of the screen
-		this.chasePointY = ballPosition.getY() - (this.screenHeight / 2);
+		long half_of_screen_height = ((long)this.screenHeight) / 2L;
+		this.chasePointY = ballPosition.getY() - half_of_screen_height;
 		this.chasing = true;
 	}
 	
@@ -96,7 +97,7 @@ public class Camera {
 	 * the calculated result of the camera, and will allow other objects to draw themselves
 	 * appropriately.
 	 */
-	public int getLogicalYOfScreenBottom() {
+	public long getLogicalYOfScreenBottom() {
 		return this.logicalYOfScreenBottom;
 	}
 	
