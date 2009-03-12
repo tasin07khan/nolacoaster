@@ -19,8 +19,11 @@ AutoRestart=0
 ]
 [DependsOn
 ]
+Description=A inifinite brick-breaking game.
 ExcludeFromBuildAll=0
 [Files
+..\..\Documents\Downloads\cover.jpg
+src\arkan8id_logo.png
 src\BlueBall.png
 src\edu\cmu\cs\nbeckman\arkan8id\Arkan8id.java
 src\edu\cmu\cs\nbeckman\arkan8id\gameobjects\Ball.java
@@ -44,13 +47,13 @@ HaveAlxImports=0
 HaveDefs=0
 HaveImports=0
 [Icons
+src\arkan8id_logo.png
 ]
 [ImplicitRules
 ]
 [Imports
 ]
 Listing=0
-Options=-quiet
 OutputFileName=Arkan8id
 [PackageProtection
 ]
@@ -60,4 +63,7 @@ RibbonPosition=0
 RunOnStartup=0
 StartupTier=7
 SystemModule=0
+Title=Arkan8id
 Type=0
+Vendor=Nels E. Beckman
+Version=1.0.0
