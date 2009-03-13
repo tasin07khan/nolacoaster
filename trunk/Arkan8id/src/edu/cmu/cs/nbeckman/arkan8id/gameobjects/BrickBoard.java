@@ -22,6 +22,8 @@ public final class BrickBoard {
 	private final int screenWidth;
 	private final int screenHeight;
 	
+	private final boolean useBitmap;
+	
 	private final int brickHeight;
 	private final int brickWidth;
 	
@@ -34,6 +36,7 @@ public final class BrickBoard {
 		this.screenHeight = screenHeight;
 		this.brickHeight = screenHeight / WACKY_SCREEN_HEIGHT_DIVISOR;
 		this.brickWidth = screenWidth / WACKY_SCREEN_WIDTH_DIVISOR;
+		this.useBitmap = (this.brickWidth == BRICK_IMAGE.getWidth());
 		this.currentScreenFull = new Screenful(bricksInFirstScreen, this.brickHeight);
 	}
 	
@@ -236,7 +239,17 @@ public final class BrickBoard {
 					// Let's try a bitmap
 					int x = i * brickWidth;
 					int y = brick_bottom_y;
-					graphics.drawBitmap(x, y, brickWidth, brickHeight, BRICK_IMAGE, 0, 0);
+					
+					if( useBitmap ) {
+						graphics.drawBitmap(x, y, brickWidth, brickHeight, BRICK_IMAGE, 0, 0);
+					}
+					else {
+						// This color comes from the GIMP
+						graphics.setColor(0xdb0909);
+						graphics.fillRoundRect(x, y, brickWidth, brickHeight, 15, 15);
+						graphics.setColor(0x7c6363);
+						graphics.drawRoundRect(x, y,  brickWidth, brickHeight, 15, 15);
+					}
 				}
 			}
 		}
