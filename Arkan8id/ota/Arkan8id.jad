@@ -1,23 +1,23 @@
-RIM-COD-SHA1-4: f8 0b 45 3a 40 f7 49 51 f8 a2 65 69 9a 42 df fa 9e 21 9c 20
-RIM-COD-SHA1-3: 83 b1 f5 4c 8e 23 f1 e3 81 0e 16 da 33 05 63 57 11 8c 4c 8a
-RIM-COD-SHA1-2: 50 15 55 b8 6c af b4 14 b4 c8 f3 95 7f ca 23 c2 aa fd 14 de
-RIM-COD-SHA1-1: 44 8b 2e a5 89 83 17 22 27 8f 7c 16 7f 65 fc ee d4 c6 9d 0b
+RIM-COD-SHA1-4: ab 07 ae 62 84 07 49 b6 c7 4c 7b df 72 19 46 9e 10 26 05 47
+RIM-COD-SHA1-3: b4 17 4a 2f b3 ef 84 b0 59 e2 fa 3a ce 56 c9 c7 87 4e b6 9b
+RIM-COD-SHA1-2: e6 5f 05 9a cc f4 58 07 47 26 a1 f4 0e 04 2a 8a 86 31 00 a6
+RIM-COD-SHA1-1: a0 69 a7 fe a3 5b 93 c9 da 2d 6a 5b 57 83 aa 93 22 16 6e 96
 RIM-MIDlet-Flags-1: 0
-MIDlet-Jar-Size: 174073
+MIDlet-Jar-Size: 918620
 MIDlet-Name: Arkan8id
 MIDlet-Jar-URL: Arkan8id.jar
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-Description: A infinite brick-breaking game.
 RIM-COD-URL-8: Arkan8id-8.cod
 RIM-COD-URL-7: Arkan8id-7.cod
-RIM-COD-Module-Dependencies: net_rim_cldc
+RIM-COD-Module-Dependencies: net_rim_cldc,net_rim_satsa
 RIM-COD-URL-6: Arkan8id-6.cod
 RIM-COD-URL-5: Arkan8id-5.cod
 RIM-COD-URL-4: Arkan8id-4.cod
 RIM-COD-URL-3: Arkan8id-3.cod
 RIM-COD-URL-2: Arkan8id-2.cod
 RIM-COD-URL-1: Arkan8id-1.cod
-RIM-COD-Size-8: 56320
+RIM-COD-Size-8: 58036
 RIM-COD-Size-7: 49856
 RIM-COD-Size-6: 49856
 RIM-COD-Size-5: 49856
@@ -26,16 +26,16 @@ RIM-COD-Size-3: 49856
 RIM-COD-Module-Name: Arkan8id
 RIM-COD-Size-2: 49856
 RIM-COD-Size-1: 49856
-RIM-COD-SHA1: eb d3 3e 5f ef 59 9c 5a cb 58 b4 d7 8d b3 0a 81 f0 ed 5c 1b
-RIM-COD-Size: 50012
+RIM-COD-SHA1: d9 58 c3 fb fa f5 ba f6 82 20 32 00 ed b6 91 e5 d9 e8 08 aa
+RIM-COD-Size: 51488
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Vendor: Nels E. Beckman
-MIDlet-1: ,,
+MIDlet-1: Arkan8id,src/arkan8id_logo.png,
 RIM-COD-URL: Arkan8id.cod
 Manifest-Version: 1.0
 MIDlet-Version: 1.0.0
-RIM-COD-SHA1-8: c4 db 80 09 0c a0 f5 ab a6 4d 95 41 48 f6 68 6d 2f df f6 dd
-RIM-COD-SHA1-7: 46 6b 8c a7 f6 1b d7 14 eb d5 14 50 bc 32 cd 96 03 7d 6b 9f
-RIM-COD-Creation-Time: 1236903657
-RIM-COD-SHA1-6: 43 f4 d4 84 7c cc 0c 55 1c 8f ff 6c 19 21 7a 19 3a c2 36 cb
-RIM-COD-SHA1-5: 9c 9c 0d 74 6e 55 2e 92 2f 73 de a5 7d 40 2a 36 b8 33 a1 d9
+RIM-COD-SHA1-8: 17 dc 8b 9b b6 5d 18 dc 4a 42 38 ce 68 0c 24 2a 5e d0 6d e8
+RIM-COD-SHA1-7: a7 71 b0 9e 44 82 4f c5 a0 c1 51 54 9c 68 18 2f c5 c9 a1 5c
+RIM-COD-Creation-Time: 1236905909
+RIM-COD-SHA1-6: 60 41 a9 18 25 34 b0 8b 2b 6d eb 0e e1 dd af 29 7c 19 cf a1
+RIM-COD-SHA1-5: e3 f4 e0 4c 6d 94 3c be 34 bb 91 44 d8 a6 37 66 a0 cb 6c 8a
