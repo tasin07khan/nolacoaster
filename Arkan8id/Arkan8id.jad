@@ -1,7 +1,7 @@
-RIM-COD-SHA1-4: ab 07 ae 62 84 07 49 b6 c7 4c 7b df 72 19 46 9e 10 26 05 47
-RIM-COD-SHA1-3: b4 17 4a 2f b3 ef 84 b0 59 e2 fa 3a ce 56 c9 c7 87 4e b6 9b
-RIM-COD-SHA1-2: e6 5f 05 9a cc f4 58 07 47 26 a1 f4 0e 04 2a 8a 86 31 00 a6
-RIM-COD-SHA1-1: a0 69 a7 fe a3 5b 93 c9 da 2d 6a 5b 57 83 aa 93 22 16 6e 96
+RIM-COD-SHA1-4: 67 6c 87 00 71 67 eb 13 fd 48 79 0b ea 66 86 21 5d 61 0e 5a
+RIM-COD-SHA1-3: 95 00 61 51 3b b4 4e 2e b2 02 41 f9 75 80 0d 62 83 ee c3 b8
+RIM-COD-SHA1-2: ae 82 ea 8b 4f 4f bc 64 38 fb 6f d3 f5 94 51 fe ec a1 b6 f7
+RIM-COD-SHA1-1: a8 ef bc 6c 52 73 33 d3 9a ff 6e 7f 6f c1 a8 ce 84 fb 54 a7
 RIM-MIDlet-Flags-1: 0
 MIDlet-Jar-Size: 918620
 MIDlet-Name: Arkan8id
@@ -17,7 +17,7 @@ RIM-COD-URL-4: Arkan8id-4.cod
 RIM-COD-URL-3: Arkan8id-3.cod
 RIM-COD-URL-2: Arkan8id-2.cod
 RIM-COD-URL-1: Arkan8id-1.cod
-RIM-COD-Size-8: 58036
+RIM-COD-Size-8: 66420
 RIM-COD-Size-7: 49856
 RIM-COD-Size-6: 49856
 RIM-COD-Size-5: 49856
@@ -26,16 +26,16 @@ RIM-COD-Size-3: 49856
 RIM-COD-Module-Name: Arkan8id
 RIM-COD-Size-2: 49856
 RIM-COD-Size-1: 49856
-RIM-COD-SHA1: d9 58 c3 fb fa f5 ba f6 82 20 32 00 ed b6 91 e5 d9 e8 08 aa
-RIM-COD-Size: 51488
+RIM-COD-SHA1: ca e8 1c a1 4a 8e df f0 47 21 41 2c 6f bb 3d 6c 17 b7 72 85
+RIM-COD-Size: 44112
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Vendor: Nels E. Beckman
 MIDlet-1: Arkan8id,src/arkan8id_logo.png,
 RIM-COD-URL: Arkan8id.cod
 Manifest-Version: 1.0
 MIDlet-Version: 1.0.0
-RIM-COD-SHA1-8: 17 dc 8b 9b b6 5d 18 dc 4a 42 38 ce 68 0c 24 2a 5e d0 6d e8
-RIM-COD-SHA1-7: a7 71 b0 9e 44 82 4f c5 a0 c1 51 54 9c 68 18 2f c5 c9 a1 5c
-RIM-COD-Creation-Time: 1236905909
-RIM-COD-SHA1-6: 60 41 a9 18 25 34 b0 8b 2b 6d eb 0e e1 dd af 29 7c 19 cf a1
-RIM-COD-SHA1-5: e3 f4 e0 4c 6d 94 3c be 34 bb 91 44 d8 a6 37 66 a0 cb 6c 8a
+RIM-COD-SHA1-8: 58 8f 2b 63 16 42 49 95 ae 5a bb 2f ac 78 0d d0 62 d6 51 f3
+RIM-COD-SHA1-7: 06 f2 d4 5d 9e 3c 13 24 77 3f 5c f3 c1 83 7e 34 b9 c1 c3 59
+RIM-COD-Creation-Time: 1236908060
+RIM-COD-SHA1-6: 81 5b 7b 2b c5 a2 71 3c ac 0b db 2f 77 cc 7c 2a 6f 22 3c c1
+RIM-COD-SHA1-5: 1b c0 78 bf 29 0c 98 75 b9 4f 94 52 c7 cd da f4 cc 1c 1e 48

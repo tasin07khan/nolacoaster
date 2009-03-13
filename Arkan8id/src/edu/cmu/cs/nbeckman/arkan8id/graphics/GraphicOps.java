@@ -53,7 +53,7 @@ public final class GraphicOps {
 		
 		graphics.drawBitmap(spaceship.getX(), 
 				(int)(this.screenHeight - spaceship.getY() - spaceship.getImage().getHeight() + logicalYOfScreenBottom), 
-				spaceship.getImage().getWidth(), 
+				this.screenWidth, 
 				spaceship.getImage().getHeight(), 
 				spaceship.getImage(), 
 				0, 0);
