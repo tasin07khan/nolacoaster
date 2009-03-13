@@ -11,6 +11,7 @@ import edu.cmu.cs.nbeckman.arkan8id.gameobjects.HasBoundingBox;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Spaceship;
 import edu.cmu.cs.nbeckman.arkan8id.gameobjects.Collision.CollisionType;
 import edu.cmu.cs.nbeckman.arkan8id.graphics.GraphicOps;
+import edu.cmu.cs.nbeckman.arkan8id.sound.Sound;
 
 
 /**
@@ -127,7 +128,7 @@ public class GameScreen extends FullScreen {
 				GameScreen.this.bricksDestroyed += collision.getNumDestroyed();
 				
 				// Every 100 points, try to garbage collect the lower screenfulls...
-				if( (collision.getNumDestroyed() > 0) && (GameScreen.this.bricksDestroyed % 104 == 0) ) {
+				if( (collision.getNumDestroyed() > 0) && (GameScreen.this.bricksDestroyed % 1 == 0) ) {
 					GameScreen.this.bricks.garbageCollect();
 				}
 				

@@ -37,6 +37,7 @@ src\edu\cmu\cs\nbeckman\arkan8id\math\Line.java
 src\edu\cmu\cs\nbeckman\arkan8id\math\Vector2D.java
 src\edu\cmu\cs\nbeckman\arkan8id\screens\GameScreen.java
 src\edu\cmu\cs\nbeckman\arkan8id\screens\MainMenu.java
+src\edu\cmu\cs\nbeckman\arkan8id\sound\Sound.java
 src\openhouseweekend.mid
 src\OrangeBrick.png
 src\RedBrick.png
@@ -54,6 +55,7 @@ src\arkan8id_logo.png
 [Imports
 ]
 Listing=0
+Options=-quiet
 OutputFileName=Arkan8id
 [PackageProtection
 ]
