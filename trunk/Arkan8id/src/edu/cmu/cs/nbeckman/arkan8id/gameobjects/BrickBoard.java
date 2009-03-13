@@ -550,12 +550,20 @@ public final class BrickBoard {
 				if( current.isCompletelyEmpty() ) {
 					// We can actually garbage collect!
 					// Create a new one, setting the correct parameters
-					IScreenful new_sf = new EmptyScreenful(current.getLogicalYOfBottom(),
-							current.getLogicalYOfTop(), current.getPrev(), current.getNext());
-					// Then adjust the next and prev of our two neighbors
-					if( !new_sf.getPrev().isTerminator() ) {
-						new_sf.getPrev().setNext(new_sf);
+					IScreenful new_sf;
+					
+					// Figure our what to do about the previous screenful
+					if( current.getPrev().isTerminator() ) {
+						new_sf = new EmptyScreenful(current.getLogicalYOfBottom(),
+								current.getLogicalYOfTop(), current.getPrev(), current.getNext());
+					} else {
+						// The previous one must be empty, right? So we
+						// conjoin the two empty screenfulls...
+						new_sf = new EmptyScreenful(current.getPrev().getLogicalYOfBottom(),
+								current.getLogicalYOfTop(), current.getPrev().getPrev(), current.getNext());
 					}
+					
+					// Then, adjust the prev of the next guy.
 					if( !new_sf.getNext().isTerminator() ) {
 						new_sf.getNext().setPrev(new_sf);
 					}
