@@ -7,8 +7,7 @@ MIDlet-Jar-Size: 174073
 MIDlet-Name: Arkan8id
 MIDlet-Jar-URL: Arkan8id.jar
 MicroEdition-Configuration: CLDC-1.1
-MIDlet-Description: A inifinite brick-breaking game.
-RIM-COD-URL-9: Arkan8id-9.cod
+MIDlet-Description: A infinite brick-breaking game.
 RIM-COD-URL-8: Arkan8id-8.cod
 RIM-COD-URL-7: Arkan8id-7.cod
 RIM-COD-Module-Dependencies: net_rim_cldc
@@ -35,7 +34,7 @@ MIDlet-Vendor: <unknown>
 MIDlet-1: ,,
 RIM-COD-URL: Arkan8id.cod
 Manifest-Version: 1.0
-MIDlet-Version: 0.0
+MIDlet-Version: 1.0.0
 RIM-COD-SHA1-9: 45 48 af 27 e7 ab 69 28 0e ae 49 0e 47 20 5a 45 83 46 5b ee
 RIM-COD-SHA1-8: c4 db 80 09 0c a0 f5 ab a6 4d 95 41 48 f6 68 6d 2f df f6 dd
 RIM-COD-SHA1-7: 46 6b 8c a7 f6 1b d7 14 eb d5 14 50 bc 32 cd 96 03 7d 6b 9f
