@@ -1,9 +1,9 @@
-RIM-COD-SHA1-4: ab 07 ae 62 84 07 49 b6 c7 4c 7b df 72 19 46 9e 10 26 05 47
-RIM-COD-SHA1-3: b4 17 4a 2f b3 ef 84 b0 59 e2 fa 3a ce 56 c9 c7 87 4e b6 9b
-RIM-COD-SHA1-2: e6 5f 05 9a cc f4 58 07 47 26 a1 f4 0e 04 2a 8a 86 31 00 a6
-RIM-COD-SHA1-1: a0 69 a7 fe a3 5b 93 c9 da 2d 6a 5b 57 83 aa 93 22 16 6e 96
+RIM-COD-SHA1-4: 90 c3 dd 6d a0 54 0a 56 cf 94 21 36 86 bd cf cc e2 19 4c 6f
+RIM-COD-SHA1-3: 2b 2b ea 35 93 64 0b b5 ee 07 12 2d 94 f6 eb a2 6a cc e3 ef
+RIM-COD-SHA1-2: f6 6b 2f 24 be 8a 2c f6 7b c1 df d5 ca 6c 7d 9f 14 0c 2b 61
+RIM-COD-SHA1-1: 7f 48 89 47 c0 6e dd 81 13 86 16 bd 80 e6 36 18 01 5b 57 61
 RIM-MIDlet-Flags-1: 0
-MIDlet-Jar-Size: 918620
+MIDlet-Jar-Size: 920227
 MIDlet-Name: Arkan8id
 MIDlet-Jar-URL: Arkan8id.jar
 MicroEdition-Configuration: CLDC-1.1
@@ -17,7 +17,7 @@ RIM-COD-URL-4: Arkan8id-4.cod
 RIM-COD-URL-3: Arkan8id-3.cod
 RIM-COD-URL-2: Arkan8id-2.cod
 RIM-COD-URL-1: Arkan8id-1.cod
-RIM-COD-Size-8: 58036
+RIM-COD-Size-8: 66420
 RIM-COD-Size-7: 49856
 RIM-COD-Size-6: 49856
 RIM-COD-Size-5: 49856
@@ -26,16 +26,16 @@ RIM-COD-Size-3: 49856
 RIM-COD-Module-Name: Arkan8id
 RIM-COD-Size-2: 49856
 RIM-COD-Size-1: 49856
-RIM-COD-SHA1: d9 58 c3 fb fa f5 ba f6 82 20 32 00 ed b6 91 e5 d9 e8 08 aa
-RIM-COD-Size: 51488
+RIM-COD-SHA1: 55 41 90 ac 5d e9 88 75 0a 17 7e 13 88 3e ac 67 4d d1 9b 3f
+RIM-COD-Size: 44112
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Vendor: Nels E. Beckman
 MIDlet-1: Arkan8id,src/arkan8id_logo.png,
 RIM-COD-URL: Arkan8id.cod
 Manifest-Version: 1.0
 MIDlet-Version: 1.0.0
-RIM-COD-SHA1-8: 17 dc 8b 9b b6 5d 18 dc 4a 42 38 ce 68 0c 24 2a 5e d0 6d e8
-RIM-COD-SHA1-7: a7 71 b0 9e 44 82 4f c5 a0 c1 51 54 9c 68 18 2f c5 c9 a1 5c
-RIM-COD-Creation-Time: 1236905909
-RIM-COD-SHA1-6: 60 41 a9 18 25 34 b0 8b 2b 6d eb 0e e1 dd af 29 7c 19 cf a1
-RIM-COD-SHA1-5: e3 f4 e0 4c 6d 94 3c be 34 bb 91 44 d8 a6 37 66 a0 cb 6c 8a
+RIM-COD-SHA1-8: d1 8c eb 7e 8f 6f 1b 75 e5 cf d0 cc 7c c8 45 02 f7 02 e9 65
+RIM-COD-SHA1-7: 39 76 57 75 0f 3f 51 29 b3 62 69 9e 80 3f 52 8f 2e f3 83 4a
+RIM-COD-Creation-Time: 1236908263
+RIM-COD-SHA1-6: 95 3e 25 7f 5c 83 7d 8f 5c 5a dc e1 63 34 1a fc 73 f2 c0 68
+RIM-COD-SHA1-5: c8 8f a0 aa d3 04 5d 8e f6 4e 72 6b f7 2e 48 d5 a7 03 f0 aa
