@@ -1,8 +1,9 @@
-#Mon Jun 01 11:46:52 EDT 2009
+#Tue Jun 23 16:40:14 EDT 2009
 /instance/org.eclipse.jdt.ui/sp_cleanup.always_use_parentheses_in_expressions=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__subclipse.tigris.org_update_1.2.x/isSystem=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__subclipse.tigris.org_update_1.2.x/url=http\://subclipse.tigris.org/update_1.2.x
 /instance/org.eclipse.team.ui/org.eclipse.team.ui.first_time=false
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/name=http\://metrics.sourceforge.net/update
 /instance/org.eclipse.jdt.ui/java_operator=204,204,204
 /instance/org.eclipse.ant.ui/useQuickDiffPrefPage=true
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__subclipse.tigris.org_update_1.4.x/enabled=true
@@ -52,7 +53,9 @@
 /instance/org.eclipse.pde.ui/editor.color.header_osgi=0,255,255
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_tools_cdt_releases_ganymede/enabled=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__altair.evelopers.com\:8080_unimod_update/enabled=true
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__crystalsaf.googlecode.com_svn_trunk_EclipseUpdate_/url=http\://crystalsaf.googlecode.com/svn/trunk/EclipseUpdate/
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.core_cache_/version=1.0.0
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/enabled=true
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.core_cache_/version=1.0.0
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_69_data_listener_1925729951_/version=1.0.0
 /instance/org.eclipse.pde.ui/editor.color.string=17,153,17
@@ -63,6 +66,7 @@
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__subclipse.tigris.org_update_1.4.x/version=1
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_.eclipseextension/suffix=eclipse
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__pluralism.googlecode.com_svn_trunk_EclipseUpdate_/version=1.0.0
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.JRE_SRC=C\:/Program Files/Java/jdk1.6.0_14/src.zip
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__eclipse.svnkit.com_1.2.x_/isSystem=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__plaidannotations.googlecode.com_svn_trunk_PlaidAnnotationsUpdateSite_/version=1.0.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_breaks_compare_to_cases=true
@@ -83,8 +87,8 @@
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__subclipse.tigris.org_update_1.2.x/url=http\://subclipse.tigris.org/update_1.2.x
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.director_rollback/name=Agent rollback repository
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_technology_dltk_updates_/enabled=false
-/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_technology_emft_updates_/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_assignment_operator=insert
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_technology_emft_updates_/isSystem=false
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.editor.tab.width=
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.never_indent_line_comments_on_first_column=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_rt_rap_update-site/url=http\://download.eclipse.org/rt/rap/update-site
@@ -113,6 +117,7 @@
 /instance/org.eclipse.jdt.ui/sp_cleanup.qualify_static_member_accesses_through_instances_with_declaring_class=true
 /instance/org.eclipse.jdt.ui/fontPropagated=true
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_63_data_listener_-1169973579_/type=org.eclipse.equinox.p2.artifact.repository.simpleRepository
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/version=1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_enum_constant=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_brace_in_array_initializer=insert
 /instance/org.eclipse.ui.workbench/ENABLED_DECORATORS=com.evelopers.unimod.generatedfiledecorator\:true,com.mountainminds.eclemma.ui.coverageDecorator\:false,org.eclipse.hyades.test.ui.internal.navigator.ExecutionHTNDecorator\:true,org.eclipse.jdt.ui.override.decorator\:true,org.eclipse.jdt.ui.interface.decorator\:false,org.eclipse.pde.ui.binaryProjectDecorator\:false,org.eclipse.team.cvs.ui.decorator\:true,org.eclipse.tptp.monitoring.managedagent.views.browser.decorator\:true,org.eclipse.ui.LinkedResourceDecorator\:true,org.eclipse.ui.ContentTypeDecorator\:true,org.tigris.subversion.subclipse.ui.decorator\:true,
@@ -136,7 +141,6 @@
 /instance/org.eclipse.ui.editors/currentLineColor=100,100,100
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_constructor_declaration_throws=do not insert
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_m2t_updates_/enabled=false
-/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__unimod.sf.net_update/suffix=site.xml
 /instance/org.eclipse.jdt.ui/semanticHighlighting.staticField.color=135,206,250
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_switchstatements_compare_to_cases=true
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__unimod.sf.net_update/description=
@@ -209,6 +213,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.blank_lines_before_field=0
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.core_cache_/suffix=content.xml
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_method_invocation=do not insert
+/instance/org.eclipse.ant.ui/org.eclipse.ant.ui.constantStringsColor=17,153,17
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_mdt_updates_/enabled=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_63_data_listener_-1169973579_/url=file\:/D\:/Program Files/eclipse_3_4_1/eclipse/configuration/org.eclipse.osgi/bundles/63/data/listener_-1169973579/
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_parameterized_type_reference=insert
@@ -222,6 +227,7 @@
 /instance/org.eclipse.jdt.ui/hoverModifiers=org.eclipse.jdt.ui.BestMatchHover;0;org.eclipse.jdt.internal.debug.ui.JavaDebugHover;\!0;org.eclipse.jdt.ui.ProblemHover;\!0;org.eclipse.jdt.ui.NLSStringHover;Ctrl+Alt;org.eclipse.jdt.ui.JavadocHover;\!0;org.eclipse.jdt.ui.JavaSourceHover;Shift;org.eclipse.jdt.ui.AnnotationHover;\!0;
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__pluralism.googlecode.com_svn_trunk_EclipseUpdate_/url=http\://pluralism.googlecode.com/svn/trunk/EclipseUpdate/
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_modeling_gmf_updates_releases_/url=http\://download.eclipse.org/modeling/gmf/updates/releases/
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__crystalsaf.googlecode.com_svn_trunk_EclipseUpdate_/url=http\://crystalsaf.googlecode.com/svn/trunk/EclipseUpdate/
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indentation.size=4
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_method_declaration=do not insert
 \!/=
@@ -259,9 +265,10 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_catch=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_for=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_annotation_declaration=insert
-/instance/org.eclipse.ui.ide/platformState=1224884031622
+/instance/org.eclipse.ui.ide/platformState=1224884031633
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_while=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/suffix=site.xml
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_tools_cdt_releases_ganymede/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_closing_brace_in_block=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_annotation=do not insert
@@ -276,6 +283,7 @@
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_releases_ganymede/version=1.0.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_bracket_in_array_reference=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_synchronized=insert
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.UNIMOD_CORE_HOME=D\:/Program Files/eclipse_3_4_1/eclipse/plugins/com.evelopers.unimod.core_1.3.39/
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_superinterfaces=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_constructor_declaration=do not insert
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_emft_updates_/isSystem=false
@@ -291,6 +299,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_colon_in_case=do not insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__www.eclipse.org_modeling_emft_?project\=search\#search/isSystem=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__altair.evelopers.com\:8080_unimod_update/isSystem=false
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.JRE_SRCROOT=
 /instance/org.eclipse.ui.workbench/ColorsAndFontsPreferencePage.expandedCategories=Torg.eclipse.ui.workbenchMisc\tTorg.eclipse.team.cvs.ui.fontsandcolors\tTorg.eclipse.debug.ui.presentation\tTorg.eclipse.jdt.ui.presentation\tTorg.tigris.subversion.subclipse.ui.fontsandcolors\tTorg.eclipse.compare.contentmergeviewer.TextMergeViewer\tTorg.eclipse.ui.presentation.default
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__subclipse.tigris.org_update_1.2.x/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_synchronized=do not insert
@@ -308,6 +317,8 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_type_parameters=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_bracket_in_array_allocation_expression=do not insert
 @org.eclipse.help.ui=3.3.101.M20080715_34x
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__crystalsaf.googlecode.com_svn_trunk_EclipseUpdate_/isSystem=false
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/url=http\://metrics.sourceforge.net/update
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_member=insert
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_tools_mylyn_update_e3.4/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.use_tabs_only_for_leading_indentations=false
@@ -350,10 +361,11 @@
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_.eclipseextension/version=1
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_dsdp_tm_updates_3.0/isSystem=false
 /instance/org.eclipse.ui.editors/AbstractTextEditor.Color.Foreground=204,204,204
+/instance/org.eclipse.ant.ui/org.eclipse.ant.ui.dtdColor=0,255,255
 /instance/org.eclipse.jdt.ui/spelling_locale_initialized=true
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__metrics.sourceforge.net_update/enabled=true
 /instance/org.eclipse.jdt.ui/sp_cleanup.convert_to_enhanced_for_loop=false
-/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1235488958191" defaultVMConnector\="">\r\n<vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\r\n<vm id\="1235488958191" javadocURL\="http\://java.sun.com/javase/6/docs/api/" name\="jdk1.6.0_03" path\="C\:\\Program Files\\Java\\jdk1.6.0_03"/>\r\n</vmType>\r\n</vmSettings>\r\n
+/instance/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_VM_XML=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<vmSettings defaultVM\="57,org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType13,1243955100241" defaultVMConnector\="">\r\n<vmType id\="org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType">\r\n<vm id\="1235488958191" javadocURL\="http\://java.sun.com/javase/6/docs/api/" name\="jdk1.6.0_03" path\="C\:\\Program Files\\Java\\jdk1.6.0_03"/>\r\n<vm id\="1243955100241" javadocURL\="http\://java.sun.com/javase/6/docs/api/" name\="jdk1.6.0_14" path\="C\:\\Program Files\\Java\\jdk1.6.0_14" vmargs\="-ea">\r\n<libraryLocations>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/resources.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="C\:/Program Files/Java/jdk1.6.0_14/src.zip" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/rt.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="C\:/Program Files/Java/jdk1.6.0_14/src.zip" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/jsse.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="C\:/Program Files/Java/jdk1.6.0_14/src.zip" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/jce.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="C\:/Program Files/Java/jdk1.6.0_14/src.zip" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/charsets.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="C\:/Program Files/Java/jdk1.6.0_14/src.zip" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/ext/dnsns.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/ext/localedata.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/ext/sunjce_provider.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/ext/sunmscapi.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="" pkgRoot\=""/>\r\n<libraryLocation jreJar\="C\:/Program Files/Java/jdk1.6.0_14/jre/lib/ext/sunpkcs11.jar" jreJavadoc\="http\://java.sun.com/javase/6/docs/api/" jreSrc\="" pkgRoot\=""/>\r\n</libraryLocations>\r\n</vm>\r\n</vmType>\r\n</vmSettings>\r\n
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_tools_gef_update-site_releases_site.xml/enabled=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_synchronized=do not insert
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_technology_dltk_updates_/isSystem=false
@@ -364,6 +376,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_explicitconstructorcall_arguments=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_assignment=0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_parenthesized_expression_in_return=insert
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/type=org.eclipse.equinox.p2.updatesite.metadataRepository
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__subclipse.tigris.org_update_1.2.x/enabled=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_parameters=do not insert
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__unimod.sf.net_update/description=
@@ -391,6 +404,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_arguments=do not insert
 /instance/org.eclipse.ui.workbench/org.eclipse.ui.commands=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<org.eclipse.ui.commands>\r\n<keyBinding contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+F6"/>\r\n<keyBinding contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+F6"/>\r\n<keyBinding commandId\="org.eclipse.ui.window.nextEditor" contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+TAB"/>\r\n<keyBinding contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+SHIFT+F6"/>\r\n<keyBinding contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+SHIFT+F6"/>\r\n<keyBinding commandId\="org.eclipse.ui.window.previousEditor" contextId\="org.eclipse.ui.contexts.window" keyConfigurationId\="org.eclipse.ui.defaultAcceleratorConfiguration" keySequence\="CTRL+SHIFT+TAB"/>\r\n</org.eclipse.ui.commands>
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__altair.evelopers.com\:8080_unimod_update/url=http\://altair.evelopers.com\:8080/unimod/update
+/instance/org.eclipse.ant.ui/org.eclipse.ant.ui.tagsColor=135,206,250
 /instance/org.eclipse.ui.ide/EXIT_PROMPT_ON_CLOSE_LAST_WINDOW=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_brace_in_array_initializer=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.taskTags=TODO,FIXME,XXX
@@ -402,7 +416,7 @@
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_m2t_updates_/url=http\://download.eclipse.org/modeling/m2t/updates/
 /instance/org.eclipse.jdt.ui/sp_cleanup.use_this_for_non_static_field_access=false
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.text.custom_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>
-/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__plaidannotations.googlecode.com_svn_trunk_PlaidAnnotationsUpdateSite_/name=Plaid Annotations
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__plaidannotations.googlecode.com_svn_trunk_PlaidAnnotationsUpdateSite_/name=PLAID Annotations
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.timeoutForParameterNameFromAttachedJavadoc=50
 /instance/org.eclipse.pde.ui/editor.color.header_value=204,204,204
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_63_data_listener_-1169973579_/isSystem=true
@@ -411,6 +425,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_block=end_of_line
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_63_data_listener_-1169973579_/version=1.0.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_arguments_in_allocation_expression=16
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_.eclipseextension/suffix=eclipse
 /instance/org.eclipse.jdt.ui/sp_cleanup.never_use_parentheses_in_expressions=true
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__eclipse.svnkit.com_1.2.x_/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_for_increments=insert
@@ -419,7 +434,9 @@
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__update.eclemma.org_/enabled=true
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_.eclipseextension/version=1
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_/isSystem=true
+/instance/org.eclipse.ui.browser/browsers=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<web-browsers current\="0">\r\n<system/>\r\n<external location\="C\:\\Program Files\\Mozilla Firefox\\firefox.exe" name\="Firefox"/>\r\n<external location\="C\:\\Program Files\\Internet Explorer\\iexplore.exe" name\="Internet Explorer"/>\r\n</web-browsers>
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_before_finally_in_try_statement=do not insert
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.UNIMOD_ADAPTER_STANDALONE_HOME=D\:/Program Files/eclipse_3_4_1/eclipse/plugins/com.evelopers.unimod.adapter.standalone_1.3.39/
 /instance/org.eclipse.pde.ui/Preferences.MainPage.overwriteBuildFilesOnExport=prompt
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_superclass_in_type_declaration=16
 /instance/org.eclipse.jdt.ui/tabWidthPropagated=true
@@ -525,12 +542,15 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.keep_imple_if_on_one_line=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_arguments_in_enum_constant=16
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_binary_operator=insert
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.classpathVariable.JRE_LIB=C\:/Program Files/Java/jdk1.6.0_14/jre/lib/rt.jar
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__crystalsaf.googlecode.com_svn_trunk_EclipseUpdate_/enabled=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_annotation=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.lineSplit=80
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__update.eclemma.org_/url=http\://update.eclemma.org/
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__unimod.sf.net_update/provider=
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_dsdp_dd_updates/isSystem=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_rt_rap_update-site/isSystem=false
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_releases_ganymede/suffix=content.xml
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_constructor_declaration=16
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_birt_update-site_2.3/isSystem=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_.eclipseextension/provider=
@@ -585,6 +605,7 @@
 file_export_version=3.0
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__altair.evelopers.com\:8080_unimod_update/isSystem=false
 /instance/org.eclipse.pde.core/platform_path=D\:\\Program Files\\eclipse_3_4_1\\eclipse
+/instance/org.eclipse.ant.ui/org.eclipse.ant.ui.commentsColor=17,170,187
 @org.eclipse.jdt.debug.ui=3.3.1.v20080730_r341
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_trailing_whitespaces=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.never_indent_block_comments_on_first_column=false
@@ -602,10 +623,10 @@ file_export_version=3.0
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__unimod.sf.net_update/url=http\://unimod.sf.net/update
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_semicolon_in_for=do not insert
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_dsdp_nab_updates/enabled=false
-/configuration/org.eclipse.ui.ide/RECENT_WORKSPACES=D\:\\workspace-unimod\nD\:\\workspace-temp\nD\:\\workspace\nD\:\\workspace-for-plural-visualization-dev\nD\:\\workspace-plural
+/configuration/org.eclipse.ui.ide/RECENT_WORKSPACES=D\:\\workspace-unimod\nD\:\\workspace\nD\:\\workspace-temp\nD\:\\workspace-for-plural-visualization-dev\nD\:\\workspace-plural
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__update.eclemma.org_/name=http\://update.eclemma.org/
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_.eclipseextension/description=
-/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__plaidannotations.googlecode.com_svn_trunk_PlaidAnnotationsUpdateSite_/name=file\:/D\:/workspace-for-crystal-library/PlaidAnnotationsUpdateSite/ - artifacts
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__plaidannotations.googlecode.com_svn_trunk_PlaidAnnotationsUpdateSite_/name=PLAID Annotations
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_unnecessary_casts=true
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_webtools_updates/enabled=false
 /instance/org.eclipse.ui.editors/currentIPColor=64,128,128
@@ -638,7 +659,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_method_invocation=do not insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_63_data_listener_-1169973579_/name=metadata listener file\:/D\:/Program Files/eclipse_3_4_1/eclipse/.eclipseextension
 /instance/org.eclipse.pde.ui/editor.color.header_attributes=204,255,204
-/instance/org.eclipse.debug.ui/pref_state_memento.org.eclipse.debug.ui.VariableView=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<VariablesViewMemento org.eclipse.debug.ui.SASH_DETAILS_PART\="315" org.eclipse.debug.ui.SASH_VIEW_PART\="684">\r\n<COLUMN_SIZES IMemento.internal.id\="org.eclipse.debug.ui.VARIALBE_COLUMN_PRESENTATION.COL_VAR_NAME" SIZE\="533"/>\r\n<COLUMN_SIZES IMemento.internal.id\="org.eclipse.debug.ui.VARIALBE_COLUMN_PRESENTATION.COL_VAR_VALUE" SIZE\="314"/>\r\n<PRESENTATION_CONTEXT_PROPERTIES IMemento.internal.id\="org.eclipse.debug.ui.VariableView"/>\r\n</VariablesViewMemento>
+/instance/org.eclipse.debug.ui/pref_state_memento.org.eclipse.debug.ui.VariableView=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<VariablesViewMemento org.eclipse.debug.ui.SASH_DETAILS_PART\="269" org.eclipse.debug.ui.SASH_VIEW_PART\="730">\r\n<COLUMN_SIZES IMemento.internal.id\="org.eclipse.debug.ui.VARIALBE_COLUMN_PRESENTATION.COL_VAR_NAME" SIZE\="533"/>\r\n<COLUMN_SIZES IMemento.internal.id\="org.eclipse.debug.ui.VARIALBE_COLUMN_PRESENTATION.COL_VAR_VALUE" SIZE\="314"/>\r\n<PRESENTATION_CONTEXT_PROPERTIES IMemento.internal.id\="org.eclipse.debug.ui.VariableView"/>\r\n</VariablesViewMemento>
 /instance/org.eclipse.jdt.ui/sp_cleanup.use_this_for_non_static_field_access_only_if_necessary=true
 @org.eclipse.hyades.trace.ui=4.4.103.v200901100100
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.internal.ui.navigator.layout=2
@@ -648,6 +669,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.ui/semanticHighlighting.staticMethodInvocation.color=204,204,204
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__update.eclemma.org_/suffix=site.xml
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_at_in_annotation_type_declaration=do not insert
+/instance/org.eclipse.ant.ui/org.eclipse.ant.ui.textColor=204,204,204
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.core_cache_/type=org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.core_cache_/description=
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__pluralism.googlecode.com_svn_trunk_EclipseUpdate_/type=org.eclipse.equinox.p2.artifact.repository.simpleRepository
@@ -656,8 +678,8 @@ file_export_version=3.0
 /instance/org.eclipse.ui/showIntro=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_at_in_annotation_type_declaration=insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__subclipse.tigris.org_update_1.4.x/suffix=site.xml
-/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_modeling_m2t_updates_/url=http\://download.eclipse.org/modeling/m2t/updates/
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_constructor_declaration=do not insert
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_modeling_m2t_updates_/url=http\://download.eclipse.org/modeling/m2t/updates/
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_eclipse_updates_3.4/url=http\://download.eclipse.org/eclipse/updates/3.4
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.codeComplete.fieldPrefixes=
 /instance/org.eclipse.pde.ui/editor.color.header_key=0,255,255
@@ -674,6 +696,8 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.brace_position_for_enum_constant=end_of_line
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__subclipse.tigris.org_update_1.4.x/name=http\://subclipse.tigris.org/update_1.4.x
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_semicolon_in_for=insert
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/provider=
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__metrics.sourceforge.net_update/description=
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_emft_updates_/url=http\://download.eclipse.org/modeling/emft/updates/
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_modeling_gmf_updates_releases_/enabled=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__update.eclemma.org_/provider=
@@ -687,11 +711,11 @@ file_export_version=3.0
 /instance/org.eclipse.ui.editors/occurrenceIndicationColor=104,104,104
 @org.eclipse.jdt.launching=3.4.1.v20080729_r341
 @org.eclipse.ui.views.log=1.0.0.v20080803-1700
-/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_tools_gef_update-site_releases_site.xml/enabled=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance=1.6
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_tools_gef_update-site_releases_site.xml/enabled=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_technology_subversive_0.7_update-site_/enabled=false
 /instance/org.eclipse.jdt.ui/sp_cleanup.use_blocks_only_for_return_and_throw=false
-/instance/org.eclipse.debug.ui/org.eclipse.debug.ui.user_view_bindings=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<viewBindings>\r\n<view id\="org.eclipse.debug.ui.ExpressionView">\r\n<perspective id\="org.eclipse.debug.ui.DebugPerspective" userAction\="opened"/>\r\n</view>\r\n<view id\="org.eclipse.ui.console.ConsoleView">\r\n<perspective id\="org.eclipse.pde.ui.PDEPerspective" userAction\="opened"/>\r\n</view>\r\n</viewBindings>\r\n
+/instance/org.eclipse.debug.ui/org.eclipse.debug.ui.user_view_bindings=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<viewBindings>\r\n<view id\="org.eclipse.debug.ui.ExpressionView">\r\n<perspective id\="org.eclipse.debug.ui.DebugPerspective" userAction\="closed"/>\r\n</view>\r\n<view id\="org.eclipse.ui.console.ConsoleView">\r\n<perspective id\="org.eclipse.pde.ui.PDEPerspective" userAction\="opened"/>\r\n</view>\r\n</viewBindings>\r\n
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_generated_serial_version_id=false
 /configuration/org.eclipse.ui.ide/MAX_RECENT_WORKSPACES=5
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_dsdp_tm_updates_3.0/enabled=false
@@ -709,8 +733,8 @@ file_export_version=3.0
 @org.eclipse.tptp.platform.common.ui.trace=4.3.201.v200901090100
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_enum_declaration=insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_modeling_mdt_updates_/url=http\://download.eclipse.org/modeling/mdt/updates/
-/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_birt_update-site_2.3/url=http\://download.eclipse.org/birt/update-site/2.3
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_multiple_field_declarations=do not insert
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_birt_update-site_2.3/url=http\://download.eclipse.org/birt/update-site/2.3
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__subclipse.tigris.org_update_1.4.x/enabled=true
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_technology_emft_updates_/enabled=false
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_m2m_updates_/enabled=false
@@ -739,7 +763,7 @@ file_export_version=3.0
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_/provider=
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_technology_dltk_updates_/url=http\://download.eclipse.org/technology/dltk/updates/
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_dsdp_nab_updates/url=http\://download.eclipse.org/dsdp/nab/updates
-/instance/org.eclipse.debug.core/prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n<expression enabled\="true" text\="height"/>\r\n</watchExpressions>\r\n
+/instance/org.eclipse.debug.core/prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n<expression enabled\="true" text\="height"/>\r\n<expression enabled\="true" text\="p"/>\r\n</watchExpressions>\r\n
 /instance/org.eclipse.jdt.ui/java_multi_line_comment=17,170,187
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_constructor_declaration=insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__unimod.sf.net_update/name=http\://unimod.sf.net/update
@@ -750,14 +774,14 @@ file_export_version=3.0
 /instance/org.eclipse.ui.editors/overviewRuler_migration=migrated_3.1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_parameterized_type_reference=do not insert
 /instance/org.eclipse.ui.views.log/column4=150
-/instance/org.eclipse.ui.views.log/column3=150
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_type_declaration=insert
+/instance/org.eclipse.ui.views.log/column3=150
 /instance/org.eclipse.ui.views.log/column2=300
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_modeling_m2t_updates_/isSystem=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_modeling_emf_updates_/enabled=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_annotation=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_array_initializer=insert
-/instance/org.eclipse.help.ui/browser.maximized=false
+/instance/org.eclipse.help.ui/browser.maximized=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_paren_in_parenthesized_expression=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_angle_bracket_in_type_arguments=do not insert
 /instance/org.eclipse.ant.ui/problem_tasks=ignore
@@ -781,6 +805,7 @@ file_export_version=3.0
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_datatools_updates/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_method_invocation=do not insert
 /instance/org.eclipse.jdt.ui/java_doc_default=105,131,205
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__crystalsaf.googlecode.com_svn_trunk_EclipseUpdate_/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_bracket_in_array_allocation_expression=do not insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_tools_mylyn_update_extras/url=http\://download.eclipse.org/tools/mylyn/update/extras
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_colon_in_for=insert
@@ -793,6 +818,7 @@ file_export_version=3.0
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__metrics.sourceforge.net_update/url=http\://metrics.sourceforge.net/update
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_p2_org.eclipse.equinox.p2.core_cache_/name=download cache
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_releases_ganymede/name=Ganymede Artifacts
+/configuration/org.eclipse.equinox.p2.artifact.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_69_data_listener_1925729951_/suffix=artifacts.xml
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_colon_in_assert=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_enum_constant=insert
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_stp_updates_/url=http\://download.eclipse.org/stp/updates/
@@ -805,8 +831,8 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_missing_methods=false
 /instance/org.eclipse.debug.ui/org.eclipse.debug.ui.switch_perspective_on_suspend=always
 /instance/org.eclipse.jdt.ui/sp_cleanup.remove_unused_private_types=true
-/instance/org.eclipse.jdt.ui/content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"><lhs name\="java.beans.PropertyChangeSupport"><rhs name\="java.beans.PropertyChangeSupport"/></lhs><lhs name\="java.lang.Enum"><rhs name\="edu.cmu.cs.fiddle.model.IHasProperties$PropertyType"/><rhs name\="edu.cmu.cs.plural.states.MethodCheckingKind"/></lhs><lhs name\="edu.cmu.cs.fiddle.model.IHasProperties$PropertyType"><rhs name\="edu.cmu.cs.fiddle.model.IHasProperties$PropertyType"/></lhs><lhs name\="org.eclipse.draw2d.ConnectionRouter"><rhs name\="org.eclipse.draw2d.FanRouter"/><rhs name\="edu.cmu.cs.fiddle.figure.BendpointSelfConnectionRouter"/><rhs name\="org.eclipse.draw2d.BendpointConnectionRouter"/><rhs name\="org.eclipse.draw2d.ManhattanConnectionRouter"/></lhs><lhs name\="org.eclipse.draw2d.ConnectionAnchor"><rhs name\="edu.cmu.cs.fiddle.figure.CornerAnchor"/></lhs><lhs name\="org.eclipse.jdt.core.dom.Name"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.IDocElement"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.Expression"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.ASTNode"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.QualifiedName"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$IsSynchronizedVisitor"><rhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$IsSynchronizedVisitor"/></lhs><lhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$NodeTree"><rhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$ExtensionTree"/></lhs><lhs name\="edu.cmu.cs.plural.concurrent.MutexWalker"><rhs name\="edu.cmu.cs.plural.concurrent.syncorswim.IsSynchronizedRefAnalysis"/></lhs><lhs name\="edu.cmu.cs.plural.states.MethodCheckingKind"><rhs name\="edu.cmu.cs.plural.states.MethodCheckingKind"/></lhs></history>
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_annotation_type_member_declaration=do not insert
+/instance/org.eclipse.jdt.ui/content_assist_lru_history=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><history maxLHS\="100" maxRHS\="10"><lhs name\="java.beans.PropertyChangeSupport"><rhs name\="java.beans.PropertyChangeSupport"/></lhs><lhs name\="java.lang.Enum"><rhs name\="edu.cmu.cs.fiddle.model.IHasProperties$PropertyType"/><rhs name\="edu.cmu.cs.plural.states.MethodCheckingKind"/><rhs name\="edu.cmu.cs.plural.errors.HistoryView$PluralAnalyses"/><rhs name\="edu.cmu.cs.plural.errors.JoiningChoices"/></lhs><lhs name\="edu.cmu.cs.fiddle.model.IHasProperties$PropertyType"><rhs name\="edu.cmu.cs.fiddle.model.IHasProperties$PropertyType"/></lhs><lhs name\="org.eclipse.draw2d.ConnectionRouter"><rhs name\="org.eclipse.draw2d.FanRouter"/><rhs name\="edu.cmu.cs.fiddle.figure.BendpointSelfConnectionRouter"/><rhs name\="org.eclipse.draw2d.BendpointConnectionRouter"/><rhs name\="org.eclipse.draw2d.ManhattanConnectionRouter"/></lhs><lhs name\="org.eclipse.draw2d.ConnectionAnchor"><rhs name\="edu.cmu.cs.fiddle.figure.CornerAnchor"/></lhs><lhs name\="org.eclipse.jdt.core.dom.Name"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.IDocElement"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.Expression"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.ASTNode"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="org.eclipse.jdt.core.dom.QualifiedName"><rhs name\="org.eclipse.jdt.core.dom.QualifiedName"/></lhs><lhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$IsSynchronizedVisitor"><rhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$IsSynchronizedVisitor"/></lhs><lhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$NodeTree"><rhs name\="edu.cmu.cs.syncorswim.IsSynchronizedRefAnalysis$ExtensionTree"/></lhs><lhs name\="edu.cmu.cs.plural.concurrent.MutexWalker"><rhs name\="edu.cmu.cs.plural.concurrent.syncorswim.IsSynchronizedRefAnalysis"/></lhs><lhs name\="edu.cmu.cs.plural.states.MethodCheckingKind"><rhs name\="edu.cmu.cs.plural.states.MethodCheckingKind"/></lhs><lhs name\="edu.cmu.cs.plural.errors.HistoryView$PluralAnalyses"><rhs name\="edu.cmu.cs.plural.errors.HistoryView$PluralAnalyses"/></lhs><lhs name\="edu.cmu.cs.plural.errors.JoiningChoices"><rhs name\="edu.cmu.cs.plural.errors.JoiningChoices"/></lhs></history>
 /configuration/org.eclipse.equinox.p2.artifact.repository/repositories/http\:__download.eclipse.org_rt_rap_update-site/isSystem=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/file\:_D\:_Program\ Files_eclipse_3_4_1_eclipse_configuration_org.eclipse.osgi_bundles_63_data_listener_-1169973579_/url=file\:/D\:/Program Files/eclipse_3_4_1/eclipse/configuration/org.eclipse.osgi/bundles/63/data/listener_-1169973579/
 /instance/org.eclipse.pde.ui/editor.color.header_assignment=204,204,204
@@ -822,6 +848,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.ui/java_keyword=0,255,255
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.keep_empty_array_initializer_on_one_line=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__plaidannotations.googlecode.com_svn_trunk_PlaidAnnotationsUpdateSite_/type=org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository
+/configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__crystalsaf.googlecode.com_svn_trunk_EclipseUpdate_/enabled=false
 /configuration/org.eclipse.equinox.p2.metadata.repository/repositories/http\:__download.eclipse.org_technology_rap_update-site/isSystem=false
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_paren_in_enum_constant=do not insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_multiple_local_declarations=do not insert
