@@ -4,47 +4,61 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
-import edu.cmu.cs.crystal.BooleanLabel;
-import edu.cmu.cs.crystal.ILabel;
+import edu.cmu.cs.crystal.flow.AnalysisDirection;
+import edu.cmu.cs.crystal.flow.BooleanLabel;
+import edu.cmu.cs.crystal.flow.ILabel;
+import edu.cmu.cs.crystal.flow.ILatticeOperations;
 import edu.cmu.cs.crystal.flow.IResult;
 import edu.cmu.cs.crystal.flow.LabeledResult;
-import edu.cmu.cs.crystal.flow.Lattice;
 import edu.cmu.cs.crystal.flow.SingleResult;
+import edu.cmu.cs.crystal.simple.AbstractingTransferFunction;
 import edu.cmu.cs.crystal.tac.AbstractTACBranchSensitiveTransferFunction;
-import edu.cmu.cs.crystal.tac.ArrayInitInstruction;
-import edu.cmu.cs.crystal.tac.BinaryOperation;
-import edu.cmu.cs.crystal.tac.CastInstruction;
-import edu.cmu.cs.crystal.tac.ConstructorCallInstruction;
-import edu.cmu.cs.crystal.tac.CopyInstruction;
-import edu.cmu.cs.crystal.tac.DotClassInstruction;
-import edu.cmu.cs.crystal.tac.EnhancedForConditionInstruction;
-import edu.cmu.cs.crystal.tac.IVariableVisitor;
-import edu.cmu.cs.crystal.tac.InstanceofInstruction;
-import edu.cmu.cs.crystal.tac.LoadArrayInstruction;
-import edu.cmu.cs.crystal.tac.LoadFieldInstruction;
-import edu.cmu.cs.crystal.tac.LoadLiteralInstruction;
-import edu.cmu.cs.crystal.tac.MethodCallInstruction;
-import edu.cmu.cs.crystal.tac.NewArrayInstruction;
-import edu.cmu.cs.crystal.tac.NewObjectInstruction;
-import edu.cmu.cs.crystal.tac.ReturnInstruction;
-import edu.cmu.cs.crystal.tac.SourceVariable;
-import edu.cmu.cs.crystal.tac.SourceVariableDeclaration;
-import edu.cmu.cs.crystal.tac.SourceVariableRead;
-import edu.cmu.cs.crystal.tac.StoreArrayInstruction;
-import edu.cmu.cs.crystal.tac.StoreFieldInstruction;
-import edu.cmu.cs.crystal.tac.SuperVariable;
-import edu.cmu.cs.crystal.tac.TempVariable;
-import edu.cmu.cs.crystal.tac.ThisVariable;
-import edu.cmu.cs.crystal.tac.TypeVariable;
-import edu.cmu.cs.crystal.tac.UnaryOperation;
+import edu.cmu.cs.crystal.tac.ITACAnalysisContext;
+import edu.cmu.cs.crystal.tac.model.ArrayInitInstruction;
+import edu.cmu.cs.crystal.tac.model.BinaryOperation;
+import edu.cmu.cs.crystal.tac.model.CastInstruction;
+import edu.cmu.cs.crystal.tac.model.ConstructorCallInstruction;
+import edu.cmu.cs.crystal.tac.model.CopyInstruction;
+import edu.cmu.cs.crystal.tac.model.DotClassInstruction;
+import edu.cmu.cs.crystal.tac.model.EnhancedForConditionInstruction;
+import edu.cmu.cs.crystal.tac.model.IVariableVisitor;
+import edu.cmu.cs.crystal.tac.model.InstanceofInstruction;
+import edu.cmu.cs.crystal.tac.model.LoadArrayInstruction;
+import edu.cmu.cs.crystal.tac.model.LoadFieldInstruction;
+import edu.cmu.cs.crystal.tac.model.LoadLiteralInstruction;
+import edu.cmu.cs.crystal.tac.model.MethodCallInstruction;
+import edu.cmu.cs.crystal.tac.model.NewArrayInstruction;
+import edu.cmu.cs.crystal.tac.model.NewObjectInstruction;
+import edu.cmu.cs.crystal.tac.model.ReturnInstruction;
+import edu.cmu.cs.crystal.tac.model.SourceVariable;
+import edu.cmu.cs.crystal.tac.model.SourceVariableDeclaration;
+import edu.cmu.cs.crystal.tac.model.SourceVariableReadInstruction;
+import edu.cmu.cs.crystal.tac.model.StoreArrayInstruction;
+import edu.cmu.cs.crystal.tac.model.StoreFieldInstruction;
+import edu.cmu.cs.crystal.tac.model.SuperVariable;
+import edu.cmu.cs.crystal.tac.model.TempVariable;
+import edu.cmu.cs.crystal.tac.model.ThisVariable;
+import edu.cmu.cs.crystal.tac.model.TypeVariable;
+import edu.cmu.cs.crystal.tac.model.UnaryOperation;
 import edu.cmu.cs.typestatefinder.TFLattice.InConditional;
 
+import edu.cmu.cs.crystal.tac.*;
+
 public class FinderTransferFunction extends
-		AbstractTACBranchSensitiveTransferFunction<TFLattice> {
+	AbstractTACBranchSensitiveTransferFunction<TFLattice> {
+
+
 
 	@Override
-	public Lattice<TFLattice> getLattice(MethodDeclaration methodDeclaration) {
-		return new Lattice<TFLattice>(new TFLattice(), TFLattice.BOTTOM);
+	public TFLattice createEntryValue(MethodDeclaration method) {
+		return new TFLattice();
+	}
+
+	private LatticeOps latticeOps = new LatticeOps();
+	
+	@Override
+	public ILatticeOperations<TFLattice> getLatticeOperations() {
+		return latticeOps;
 	}
 
 	@Override
@@ -219,9 +233,9 @@ public class FinderTransferFunction extends
 			List<ILabel> labels, TFLattice value) {
 		return resultFromLabels(value, labels, false);
 	}
-
+	
 	@Override
-	public IResult<TFLattice> transfer(SourceVariableRead instr,
+	public IResult<TFLattice> transfer(SourceVariableReadInstruction instr,
 			List<ILabel> labels, TFLattice value) {
 		return resultFromLabels(value, labels, false);
 	}
@@ -237,6 +251,4 @@ public class FinderTransferFunction extends
 			List<ILabel> labels, TFLattice value) {
 		return resultFromLabels(value, labels, false);
 	}
-	
-	
 }
