@@ -1,11 +1,9 @@
 package edu.cmu.cs.typestatefinder;
 
+import java.util.Collections;
 import java.util.Set;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-
-import edu.cmu.cs.crystal.flow.LatticeElement;
-import edu.cmu.cs.crystal.tac.Variable;
+import edu.cmu.cs.crystal.tac.model.Variable;
 import edu.rice.cs.plt.collect.CollectUtil;
 
 /**
@@ -15,7 +13,7 @@ import edu.rice.cs.plt.collect.CollectUtil;
  * 
  * @author Nels E. Beckman
  */
-public class TFLattice implements LatticeElement<TFLattice> {
+public class TFLattice {
 	
 	enum InConditional {
 		NOT, TRUE, FALSE
@@ -26,8 +24,6 @@ public class TFLattice implements LatticeElement<TFLattice> {
 	private final Set<Variable> varIsField;
 	
 	private final InConditional isInConditional;
-	
-	public final static TFLattice BOTTOM = new TFLattice();
 	
 	public TFLattice() {
 		this.varIsField = CollectUtil.emptySet();
@@ -60,51 +56,6 @@ public class TFLattice implements LatticeElement<TFLattice> {
 	public TFLattice fieldCheckOcurred() {
 		return new TFLattice(true, this.varIsField, this.isInConditional);
 	}
-	
-	@Override
-	public boolean atLeastAsPrecise(TFLattice other, ASTNode node) {		
-		if( this == BOTTOM ) {
-			return true;
-		}
-		else if( other == BOTTOM ) {
-			return false;
-		}
-		else if( !this.isInConditional.equals(other.isInConditional) ) {
-			return false;
-		}
-		else if( this.justCheckedField == true ) {
-			return varIsField.containsAll(other.varIsField);
-		}
-		else if( other.justCheckedField == true ) {
-			return false;
-		}
-		else {
-			return this.varIsField.containsAll(other.varIsField);
-		}
-	}
-
-	@Override
-	public TFLattice copy() {
-		return this;
-	}
-
-	@Override
-	public TFLattice join(TFLattice other, ASTNode node) {
-		if( this == BOTTOM )
-			return other;
-		else if( other == BOTTOM )
-			return this;
-		
-		boolean just_checked_field =
-			this.isInConditional.equals(other.isInConditional) & this.justCheckedField & other.justCheckedField;
-		
-		InConditional is_in_conditional = 
-			this.isInConditional.equals(other.isInConditional) ? this.isInConditional : InConditional.NOT;
-		
-		return new TFLattice(just_checked_field,
-				CollectUtil.intersection(this.varIsField, other.varIsField),
-				is_in_conditional);
-	}
 
 	@Override
 	public int hashCode() {
@@ -126,5 +77,13 @@ public class TFLattice implements LatticeElement<TFLattice> {
 		if (justCheckedField != other.justCheckedField)
 			return false;
 		return true;
+	}
+
+	InConditional isInConditional() {
+		return this.isInConditional;
+	}
+
+	Set<Variable> varIsField() {
+		return Collections.unmodifiableSet(this.varIsField);
 	}
 }

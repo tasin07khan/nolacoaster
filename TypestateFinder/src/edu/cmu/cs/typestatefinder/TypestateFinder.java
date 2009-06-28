@@ -31,24 +31,6 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 		//d.accept(new FinderVisitor(analysis));
 		d.accept(new PartialFunctionFinder());
 	}
-
-	private class FinderVisitor extends ASTVisitor {
-		private final TACFlowAnalysis<TFLattice> analysis;
-		
-		FinderVisitor(TACFlowAnalysis<TFLattice> analysis) {
-			this.analysis = analysis;
-		}
-
-		@Override
-		public void endVisit(ThrowStatement node) {
-			TFLattice lattice = analysis.getResultsBefore(node);
-			if( lattice.justCheckedField() ) {
-				TypestateFinder.this.reporter.reportUserProblem("Possible typestate", 
-						node, 
-						TypestateFinder.this.getName());
-			}
-		}
-	}
 	
 	/**
 	 * Finds methods that are partial functions of 'this.' 
@@ -120,18 +102,6 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 						}
 					}
 				}
-
-//				@Override
-//				public void endVisit(QualifiedName node) {
-//					// TODO Auto-generated method stub
-//					super.endVisit(node);
-//				}
-//
-//				@Override
-//				public void endVisit(ThisExpression node) {
-//					// TODO Auto-generated method stub
-//					super.endVisit(node);
-//				}
 			});
 			
 			// If we just saw a field... or if we already saw one
