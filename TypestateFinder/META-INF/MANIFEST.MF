@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TypestateFinder Plug-in
+Bundle-SymbolicName: TypestateFinder;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: typestatefinder.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ edu.cmu.cs.crystal,
+ org.eclipse.jdt.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: plt.jar,
+ .
