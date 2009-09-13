@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+RIM-COD-Module-Name: Latemaster
+RIM-COD-Module-Dependencies: net_rim_cldc
+MIDlet-Jar-Size: 4188
+MIDlet-1: ,,
+RIM-COD-Creation-Time: 1252867370
+MIDlet-Jar-URL: Latemaster.jar
+RIM-COD-URL: Latemaster.cod
+RIM-COD-SHA1: 7a b9 1c 0c c8 6b 1d f2 77 1f cc 43 c2 4b 36 7f 02 90 fc 9a
+RIM-COD-Size: 1420
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Version: 0.0
+MIDlet-Name: Latemaster
+MIDlet-Vendor: <unknown>
+MicroEdition-Profile: MIDP-2.0
+RIM-MIDlet-Flags-1: 0
