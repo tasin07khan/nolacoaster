@@ -1,12 +1,22 @@
 package edu.cmu.cs.typestatefinder;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.util.Calendar;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CatchClause;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -22,14 +32,26 @@ import edu.cmu.cs.crystal.util.Box;
 
 public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 
+	// Statically open a file. This will be used to output all results.
+	
+	private static final File OUTPUT_FILE = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\output_" + Calendar.getInstance().getTimeInMillis()+".txt"); 
+	private static FileWriter OUTPUT_WRITER;
+	
+	static {
+		try { 
+			OUTPUT_WRITER = new FileWriter(OUTPUT_FILE);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void analyzeMethod(MethodDeclaration d) {
 		TACFlowAnalysis<TFLattice> analysis =
 		new TACFlowAnalysis<TFLattice>(new FinderTransferFunction(),
 				this.analysisInput.getComUnitTACs().unwrap());
 		
-		//d.accept(new FinderVisitor(analysis));
-		d.accept(new PartialFunctionFinder());
+		d.accept(new PartialFunctionFinder(d.resolveBinding().getDeclaringClass()));
 	}
 	
 	/**
@@ -41,12 +63,15 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 		
 		private final boolean checkExistsAboveUs;
 		
-		PartialFunctionFinder() {
-			this(false);
+		private final ITypeBinding definingClass;
+		
+		PartialFunctionFinder(ITypeBinding definingClass) {
+			this(false, definingClass);
 		}
 		
-		private PartialFunctionFinder(boolean checkExistsAboveUs) {
+		private PartialFunctionFinder(boolean checkExistsAboveUs, ITypeBinding definingClass) {
 			this.checkExistsAboveUs = checkExistsAboveUs;
+			this.definingClass = definingClass;
 		}
 		
 		@Override
@@ -55,6 +80,27 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 				TypestateFinder.this.reporter.reportUserProblem("Possible typestate", 
 						node, 
 						TypestateFinder.this.getName());
+
+				// Identify the closest resource to the ASTNode,
+				ASTNode root = node.getRoot();
+				IResource resource;
+				if (root.getNodeType() == ASTNode.COMPILATION_UNIT) {
+					CompilationUnit cu = (CompilationUnit) root;
+					IJavaElement je = cu.getJavaElement();
+					resource = je.getResource();
+					cu.getPackage();
+					
+					String output = cu.getPackage().getName() + ", " + resource.getName() + ", " +
+						cu.getLineNumber(node.getStartPosition()) + ", " + this.definingClass.getQualifiedName() + "\n";
+					try {
+						OUTPUT_WRITER.write(output);
+						OUTPUT_WRITER.flush();
+					} catch (IOException e) { e.printStackTrace(); }
+				}
+				else {
+					// Use the high-level Workspace
+					System.err.println("Problem: No compilation unit.");
+				}
 			}
 		}
 
@@ -65,7 +111,7 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 			// Visiting a catch clause really should reset the 'existsAboveUs' since it's
 			// not directly in the execution path.
 			node.getException().accept(this);
-			node.getBody().accept(new PartialFunctionFinder(false));
+			node.getBody().accept(new PartialFunctionFinder(false, this.definingClass));
 			return false;
 		}
 
@@ -77,7 +123,7 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 			
 			// See if there is a field access in the conditional.
 			final Box<Boolean> saw_field = Box.box(false);
-			conditional_expr.accept(new PartialFunctionFinder(checkExistsAboveUs){
+			conditional_expr.accept(new PartialFunctionFinder(checkExistsAboveUs, this.definingClass){
 				// If we see a field, record that fact...
 				
 				@Override
@@ -106,7 +152,7 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 			
 			// If we just saw a field... or if we already saw one
 			final PartialFunctionFinder next_visitor = 
-				new PartialFunctionFinder(checkExistsAboveUs | saw_field.getValue());
+				new PartialFunctionFinder(checkExistsAboveUs | saw_field.getValue(), this.definingClass);
 			then.accept(next_visitor);
 			
 			if( else_branch != null )
