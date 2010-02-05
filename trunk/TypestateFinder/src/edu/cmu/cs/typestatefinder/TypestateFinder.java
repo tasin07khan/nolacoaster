@@ -1,13 +1,8 @@
 package edu.cmu.cs.typestatefinder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.Calendar;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -27,30 +22,12 @@ import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 
 import edu.cmu.cs.crystal.AbstractCrystalMethodAnalysis;
-import edu.cmu.cs.crystal.tac.TACFlowAnalysis;
 import edu.cmu.cs.crystal.util.Box;
 
 public class TypestateFinder extends AbstractCrystalMethodAnalysis {
-
-	// Statically open a file. This will be used to output all results.
-	
-	private static final File OUTPUT_FILE = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\output_" + Calendar.getInstance().getTimeInMillis()+".txt"); 
-	private static FileWriter OUTPUT_WRITER;
-	
-	static {
-		try { 
-			OUTPUT_WRITER = new FileWriter(OUTPUT_FILE);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	@Override
 	public void analyzeMethod(MethodDeclaration d) {
-		TACFlowAnalysis<TFLattice> analysis =
-		new TACFlowAnalysis<TFLattice>(new FinderTransferFunction(),
-				this.analysisInput.getComUnitTACs().unwrap());
-		
 		d.accept(new PartialFunctionFinder(d.resolveBinding().getDeclaringClass()));
 	}
 	
@@ -91,11 +68,8 @@ public class TypestateFinder extends AbstractCrystalMethodAnalysis {
 					cu.getPackage();
 					
 					String output = cu.getPackage().getName() + ", " + resource.getName() + ", " +
-						cu.getLineNumber(node.getStartPosition()) + ", " + this.definingClass.getQualifiedName() + "\n";
-					try {
-						OUTPUT_WRITER.write(output);
-						OUTPUT_WRITER.flush();
-					} catch (IOException e) { e.printStackTrace(); }
+						cu.getLineNumber(node.getStartPosition()) + ", " + this.definingClass.getQualifiedName();
+					System.out.println(output);
 				}
 				else {
 					// Use the high-level Workspace
