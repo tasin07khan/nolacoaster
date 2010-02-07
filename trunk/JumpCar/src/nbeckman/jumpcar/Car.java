@@ -29,10 +29,10 @@ public final class Car implements Comparable<Car> {
 	private final String make;
 	private final String model;
 	private final int year;
-	private final HeightFunction heightFn;
+	private final CarHeightFunction heightFn;
 	private final MPH topSpead;
 	
-	private Car(String make, String model, int year, HeightFunction heightFn, MPH topSpead) {
+	private Car(String make, String model, int year, CarHeightFunction heightFn, MPH topSpead) {
 		this.make = make;
 		this.model = model;
 		this.year = year;
@@ -103,7 +103,7 @@ public final class Car implements Comparable<Car> {
 			assertNonNull(make, model, image_file);
 			
 			BufferedImage input_image = ImageIO.read(new File(spec_file.getParent() + "/" + image_file));
-			HeightFunction height_fn = HeightFunction.createHeightFn(input_image, length);
+			CarHeightFunction height_fn = CarHeightFunction.createHeightFn(input_image, length);
 			
 			return Option.some(new Car(make, model, year, height_fn, speed));
 		} catch(Exception e) {
