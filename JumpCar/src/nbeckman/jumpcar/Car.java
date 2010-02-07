@@ -111,14 +111,4 @@ public final class Car implements Comparable<Car> {
 			return Option.none();
 		}
 	}
-	
-	private static class HeightFunction {
-		public HeightFunction(BufferedImage image) {
-			
-		}
-		
-		public static HeightFunction createHeightFn(BufferedImage image, double length) {
-			throw new RuntimeException();
-		}
-	}
 }
