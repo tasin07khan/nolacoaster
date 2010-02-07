@@ -20,7 +20,7 @@ import edu.rice.cs.plt.tuple.Option;
  * @author Nels E. Beckman
  *
  */
-final class HeightFunction {
+final class CarHeightFunction {
 	
 	// The samples. Maps from x value to y
 	final private TreeMap<Double,Double> samples;
@@ -29,7 +29,7 @@ final class HeightFunction {
 	// smaller than the given samples.
 	final private Double defaultVal;
 	
-	private HeightFunction(TreeMap<Double,Double> samples, double defaultVal) {
+	private CarHeightFunction(TreeMap<Double,Double> samples, double defaultVal) {
 		this.samples = samples;
 		this.defaultVal = Double.valueOf(defaultVal);
 	}
@@ -74,7 +74,7 @@ final class HeightFunction {
 	 * translate the difference of the red pixels in pixels to a distance in
 	 * meters. 
 	 */
-	public static HeightFunction createHeightFn(BufferedImage inputImage, double length) throws BadBMPException {
+	public static CarHeightFunction createHeightFn(BufferedImage inputImage, double length) throws BadBMPException {
 		Raster image_raster = inputImage.getData();
 		
 		int length_in_pixels = findLengthInPixels(image_raster);
@@ -97,7 +97,7 @@ final class HeightFunction {
 			}
 		}
 		
-		return new HeightFunction(result, 0.0d);
+		return new CarHeightFunction(result, 0.0d);
 	}
 
 	// Given that there are two pixels in this image that are red, find
@@ -166,7 +166,7 @@ final class HeightFunction {
 	public static void main(String args[]) throws IOException, BadBMPException {  
 		File carimage = new File("cardata/audi_a4_2008.bmp");
 		BufferedImage input_image = ImageIO.read(carimage);
-		final HeightFunction hf = HeightFunction.createHeightFn(input_image, 4.703d);
+		final CarHeightFunction hf = CarHeightFunction.createHeightFn(input_image, 4.703d);
 
 		for( double x=0.0d; x<=4.703d; x+=0.1d ) {
 			System.out.println("x: " + x + ", y: " + hf.get(x));
