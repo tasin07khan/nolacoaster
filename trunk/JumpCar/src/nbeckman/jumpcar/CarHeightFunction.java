@@ -171,6 +171,10 @@ final class CarHeightFunction {
 		for( double x=0.0d; x<=4.703d; x+=0.1d ) {
 			System.out.println("x: " + x + ", y: " + hf.get(x));
 		}
+	}
+
+	public double getLength() {
+		return this.samples.lastKey();
 	}  
 
 }

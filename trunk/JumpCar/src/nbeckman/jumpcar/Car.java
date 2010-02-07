@@ -30,14 +30,14 @@ public final class Car implements Comparable<Car> {
 	private final String model;
 	private final int year;
 	private final CarHeightFunction heightFn;
-	private final MPH topSpead;
+	private final MPH topSpeed;
 	
 	private Car(String make, String model, int year, CarHeightFunction heightFn, MPH topSpead) {
 		this.make = make;
 		this.model = model;
 		this.year = year;
 		this.heightFn = heightFn;
-		this.topSpead = topSpead;
+		this.topSpeed = topSpead;
 	}
 
 	@Override
@@ -48,6 +48,11 @@ public final class Car implements Comparable<Car> {
 			year - c.year;
 	}
 	
+	@Override
+	public String toString() {
+		return year + " " + make + " " + model;
+	}
+
 	/**
 	 * Parses all of the *.spec files in a directory and returns
 	 * a list of those spec files as cars, in alphabetical order.
@@ -79,6 +84,8 @@ public final class Car implements Comparable<Car> {
 			else
 				result.add(car_.unwrap());
 		}
+		
+		Collections.sort(result);
 		return result;
 	}
 	
@@ -110,5 +117,29 @@ public final class Car implements Comparable<Car> {
 			e.printStackTrace();
 			return Option.none();
 		}
+	}
+
+	public String getMake() {
+		return make;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public String getYear() {
+		return Integer.toString(year);
+	}
+
+	public MPH getSpeed() {
+		return this.topSpeed;
+	}
+
+	public double getLength() {
+		return this.heightFn.getLength();
+	}
+	
+	public double getLengthInFeet() {
+		return this.getLength() * 3.28d;
 	}
 }
