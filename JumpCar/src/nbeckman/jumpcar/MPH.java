@@ -28,6 +28,8 @@ public final class MPH implements Comparable<MPH> {
 		return mph - o.mph;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return mph + "mph";
+	}
 }
