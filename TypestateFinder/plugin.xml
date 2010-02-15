@@ -6,6 +6,10 @@
       <analysis
             class="edu.cmu.cs.typestatefinder.TypestateFinder">
       </analysis>
+      <analysis
+            class="edu.cmu.cs.typestatefinder.TypestateUsageFinder"
+            name="Typestate Usage Finder">
+      </analysis>
    </extension>
 
 </plugin>
