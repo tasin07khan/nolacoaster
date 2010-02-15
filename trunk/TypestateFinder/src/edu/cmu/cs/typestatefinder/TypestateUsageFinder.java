@@ -36,7 +36,7 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 	 */
 	private final Set<String> classesDefiningProts;
 	
-	private static final String INPUT_FILE_PATH = "classes_with_protocols.txt";
+	private static final String INPUT_FILE_PATH = "C:\\Users\\nbeckman\\workspace\\TypestateFinder\\classes_with_protocols.txt";
 	
 	public TypestateUsageFinder() {
 		super();
@@ -79,6 +79,7 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 			if( type_name.isSome() ) {
 				// OUTPUT
 				reportUse(node.resolveConstructorBinding(), type_name.unwrap(), 
+						  methodDeclaration.resolveBinding().getDeclaringClass(), 
 						  this.methodDeclaration, node);
 			}
 		}
@@ -93,16 +94,20 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 			if( type_name.isSome() ) {
 				// OUTPUT
 				reportUse(node.resolveMethodBinding(), type_name.unwrap(), 
+						  methodDeclaration.resolveBinding().getDeclaringClass(), 
 						  this.methodDeclaration, node);
 			}
 		}
 		
 		private void reportUse(IMethodBinding method_called, String class_defining_method, 
-				MethodDeclaration this_method, ASTNode node) {
+				ITypeBinding this_class, MethodDeclaration this_method, ASTNode node) {
 			// FQ Methodname, type_name, method_called_from, resource name, line no., 
 			String method_called_ = method_called.getDeclaringClass().getQualifiedName() + "." + method_called.getName();
-			// Method called from (which also contains class)
-			String this_method_ = this_method.getName().getFullyQualifiedName();
+			// Calling class
+			String this_class_ = this_class.getName() == null ? "XXX" : this_class.getQualifiedName();
+			// Method called from
+			// Can't believe I HAVE to call getFullyQualifiedName for the unqialified name...
+			String this_method_ = this_class_ + "." + this_method.getName().getFullyQualifiedName();
 			
 			// Identify the closest resource to the ASTNode,
 			ASTNode root = node.getRoot();
@@ -137,8 +142,10 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 			}
 			else {
 				// Try super-types.
-				Option<String> super_name = findTypeIfInProtocols(type.getSuperclass());
-				if( super_name.isSome() ) return super_name;
+				if( type.getSuperclass() != null ) {
+					Option<String> super_name = findTypeIfInProtocols(type.getSuperclass());
+					if( super_name.isSome() ) return super_name;
+				}
 				
 				// Try interfaces
 				for( ITypeBinding interface_type : type.getInterfaces() ) {
