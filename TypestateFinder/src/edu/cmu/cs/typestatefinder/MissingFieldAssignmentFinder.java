@@ -1,0 +1,222 @@
+package edu.cmu.cs.typestatefinder;
+
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ConstructorInvocation;
+import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
+import edu.cmu.cs.crystal.AbstractCompilationUnitAnalysis;
+
+/**
+ * A protocol detector that attempts to find initialization-style
+ * protocols by looking for classes that never assign values to
+ * some of its fields in some of its constructors. For now, let's
+ * just do this on a class-by-class basis, and ignore protected
+ * fields from superclasses. This class is not flow sensitive,
+ * although this means that there is a possibility for false-
+ * negatives.
+ * 
+ * @author Nels E. Beckman
+ */
+public final class MissingFieldAssignmentFinder extends
+		AbstractCompilationUnitAnalysis {
+
+	@Override
+	public void analyzeCompilationUnit(CompilationUnit d) {
+		ClassVisitor visitor = new ClassVisitor();
+		d.accept(visitor);
+	}
+
+	// In the given list, find the fields that are uninitialized by the declaration itself.
+	private static Set<IVariableBinding> findUninitializedFields(FieldDeclaration[] fields) {
+		Set<IVariableBinding> result = new HashSet<IVariableBinding>();
+		
+		for( FieldDeclaration field : fields ) {
+			// We only care about instance fields.
+			if( Modifier.isStatic(field.getModifiers()) ) continue;
+			// Also, if it's final, then there can't really be a protocol
+			if( Modifier.isFinal(field.getModifiers()) ) continue;
+			
+			// No initializer or an initializer but the value is the literal null
+			for( Object var_decl_ : field.fragments() ) {
+				VariableDeclarationFragment var_decl = (VariableDeclarationFragment)var_decl_;
+				
+				// Primitive fields cannot be null
+				if( var_decl.resolveBinding().getType().isPrimitive() ) continue;
+				
+				Expression init = var_decl.getInitializer();
+				
+				if( init == null ) result.add(var_decl.resolveBinding());
+				else if( init.resolveTypeBinding().isNullType() ) result.add(var_decl.resolveBinding());
+			}
+		}
+		
+		return result;
+	}
+	
+	private class ClassVisitor extends ASTVisitor {
+
+		@Override
+		public void endVisit(TypeDeclaration node) {
+			if( node.isInterface() ) return; // classes only...
+			
+			// Get all of the fields, remove the ones
+			// that have field initializers.
+			Set<IVariableBinding> unitialized = findUninitializedFields(node.getFields());
+			
+			// Accept constructor visitor
+			Set<IVariableBinding> unassigned_vars = 
+				ConstructorsVisitor.findUnassigned(node, unitialized);
+			
+			// See if remaining fields exist
+			if( !unassigned_vars.isEmpty() ) {
+				String error_msg = "There are unassigned fields in one of the constructors. Fields are " +
+					unassigned_vars.toString();
+				reporter.reportUserProblem(error_msg, node, getName());
+			}
+		}
+	}
+	
+	private static class SingleConstructorVisitor extends ASTVisitor {
+		private final Set<IVariableBinding> uninitialized;
+		// map is mutated during visiting.
+		private final Map<IMethodBinding, Set<IVariableBinding>> varsUnassignedInCxtr;
+		
+		private final IMethodBinding thisConstructor;
+		
+		public SingleConstructorVisitor(
+				Set<IVariableBinding> unitialized,
+				Map<IMethodBinding, Set<IVariableBinding>> varsUnassignedInCxtr,
+				IMethodBinding thisConstructor) {
+			this.uninitialized = unitialized;
+			this.varsUnassignedInCxtr = varsUnassignedInCxtr;
+			this.thisConstructor = thisConstructor;
+		}
+
+		@Override
+		public void endVisit(Assignment node) {
+			// Only counts if right-hand side is not null!
+			if( node.getRightHandSide().resolveTypeBinding().isNullType() ) return;
+			
+			// If LHS is a field, remove it
+			node.getLeftHandSide().accept(new ASTVisitor(){
+				@Override
+				public boolean visit(FieldAccess node) {
+					if( uninitialized.contains(node.resolveFieldBinding()) ) {
+						removeBinding(node.resolveFieldBinding());
+					}
+					return false;
+				}
+
+				@Override
+				public boolean visit(SimpleName node) {
+					if( node.resolveBinding() instanceof IVariableBinding ) {
+						IVariableBinding var_binding = (IVariableBinding)node.resolveBinding();
+						if( var_binding.isField() && uninitialized.contains(var_binding) ) {
+							removeBinding(var_binding);
+						}
+					}
+					return false;
+				}
+				private void removeBinding(IVariableBinding field) {
+					assert(varsUnassignedInCxtr.containsKey(thisConstructor));
+					SingleConstructorVisitor.this.varsUnassignedInCxtr.get(thisConstructor).remove(field);
+				}
+			});
+		}
+
+		@Override
+		public void endVisit(ConstructorInvocation node) {
+			// Now because we are calling another constructor, we get to remove,
+			// for free, everything that they remove.
+			IMethodBinding xtr_binding = node.resolveConstructorBinding();
+			if( varsUnassignedInCxtr.containsKey(xtr_binding) ) {
+				// Take uninitialized - other xtr. We can remove that set from here.
+				Set<IVariableBinding> to_remove = new HashSet<IVariableBinding>(uninitialized);
+				to_remove.removeAll(varsUnassignedInCxtr.get(xtr_binding));
+				// now remove
+				varsUnassignedInCxtr.get(thisConstructor).removeAll(to_remove);
+			}
+		}
+	}
+	
+	// The constructor actually does a sort of worklist thing.
+	private static class ConstructorsVisitor extends ASTVisitor {
+		private final Set<IVariableBinding> unitialized;
+		// map is mutated during visiting.
+		private final Map<IMethodBinding, Set<IVariableBinding>> varsUnassignedInCxtr;
+		
+		private ConstructorsVisitor(Set<IVariableBinding> unitialized,
+				Map<IMethodBinding, Set<IVariableBinding>> varsUnassigned) {
+			this.unitialized = Collections.unmodifiableSet(new HashSet<IVariableBinding>(unitialized));
+			// map is mutated during visiting.
+			this.varsUnassignedInCxtr = new HashMap<IMethodBinding, Set<IVariableBinding>>();
+			// gotta do a stupid deep copy...
+			for( Map.Entry<IMethodBinding, Set<IVariableBinding>> entry : varsUnassigned.entrySet() ) {
+				this.varsUnassignedInCxtr.put(entry.getKey(), new HashSet<IVariableBinding>(entry.getValue()) );
+			}
+		}
+
+		@Override
+		public void endVisit(MethodDeclaration node) {
+			IMethodBinding resolvedBinding = node.resolveBinding();
+			if( resolvedBinding.isConstructor() ) {
+				// Add this binding to the map
+				// If map does not contain this constructor entry, add all uninit-ed vars.
+				// Otherwise, leave it alone, since it represents the results of a previous
+				// iteration.
+				if( !varsUnassignedInCxtr.containsKey(resolvedBinding) ) {
+					varsUnassignedInCxtr.put(resolvedBinding, new HashSet<IVariableBinding>(unitialized));
+				}
+				// This single-constructor visitor modifies the map in-place.
+				node.accept(new SingleConstructorVisitor(unitialized, varsUnassignedInCxtr, resolvedBinding));
+			}
+		}
+
+
+
+		public static Set<IVariableBinding> findUnassigned(ASTNode node, 
+				Set<IVariableBinding> unitialized) {
+			Map<IMethodBinding, Set<IVariableBinding>> last_map = Collections.emptyMap();
+			// perform worklist, comparing to last_map and visiting until they are
+			// the same.
+			boolean continue_;
+			do {
+				ConstructorsVisitor visitor = new ConstructorsVisitor(unitialized, last_map);
+				node.accept(visitor);
+				continue_ = !visitor.varsUnassignedInCxtr.equals(last_map);
+				last_map = visitor.varsUnassignedInCxtr;
+			} while( continue_ );
+			
+			if( last_map.isEmpty() ) {
+				// This means there were no constructors at all.
+				return unitialized;
+			}
+			
+			// Now that we have reached a fixed point, find one non-empty set and return it, otherwise nothing.
+			for( Map.Entry<IMethodBinding, Set<IVariableBinding>> entry : last_map.entrySet() ) {
+				if( !entry.getValue().isEmpty() ) {
+					return entry.getValue();
+				}
+			}
+			return Collections.emptySet();
+		}
+	}	
+}
