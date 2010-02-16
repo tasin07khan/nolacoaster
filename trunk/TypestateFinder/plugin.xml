@@ -10,6 +10,10 @@
             class="edu.cmu.cs.typestatefinder.TypestateUsageFinder"
             name="Typestate Usage Finder">
       </analysis>
+      <analysis
+            class="edu.cmu.cs.typestatefinder.MissingFieldAssignmentFinder"
+            name="Missing Field Assignment Finder">
+      </analysis>
    </extension>
 
 </plugin>

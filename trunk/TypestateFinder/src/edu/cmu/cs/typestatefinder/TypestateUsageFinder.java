@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -13,12 +14,16 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
-import edu.cmu.cs.crystal.AbstractCrystalMethodAnalysis;
+import edu.cmu.cs.crystal.AbstractCompilationUnitAnalysis;
+import edu.cmu.cs.crystal.IAnalysisReporter.SEVERITY;
 import edu.rice.cs.plt.tuple.Option;
 
 /**
@@ -29,7 +34,7 @@ import edu.rice.cs.plt.tuple.Option;
  * @author Nels E. Beckman
  *
  */
-public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
+public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis {
 
 	/**
 	 * A set of class names that define protocols.
@@ -40,15 +45,16 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 	
 	public TypestateUsageFinder() {
 		super();
-		this.classesDefiningProts = new TreeSet<String>();
+		TreeSet<String> result = new TreeSet<String>();
 		
 		// Load file, each line is an entry
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(new File(INPUT_FILE_PATH)));
 			String cur_line;
 			while( (cur_line = br.readLine()) != null ) {
-				this.classesDefiningProts.add(cur_line.trim());
+				result.add(cur_line.trim());
 			}
+			this.classesDefiningProts = Collections.unmodifiableSet(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -56,12 +62,63 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 	}
 
 	@Override
-	public void analyzeMethod(MethodDeclaration d) {
-		// If we get this far, classesDefiningProts is initialized.
-		// Analyze method body...
-		d.accept(new CallSiteVisitor(d));
+	public void analyzeCompilationUnit(CompilationUnit cu) {	
+		cu.accept(new ASTVisitor() {
+			@Override
+			public void endVisit(MethodDeclaration d) {
+				// If we get this far, classesDefiningProts is initialized.
+				// Analyze method body...
+				d.accept(new CallSiteVisitor(d));
+			}
+		});
+		
+		// Also, when are fields of classes fields that define protocols?
+		cu.accept(new ASTVisitor() {
+			@Override
+			public void endVisit(FieldDeclaration node) {
+				if( Modifier.isStatic(node.getModifiers()) ) return;
+				
+				for( Object frag_ : node.fragments() ) {
+					VariableDeclarationFragment frag = (VariableDeclarationFragment)frag_;
+					ITypeBinding field_binding = frag.resolveBinding().getType();
+					Option<String> fq_type = findTypeIfInProtocols(field_binding);
+					if( fq_type.isSome() ) {
+						String error_msg = "Field type (" + fq_type.unwrap() + ")defines a protocol.";
+						reporter.reportUserProblem(error_msg, node, getName(), SEVERITY.WARNING);
+					}
+				}
+			}
+		});
 	}
-
+	
+	/**
+	 * Does the given type define a protocol or do any of its super
+	 * types? If yes, return the fully-qualified type name, and if
+	 * no, return NONE. (Fully qualified name is returned since it
+	 * may be of a supertype, and not of the given type parameter.)
+	 */
+	private Option<String> findTypeIfInProtocols(ITypeBinding type) {
+		String type_name = type.getQualifiedName();
+		if( classesDefiningProts.contains(type_name) ) {
+			return Option.some(type_name);
+		}
+		else {
+			// Try super-types.
+			if( type.getSuperclass() != null ) {
+				Option<String> super_name = findTypeIfInProtocols(type.getSuperclass());
+				if( super_name.isSome() ) return super_name;
+			}
+			
+			// Try interfaces
+			for( ITypeBinding interface_type : type.getInterfaces() ) {
+				Option<String> inter_name = findTypeIfInProtocols(interface_type);
+				if( inter_name.isSome() ) return inter_name;
+			}
+			
+			return Option.none();
+		}
+	}
+	
 	// Note this class is not static deliberately.
 	private class CallSiteVisitor extends ASTVisitor {
 		final private MethodDeclaration methodDeclaration;
@@ -128,34 +185,5 @@ public final class TypestateUsageFinder extends AbstractCrystalMethodAnalysis {
 				this_method_ + ", " + resource_name + ", " + line_no;
 			reporter.reportUserProblem(output_str, node, getName());
 		}
-		
-		/**
-		 * Does the given type define a protocol or do any of its super
-		 * types? If yes, return the fully-qualified type name, and if
-		 * no, return NONE. (Fully qualified name is returned since it
-		 * may be of a supertype, and not of the given type parameter.)
-		 */
-		private Option<String> findTypeIfInProtocols(ITypeBinding type) {
-			String type_name = type.getQualifiedName();
-			if( classesDefiningProts.contains(type_name) ) {
-				return Option.some(type_name);
-			}
-			else {
-				// Try super-types.
-				if( type.getSuperclass() != null ) {
-					Option<String> super_name = findTypeIfInProtocols(type.getSuperclass());
-					if( super_name.isSome() ) return super_name;
-				}
-				
-				// Try interfaces
-				for( ITypeBinding interface_type : type.getInterfaces() ) {
-					Option<String> inter_name = findTypeIfInProtocols(interface_type);
-					if( inter_name.isSome() ) return inter_name;
-				}
-				
-				return Option.none();
-			}
-		}
-		
 	}
 }
