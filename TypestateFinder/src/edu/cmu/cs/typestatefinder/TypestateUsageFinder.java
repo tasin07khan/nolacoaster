@@ -83,7 +83,7 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 					ITypeBinding field_binding = frag.resolveBinding().getType();
 					Option<String> fq_type = findTypeIfInProtocols(field_binding);
 					if( fq_type.isSome() ) {
-						String error_msg = "Field type (" + fq_type.unwrap() + ")defines a protocol.";
+						String error_msg = "Field type (" + fq_type.unwrap() + ") defines a protocol.";
 						reporter.reportUserProblem(error_msg, node, getName(), SEVERITY.WARNING);
 					}
 				}
