@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import edu.cmu.cs.crystal.AbstractCompilationUnitAnalysis;
+import edu.cmu.cs.crystal.util.Pair;
 
 /**
  * A protocol detector that attempts to find initialization-style
@@ -82,14 +83,21 @@ public final class MissingFieldAssignmentFinder extends
 			Set<IVariableBinding> unitialized = findUninitializedFields(node.getFields());
 			
 			// Accept constructor visitor
-			Set<IVariableBinding> unassigned_vars = 
+			Pair<Set<IVariableBinding>, Boolean> visitor_result = 
 				ConstructorsVisitor.findUnassigned(node, unitialized);
+			Set<IVariableBinding> unassigned_vars = visitor_result.fst(); 
+			Boolean saw_sync = visitor_result.snd();
 			
 			// See if remaining fields exist
 			if( !unassigned_vars.isEmpty() ) {
 				String error_msg = "There are unassigned fields in one of the constructors. Fields are " +
 					unassigned_vars.toString();
 				reporter.reportUserProblem(error_msg, node, getName());
+				
+				// Make sure you print all of the data we needed for the original typestate finder
+				String class_name = node.resolveBinding().getQualifiedName();
+				String msg = "NullFieldClass, " + class_name +", " + saw_sync.toString();
+				System.out.println(msg);
 			}
 		}
 	}
@@ -162,6 +170,8 @@ public final class MissingFieldAssignmentFinder extends
 		private final Set<IVariableBinding> unitialized;
 		// map is mutated during visiting.
 		private final Map<IMethodBinding, Set<IVariableBinding>> varsUnassignedInCxtr;
+		// did we see a synchronized method?
+		boolean sawSync = false;
 		
 		private ConstructorsVisitor(Set<IVariableBinding> unitialized,
 				Map<IMethodBinding, Set<IVariableBinding>> varsUnassigned) {
@@ -176,6 +186,8 @@ public final class MissingFieldAssignmentFinder extends
 
 		@Override
 		public void endVisit(MethodDeclaration node) {
+			this.sawSync |= Modifier.isSynchronized(node.getModifiers());
+			
 			IMethodBinding resolvedBinding = node.resolveBinding();
 			if( resolvedBinding.isConstructor() ) {
 				// Add this binding to the map
@@ -192,14 +204,15 @@ public final class MissingFieldAssignmentFinder extends
 
 
 
-		public static Set<IVariableBinding> findUnassigned(ASTNode node, 
+		public static Pair<Set<IVariableBinding>, Boolean> findUnassigned(ASTNode node, 
 				Set<IVariableBinding> unitialized) {
 			Map<IMethodBinding, Set<IVariableBinding>> last_map = Collections.emptyMap();
 			// perform worklist, comparing to last_map and visiting until they are
 			// the same.
 			boolean continue_;
+			ConstructorsVisitor visitor;
 			do {
-				ConstructorsVisitor visitor = new ConstructorsVisitor(unitialized, last_map);
+				visitor = new ConstructorsVisitor(unitialized, last_map);
 				node.accept(visitor);
 				continue_ = !visitor.varsUnassignedInCxtr.equals(last_map);
 				last_map = visitor.varsUnassignedInCxtr;
@@ -207,16 +220,16 @@ public final class MissingFieldAssignmentFinder extends
 			
 			if( last_map.isEmpty() ) {
 				// This means there were no constructors at all.
-				return unitialized;
+				return Pair.create(unitialized, visitor.sawSync);
 			}
 			
 			// Now that we have reached a fixed point, find one non-empty set and return it, otherwise nothing.
 			for( Map.Entry<IMethodBinding, Set<IVariableBinding>> entry : last_map.entrySet() ) {
 				if( !entry.getValue().isEmpty() ) {
-					return entry.getValue();
+					return Pair.create(entry.getValue(), visitor.sawSync);
 				}
 			}
-			return Collections.emptySet();
+			return Pair.create(Collections.<IVariableBinding>emptySet(), Boolean.FALSE);
 		}
 	}	
 }
