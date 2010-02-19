@@ -61,6 +61,8 @@ public final class MissingFieldAssignmentFinder extends
 				
 				// Primitive fields cannot be null
 				if( var_decl.resolveBinding().getType().isPrimitive() ) continue;
+				// Also, I don't care about arrays, even though maybe I should.
+				if( var_decl.resolveBinding().getType().isArray() ) continue;
 				
 				Expression init = var_decl.getInitializer();
 				

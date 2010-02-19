@@ -14,6 +14,10 @@
             class="edu.cmu.cs.typestatefinder.MissingFieldAssignmentFinder"
             name="Missing Field Assignment Finder">
       </analysis>
+      <analysis
+            class="edu.cmu.cs.typestatefinder.TestMustBeAFieldAnalysis"
+            name="TestFieldAnalysis">
+      </analysis>
    </extension>
 
 </plugin>

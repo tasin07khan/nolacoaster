@@ -12,8 +12,10 @@ import java.util.List;
 import edu.rice.cs.plt.tuple.Option;
 
 /**
- * Eh... this code is garbage right now.
- * @author nbeckman
+ * This class is nothing more than some utility code. It is meant to
+ * help me extract classes for the warnings that I found with the
+ * typestate finder earlier.
+ * @author Nels E. Beckman
  *
  */
 public final class UniqueClassCounter {
@@ -79,7 +81,7 @@ public final class UniqueClassCounter {
 		// Now we've got all the input records.
 		// build the output record.
 		
-		File classes_file = new File("output_1264997698224.txt");
+		File classes_file = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\standardio.txt");
 		FileReader freader = new FileReader(classes_file);
 		BufferedReader reader = new BufferedReader(freader);
 		
@@ -87,12 +89,15 @@ public final class UniqueClassCounter {
 		
 		String cur = reader.readLine();
 		while( cur != null ) {
-			InputRecord class_rec = buildInputRecordFromClass(cur);
-			if( input_records.contains(class_rec) ) {
-				// Remove it and add it to the output
-				input_records.remove(class_rec);
-				String class_name = classNameFromClassRecord(cur);
-				classes_with_protocols.add(class_name);
+			cur = cur.trim();
+			if( !"".equals(cur) ) {
+				InputRecord class_rec = buildInputRecordFromClass(cur);
+				if( input_records.contains(class_rec) ) {
+					// Remove it and add it to the output
+					input_records.remove(class_rec);
+					String class_name = classNameFromClassRecord(cur);
+					classes_with_protocols.add(class_name);
+				}
 			}
 			
 			cur = reader.readLine();
@@ -152,7 +157,7 @@ public final class UniqueClassCounter {
 	}
 	
 	private static HashSet<InputRecord> buildInputRecords() throws IOException {
-		File results_file = new File("results.csv");
+		File results_file = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\jsl.csv");
 		FileReader results_reader = new FileReader(results_file);
 		BufferedReader results_reader_br = new BufferedReader(results_reader);
 		
