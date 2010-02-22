@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -14,12 +15,15 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
  *
  */
 public interface EntityWithMethods {
-	MethodDeclaration[] getMethods();
+	public MethodDeclaration[] getMethods();
+	public ITypeBinding getType();
+	
 	
 	public class Util {
 		public static EntityWithMethods fromTypeDeclaration(final TypeDeclaration type) {
 			return new EntityWithMethods(){
 				@Override public MethodDeclaration[] getMethods() {return type.getMethods();}
+				@Override public ITypeBinding getType() {return type.resolveBinding();}
 			};
 		}
 		
@@ -33,6 +37,7 @@ public interface EntityWithMethods {
 					}
 					return mds.toArray(new MethodDeclaration[mds.size()]);
 				}
+				@Override public ITypeBinding getType() {return anon.resolveBinding();}
 			};
 		}
 	}
