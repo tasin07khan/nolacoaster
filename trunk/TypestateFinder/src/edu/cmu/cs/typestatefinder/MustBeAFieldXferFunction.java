@@ -31,6 +31,7 @@ import edu.cmu.cs.crystal.tac.model.SourceVariableDeclaration;
 import edu.cmu.cs.crystal.tac.model.SourceVariableReadInstruction;
 import edu.cmu.cs.crystal.tac.model.StoreArrayInstruction;
 import edu.cmu.cs.crystal.tac.model.StoreFieldInstruction;
+import edu.cmu.cs.crystal.tac.model.ThisVariable;
 import edu.cmu.cs.crystal.tac.model.UnaryOperation;
 import edu.cmu.cs.crystal.tac.model.Variable;
 import edu.cmu.cs.typestatefinder.MustBeAFieldAnalysis.IsField;
@@ -155,7 +156,10 @@ class MustBeAFieldXferFunction implements ITACTransferFunction<TupleLatticeEleme
 	public TupleLatticeElement<Variable, IsField> transfer(
 			LoadFieldInstruction instr,
 			TupleLatticeElement<Variable, IsField> value) {
-		if( instr.getSourceObject().equals(this.context.getThisVariable()) ) {
+		// I think the line below is much more inline with what the
+		// old typestate finder did, insomuch as it doesn't care which
+		// this variable is being accessed.
+		if( instr.getSourceObject() instanceof ThisVariable ) {
 			value.put(instr.getTarget(), IsField.Yes);
 		}
 		return value;
