@@ -74,8 +74,25 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 					resource = je.getResource();
 					cu.getPackage();
 					
+					String class_name;
+					if( this.definingClassBinding.isAnonymous() ) {
+						// Guess we should print the class that is being instantiated...
+						if( this.definingClassBinding.getInterfaces().length > 0 ) {
+							assert(this.definingClassBinding.getInterfaces().length == 1);
+							class_name = this.definingClassBinding.getInterfaces()[0].getQualifiedName();
+						} else {
+							class_name = this.definingClassBinding.getSuperclass().getQualifiedName();
+						}
+					} else if( this.definingClassBinding.isLocal() ) {
+						// A local, non-anonymous class actually presents some difficulties.
+						// Just print out the fact that it is local...
+						class_name = "LOCAL";
+					} else {
+						class_name = this.definingClassBinding.getQualifiedName();
+					}
+					
 					String output = cu.getPackage().getName() + ", " + resource.getName() + ", " +
-						cu.getLineNumber(node.getStartPosition()) + ", " + this.definingClassBinding.getQualifiedName();
+						cu.getLineNumber(node.getStartPosition()) + ", " + class_name;
 					System.out.println(output);
 				}
 				else {
