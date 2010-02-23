@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -94,8 +95,11 @@ final class MustBeAFieldAnalysis {
 					new MustBeAFieldXferFunction(Collections.<IMethodBinding>emptySet()),tacs);
 		
 		decl.accept(new ASTVisitor() {
+			@Override public boolean visit(AnonymousClassDeclaration acd) { return false; }
+			
 			@Override public void endVisit(ReturnStatement node) {
 				Expression return_expr = node.getExpression();
+				assert(return_expr != null);
 				IsField is_field =
 					flowAnalysis.getResultsAfter(return_expr).get(flowAnalysis.getVariable(return_expr));
 				is_getter.setValue(is_field);
