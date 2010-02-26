@@ -8,10 +8,17 @@ import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldAccess;
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -122,8 +129,30 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 			// See if there is a field access in the conditional.
 			final Box<Boolean> saw_field = Box.box(Boolean.FALSE);
 			conditional_expr.accept(new PartialFunctionFinder(checkExistsAboveUs, this.definingClassBinding, this.fieldAnalysis){
+				// NON GETTER VERSION
+//				@Override
+//                public void endVisit(FieldAccess node) {
+//                        if( node.getExpression() instanceof ThisExpression ) {
+//                                saw_field.setValue(true);
+//                        }
+//                        super.endVisit(node);
+//                }
+//                @Override
+//                public void endVisit(SimpleName node) {
+//                        // Easiest case, just see if this is a field. If so, it must be of 'this.'
+//                        if( node.getParent() instanceof QualifiedName )
+//                                return;
+//                        
+//                        IBinding binding = node.resolveBinding();
+//                        if( binding.getKind() == IBinding.VARIABLE ) {
+//                                IVariableBinding var_bind = (IVariableBinding)binding;
+//                                if( !var_bind.isEnumConstant() && var_bind.isField() && !Modifier.isStatic(var_bind.getModifiers()) ) {
+//                                        saw_field.setValue(true);
+//                                }
+//                        }
+//                }
+                // GETTER VERSION
 				// If we see a field, record that fact...
-				
 				@Override
 				public void postVisit(ASTNode node) {
 					if( node instanceof Expression ) {

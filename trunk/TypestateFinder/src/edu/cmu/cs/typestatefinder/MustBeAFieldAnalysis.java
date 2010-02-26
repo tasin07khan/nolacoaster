@@ -7,11 +7,10 @@ import java.util.Set;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.ReturnStatement;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import edu.cmu.cs.crystal.internal.CrystalRuntimeException;
 import edu.cmu.cs.crystal.simple.TupleLatticeElement;
@@ -20,6 +19,7 @@ import edu.cmu.cs.crystal.tac.TACFlowAnalysis;
 import edu.cmu.cs.crystal.tac.eclipse.CompilationUnitTACs;
 import edu.cmu.cs.crystal.tac.model.Variable;
 import edu.cmu.cs.crystal.util.Box;
+import edu.cmu.cs.crystal.util.Option;
 
 /**
  * A static analysis which will determine if a given expression
@@ -37,10 +37,22 @@ import edu.cmu.cs.crystal.util.Box;
  */
 final class MustBeAFieldAnalysis {
 
-	private final Set<IMethodBinding> getters;
+	private final Set<Getter> getters;
 	private final TACFlowAnalysis<TupleLatticeElement<Variable, IsField>> flowAnalysis;
 	
-	enum IsField { Yes, Unknown, Bottom }
+	static class IsField { 
+		static final IsField Unknown = new IsField();
+		static final IsField Bottom = new IsField();
+		
+		private final Option<IVariableBinding> field;
+		
+		IsField() { field = Option.none(); }
+		IsField(IVariableBinding field) { this.field = Option.some(field); }
+		Option<IVariableBinding> getField() { 
+			assert( !this.equals(Unknown) && !this.equals(Bottom) );
+			return field; 
+		}
+	}
 	
 	MustBeAFieldAnalysis(EntityWithMethods type, CompilationUnitTACs tacs) {
 		this.getters = findGetters(type, tacs);
@@ -53,19 +65,31 @@ final class MustBeAFieldAnalysis {
 	 * Does the given expression represent the value of a field of the current receiver?
 	 */
 	boolean isField(Expression expr) {
+		IsField is_field = isFieldFromExpr(expr);
+		return !is_field.equals(IsField.Bottom) &&
+		        !is_field.equals(IsField.Unknown);
+	}
+	
+	/** Which field does the given expression represent? Returns SOME only if it is known
+	 *  exactly, and NONE in all other cases. */
+	Option<IVariableBinding> whichField(Expression expr) {
+		return isFieldFromExpr(expr).getField();
+	}
+	
+	private IsField isFieldFromExpr(Expression expr) {
 		TupleLatticeElement<Variable,IsField> tuple = flowAnalysis.getResultsAfter(expr);
-		
+
 		// If it actually is a field, I think we just have to do this...
 		Variable expr_var;
 		try {
 			expr_var = flowAnalysis.getVariable(expr);
 		} catch(CrystalRuntimeException cre) {
-			return false; // This is ultimately how the analysis fails, which
+			return IsField.Unknown; // This is ultimately how the analysis fails, which
 			// is really annoying.
 		} catch(IllegalArgumentException iae) {
-			return false; // same issue
+			return IsField.Unknown; // same issue
 		}
-		return tuple.get(expr_var).equals(IsField.Yes);
+		return tuple.get(expr_var);		
 	}
 	
 	/**
@@ -73,11 +97,12 @@ final class MustBeAFieldAnalysis {
 	 * immediately return this.field. Static fields
 	 * don't count.
 	 */
-	private static Set<IMethodBinding> findGetters(EntityWithMethods type, CompilationUnitTACs tacs) {
-		Set<IMethodBinding> result = new HashSet<IMethodBinding>();
-		for( MethodDeclaration decl : type.getMethods() ) {
-			if( isGetter(decl, tacs) ) {
-				result.add(decl.resolveBinding());
+	private static Set<Getter> findGetters(EntityWithMethods type, CompilationUnitTACs tacs) {
+		Set<Getter> result = new HashSet<Getter>();
+		for( final MethodDeclaration decl : type.getMethods() ) {
+			final IsField is_field = isGetter(decl, tacs);
+			if( !is_field.equals(IsField.Unknown) && !is_field.equals(IsField.Bottom) ) {
+				result.add(new Getter.GetterImpl(decl.resolveBinding(), is_field.getField()));
 			}
 		}
 		return result;
@@ -85,15 +110,15 @@ final class MustBeAFieldAnalysis {
 
 	// TODO: We could make the whole process go until fixed-point, and that way we
 	// could have getters of getters...
-	private static boolean isGetter(MethodDeclaration decl, CompilationUnitTACs tacs) {
+	private static IsField isGetter(MethodDeclaration decl, CompilationUnitTACs tacs) {
 		final Box<IsField> is_getter = new Box<IsField>(IsField.Unknown);
 		// If the method returns void, then it can't be a getter!
-		if( isVoid(decl.resolveBinding().getReturnType()) ) return false;
+		if( isVoid(decl.resolveBinding().getReturnType()) ) return IsField.Unknown;
 		
 		final TACFlowAnalysis<TupleLatticeElement<Variable,IsField>> flowAnalysis = 
 			new TACFlowAnalysis<TupleLatticeElement<Variable,IsField>>(
-					new MustBeAFieldXferFunction(Collections.<IMethodBinding>emptySet()),tacs);
-		
+					new MustBeAFieldXferFunction(Collections.<Getter>emptySet()),tacs);
+		// If the method sees several return statements, we only return the last one.
 		decl.accept(new ASTVisitor() {
 			@Override public boolean visit(AnonymousClassDeclaration acd) { return false; }
 			
@@ -105,7 +130,7 @@ final class MustBeAFieldAnalysis {
 				is_getter.setValue(is_field);
 			}
 		});
-		return is_getter.getValue().equals(IsField.Yes);
+		return is_getter.getValue();
 	}
 
 	private static boolean isVoid(ITypeBinding t) {
