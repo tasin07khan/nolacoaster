@@ -3,7 +3,6 @@ package edu.cmu.cs.typestatefinder;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
 import edu.cmu.cs.crystal.flow.AnalysisDirection;
@@ -38,9 +37,9 @@ import edu.cmu.cs.typestatefinder.MustBeAFieldAnalysis.IsField;
 
 class MustBeAFieldXferFunction implements ITACTransferFunction<TupleLatticeElement<Variable, IsField>> {
 
-	private final Set<IMethodBinding> getters;
+	private final Set<Getter> getters;
 	
-	private ITACAnalysisContext context;
+	//private ITACAnalysisContext context;
 	
 	/**
 	 * Lattice operations, defined in-line on the IsField lattice element.
@@ -48,11 +47,15 @@ class MustBeAFieldXferFunction implements ITACTransferFunction<TupleLatticeEleme
 	private final TupleLatticeOperations<Variable, IsField> latticeOps = 
 		new TupleLatticeOperations<Variable, IsField>(new ILatticeOperations<IsField>(){
 			@Override public boolean atLeastAsPrecise(IsField info, IsField reference, ASTNode node) {
-				switch(reference) {
-				case Yes: case Bottom: // Fall-through.
+				if( reference.equals(IsField.Bottom) || info.equals(IsField.Unknown) ) {
 					return info.equals(reference);
-				case Unknown: return true;
-				default: throw new RuntimeException("Impossible");
+				}
+				else if( reference.equals(IsField.Unknown) || info.equals(IsField.Bottom) ) {
+					return true;
+				}
+				else {
+					// The 'yes' case
+					return info.getField().equals(reference.getField());
 				}
 			}
 
@@ -61,22 +64,32 @@ class MustBeAFieldXferFunction implements ITACTransferFunction<TupleLatticeEleme
 
 			@Override
 			public IsField join(IsField someInfo, IsField otherInfo, ASTNode node) {
-				switch(otherInfo) {
-				case Yes: case Bottom: // Fall-through.
-					return someInfo.equals(otherInfo) ? someInfo : IsField.Unknown;
-				case Unknown: return IsField.Unknown;
-				default: throw new RuntimeException("Impossible");
+				if( otherInfo.equals(IsField.Bottom) ) {
+					return someInfo;
+				}
+				else if( someInfo.equals(IsField.Bottom) ) {
+					return otherInfo;
+				}
+				else if( otherInfo.equals(IsField.Unknown) || someInfo.equals(IsField.Unknown) ) {
+					return IsField.Unknown;
+				}
+				else if( otherInfo.getField().equals(someInfo.getField()) ) {
+					return someInfo;
+				}
+				else {
+					// Now the field itself is unknown, although we do know that it is a field.
+					return new IsField();
 				}
 			}}, 
 				IsField.Unknown);
 	
-	public MustBeAFieldXferFunction(Set<IMethodBinding> getters) {
+	public MustBeAFieldXferFunction(Set<Getter> getters) {
 		this.getters = getters;
 	}
 
 	@Override
 	public void setAnalysisContext(ITACAnalysisContext context) {
-		this.context = context;
+		//this.context = context;
 	}
 
 	@Override
@@ -160,7 +173,7 @@ class MustBeAFieldXferFunction implements ITACTransferFunction<TupleLatticeEleme
 		// old typestate finder did, insomuch as it doesn't care which
 		// this variable is being accessed.
 		if( instr.getSourceObject() instanceof ThisVariable ) {
-			value.put(instr.getTarget(), IsField.Yes);
+			value.put(instr.getTarget(), new IsField(instr.resolveFieldBinding()));
 		}
 		return value;
 	}
@@ -169,8 +182,13 @@ class MustBeAFieldXferFunction implements ITACTransferFunction<TupleLatticeEleme
 	public TupleLatticeElement<Variable, IsField> transfer(
 			MethodCallInstruction instr,
 			TupleLatticeElement<Variable, IsField> value) {
-		if( this.getters.contains(instr.resolveBinding()) ) {
-			value.put(instr.getTarget(), IsField.Yes);
+		for( Getter getter : this.getters ) {
+			if( getter.getterMethod().equals(getter) ) {
+				if( getter.getterVariable().isSome() )
+					value.put(instr.getTarget(), new IsField(getter.getterVariable().unwrap()));
+				else
+					value.put(instr.getTarget(), new IsField());
+			}
 		}
 		// Default is unknown, so I don't need to put it in for this
 		// brand-new variable.

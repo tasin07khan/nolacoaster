@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ConstructorInvocation;
@@ -18,11 +19,13 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import edu.cmu.cs.crystal.AbstractCompilationUnitAnalysis;
+import edu.cmu.cs.crystal.util.Option;
 import edu.cmu.cs.crystal.util.Pair;
 
 /**
@@ -90,10 +93,13 @@ public final class MissingFieldAssignmentFinder extends
 			Set<IVariableBinding> unassigned_vars = visitor_result.fst(); 
 			Boolean saw_sync = visitor_result.snd();
 			
+			// See if any of those fields ever have methods called on them.
+			Set<IVariableBinding> called_unassigned = findUnassignedCalledVars(node, unassigned_vars);
+			
 			// See if remaining fields exist
-			if( !unassigned_vars.isEmpty() ) {
+			if( !called_unassigned.isEmpty() ) {
 				String error_msg = "There are unassigned fields in one of the constructors. Fields are " +
-					unassigned_vars.toString();
+					called_unassigned.toString();
 				reporter.reportUserProblem(error_msg, node, getName());
 				
 				// Make sure you print all of the data we needed for the original typestate finder
@@ -101,6 +107,29 @@ public final class MissingFieldAssignmentFinder extends
 				String msg = "NullFieldClass, " + class_name +", " + saw_sync.toString();
 				System.out.println(msg);
 			}
+		}
+		
+		private Set<IVariableBinding> findUnassignedCalledVars(TypeDeclaration node, 
+				final Set<IVariableBinding> unassignedVars) {
+			final MustBeAFieldAnalysis analysis = 
+				new MustBeAFieldAnalysis(EntityWithMethods.Util.fromTypeDeclaration(node), getInput().getComUnitTACs().unwrap());
+			final Set<IVariableBinding> result = new HashSet<IVariableBinding>();
+			for( MethodDeclaration method : node.getMethods() ) {
+				method.accept(new ASTVisitor() {
+					@Override
+					public void endVisit(MethodInvocation node) {
+						if( node.getExpression() != null && analysis.isField(node.getExpression())) {
+							Option<IVariableBinding> var_ = analysis.whichField(node.getExpression());
+							if( var_.isSome() && unassignedVars.contains(var_.unwrap()) ) {
+								result.add(var_.unwrap());
+							}
+						}
+					}
+
+					@Override public boolean visit(AnonymousClassDeclaration node) { return false; }
+				});
+			}
+			return result;
 		}
 	}
 	
@@ -225,13 +254,21 @@ public final class MissingFieldAssignmentFinder extends
 				return Pair.create(unitialized, visitor.sawSync);
 			}
 			
-			// Now that we have reached a fixed point, find one non-empty set and return it, otherwise nothing.
-			for( Map.Entry<IMethodBinding, Set<IVariableBinding>> entry : last_map.entrySet() ) {
-				if( !entry.getValue().isEmpty() ) {
-					return Pair.create(entry.getValue(), visitor.sawSync);
-				}
+			// Gather together all of the fields that were not assigned in at least on xtr
+			Set<IVariableBinding> all_possible_nulls = new HashSet<IVariableBinding>();
+			for( Set<IVariableBinding> possible_nulls : last_map.values() ) {
+				all_possible_nulls.addAll(possible_nulls);
 			}
-			return Pair.create(Collections.<IVariableBinding>emptySet(), Boolean.FALSE);
+			
+			if( all_possible_nulls.isEmpty() ) {
+				return Pair.create(Collections.<IVariableBinding>emptySet(), Boolean.FALSE);
+			}
+			else {
+				// XXX What we'd like to do now is go through each of these fields and see
+				//     if any method is ever called on them. To do that I am going to need to
+				//     fix up my field finder.
+				return Pair.create(all_possible_nulls, visitor.sawSync);
+			}			
 		}
 	}	
 }
