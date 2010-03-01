@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.Assignment;
@@ -149,6 +148,10 @@ public final class MissingFieldAssignmentFinder extends
 			this.thisConstructor = thisConstructor;
 		}
 
+		@Override public boolean visit(AnonymousClassDeclaration node) { return false; }
+		@Override public boolean visit(TypeDeclaration node) { return false; }
+
+
 		@Override
 		public void endVisit(Assignment node) {
 			// Only counts if right-hand side is not null!
@@ -215,6 +218,9 @@ public final class MissingFieldAssignmentFinder extends
 			}
 		}
 
+		@Override public boolean visit(AnonymousClassDeclaration node) { return false; }
+		@Override public boolean visit(TypeDeclaration node) { return false; }
+		
 		@Override
 		public void endVisit(MethodDeclaration node) {
 			this.sawSync |= Modifier.isSynchronized(node.getModifiers());
@@ -235,7 +241,7 @@ public final class MissingFieldAssignmentFinder extends
 
 
 
-		public static Pair<Set<IVariableBinding>, Boolean> findUnassigned(ASTNode node, 
+		public static Pair<Set<IVariableBinding>, Boolean> findUnassigned(TypeDeclaration node, 
 				Set<IVariableBinding> unitialized) {
 			Map<IMethodBinding, Set<IVariableBinding>> last_map = Collections.emptyMap();
 			// perform worklist, comparing to last_map and visiting until they are
@@ -244,7 +250,7 @@ public final class MissingFieldAssignmentFinder extends
 			ConstructorsVisitor visitor;
 			do {
 				visitor = new ConstructorsVisitor(unitialized, last_map);
-				node.accept(visitor);
+				for( MethodDeclaration method : node.getMethods() ) { method.accept(visitor); }
 				continue_ = !visitor.varsUnassignedInCxtr.equals(last_map);
 				last_map = visitor.varsUnassignedInCxtr;
 			} while( continue_ );
@@ -264,9 +270,6 @@ public final class MissingFieldAssignmentFinder extends
 				return Pair.create(Collections.<IVariableBinding>emptySet(), Boolean.FALSE);
 			}
 			else {
-				// XXX What we'd like to do now is go through each of these fields and see
-				//     if any method is ever called on them. To do that I am going to need to
-				//     fix up my field finder.
 				return Pair.create(all_possible_nulls, visitor.sawSync);
 			}			
 		}
