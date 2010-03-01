@@ -18,6 +18,10 @@
             class="edu.cmu.cs.typestatefinder.TestMustBeAFieldAnalysis"
             name="TestFieldAnalysis">
       </analysis>
+      <analysis
+            class="util.ThrowableFinder"
+            name="Throwable Finder">
+      </analysis>
    </extension>
 
 </plugin>

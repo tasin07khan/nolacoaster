@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
@@ -20,6 +21,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import edu.cmu.cs.crystal.AbstractCompilationUnitAnalysis;
@@ -52,7 +54,9 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			BufferedReader br = new BufferedReader(new FileReader(new File(INPUT_FILE_PATH)));
 			String cur_line;
 			while( (cur_line = br.readLine()) != null ) {
-				result.add(cur_line.trim());
+				cur_line = cur_line.trim();
+				if( !"".equals(cur_line) )
+					result.add(cur_line);
 			}
 			this.classesDefiningProts = Collections.unmodifiableSet(result);
 		} catch (IOException e) {
@@ -85,6 +89,7 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 					if( fq_type.isSome() ) {
 						String error_msg = "Field type (" + fq_type.unwrap() + ") defines a protocol.";
 						reporter.reportUserProblem(error_msg, node, getName(), SEVERITY.WARNING);
+						System.out.println("ProtocolField: " + error_msg);
 					}
 				}
 			}
@@ -126,6 +131,11 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			this.methodDeclaration = d;
 		}
 		
+		// Avoid going down into sub-types, since they will be visited by the top level analysis.
+		@Override public boolean visit(AnonymousClassDeclaration node) { return false; }
+		@Override public boolean visit(TypeDeclaration node) { return false; }
+
+
 		@Override
 		public void endVisit(ClassInstanceCreation node) {
 			// Is this method defined in a class that is
@@ -133,10 +143,12 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			ITypeBinding declaring_type = node.resolveConstructorBinding().getDeclaringClass();
 			Option<String> type_name = findTypeIfInProtocols(declaring_type);
 			
-			if( type_name.isSome() ) {
+			// We really only care if the method is being called from outside of this class.
+			ITypeBinding this_class = methodDeclaration.resolveBinding().getDeclaringClass();
+			if( type_name.isSome() && !declaring_type.equals(this_class) ) {
 				// OUTPUT
 				reportUse(node.resolveConstructorBinding(), type_name.unwrap(), 
-						  methodDeclaration.resolveBinding().getDeclaringClass(), 
+						  this_class, 
 						  this.methodDeclaration, node);
 			}
 		}
@@ -147,11 +159,13 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			// in the protocol set? Are any of its parents?
 			ITypeBinding declaring_type = node.resolveMethodBinding().getDeclaringClass();
 			Option<String> type_name = findTypeIfInProtocols(declaring_type);
-			
-			if( type_name.isSome() ) {
+
+			// We really only care if the method is being called from outside of this class.
+			ITypeBinding this_class = methodDeclaration.resolveBinding().getDeclaringClass();
+			if( type_name.isSome() && !declaring_type.equals(this_class) ) {
 				// OUTPUT
 				reportUse(node.resolveMethodBinding(), type_name.unwrap(), 
-						  methodDeclaration.resolveBinding().getDeclaringClass(), 
+						  this_class, 
 						  this.methodDeclaration, node);
 			}
 		}
@@ -184,6 +198,7 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			String output_str = method_called_ + ", " + class_defining_method + ", " + 
 				this_method_ + ", " + resource_name + ", " + line_no;
 			reporter.reportUserProblem(output_str, node, getName());
+			System.out.println("ProtocolClassCalled: " + output_str);
 		}
 	}
 }
