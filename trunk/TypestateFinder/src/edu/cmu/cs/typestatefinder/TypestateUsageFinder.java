@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -18,15 +20,13 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import edu.cmu.cs.crystal.AbstractCompilationUnitAnalysis;
-import edu.cmu.cs.crystal.IAnalysisReporter.SEVERITY;
-import edu.rice.cs.plt.tuple.Option;
+import edu.cmu.cs.crystal.util.Option;
 
 /**
  * From a file listing all the classes that define typestate, list all
@@ -67,33 +67,123 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 
 	@Override
 	public void analyzeCompilationUnit(CompilationUnit cu) {	
-		cu.accept(new ASTVisitor() {
-			@Override
-			public void endVisit(MethodDeclaration d) {
-				// If we get this far, classesDefiningProts is initialized.
-				// Analyze method body...
-				d.accept(new CallSiteVisitor(d));
-			}
-		});
-		
 		// Also, when are fields of classes fields that define protocols?
-		cu.accept(new ASTVisitor() {
-			@Override
-			public void endVisit(FieldDeclaration node) {
-				if( Modifier.isStatic(node.getModifiers()) ) return;
-				
-				for( Object frag_ : node.fragments() ) {
-					VariableDeclarationFragment frag = (VariableDeclarationFragment)frag_;
-					ITypeBinding field_binding = frag.resolveBinding().getType();
-					Option<String> fq_type = findTypeIfInProtocols(field_binding);
-					if( fq_type.isSome() ) {
-						String error_msg = "Field type (" + fq_type.unwrap() + ") defines a protocol.";
-						reporter.reportUserProblem(error_msg, node, getName(), SEVERITY.WARNING);
-						System.out.println("ProtocolField: " + error_msg);
-					}
+		cu.accept(new ProtocolFieldVisitor());
+	}
+	
+	private class ProtocolFieldVisitor extends ASTVisitor {
+		private final Deque<ITypeBinding> currentType = new LinkedList<ITypeBinding>();
+		
+		private boolean isAnonymous() {
+			return currentType.peek().isAnonymous();
+		}
+		
+		private String mostRecentType() {
+			for( ITypeBinding type : currentType ) {
+				if( type.isAnonymous() ) continue;
+				else return type.getQualifiedName();
+			}
+			throw new IllegalStateException("Invariant violated");
+		}
+		
+		private ITypeBinding curType() {
+			return currentType.peek();
+		}
+		
+		@Override
+		public void endVisit(FieldDeclaration node) {
+			if( Modifier.isStatic(node.getModifiers()) ) return;
+			
+			for( Object frag_ : node.fragments() ) {
+				VariableDeclarationFragment frag = (VariableDeclarationFragment)frag_;
+				ITypeBinding field_binding = frag.resolveBinding().getType();
+				Option<String> fq_type = findTypeIfInProtocols(field_binding);
+				if( fq_type.isSome() ) {
+					String class_name = mostRecentType();
+					boolean is_anon = isAnonymous();
+					// Field name, class name, is anonymous, protocol class
+					String msg = frag.resolveBinding().getName() + ", " + class_name + ", " +
+						Boolean.toString(is_anon) + ", " + fq_type.unwrap();
+					// reporter.reportUserProblem(msg, node, getName(), SEVERITY.WARNING);
+					System.out.println("ProtocolField: " + msg);
 				}
 			}
-		});
+		}
+		@Override
+		public boolean visit(AnonymousClassDeclaration node) {
+			currentType.push(node.resolveBinding());
+			return true;
+		}
+		
+		@Override
+		public boolean visit(TypeDeclaration node) {
+			currentType.push(node.resolveBinding());
+			return true;
+		}
+
+		@Override public void endVisit(AnonymousClassDeclaration node) {this.currentType.pop();}
+		@Override public void endVisit(TypeDeclaration node) {this.currentType.pop();}
+		
+		@Override
+		public void endVisit(ClassInstanceCreation node) {
+			// Is this method defined in a class that is
+			// in the protocol set? Are any of its parents?
+			ITypeBinding declaring_type = node.resolveConstructorBinding().getDeclaringClass();
+			Option<String> type_name = findTypeIfInProtocols(declaring_type);
+			
+			// We really only care if the method is being called from outside of this class.
+			ITypeBinding this_class = curType();
+			if( type_name.isSome() && !declaring_type.equals(this_class) ) {
+				// OUTPUT
+				reportUse(node.resolveConstructorBinding(), type_name.unwrap(), 
+						  this_class, node);
+			}
+		}
+
+		@Override
+		public void endVisit(MethodInvocation node) {
+			// Is this method defined in a class that is
+			// in the protocol set? Are any of its parents?
+			ITypeBinding declaring_type = node.resolveMethodBinding().getDeclaringClass();
+			Option<String> type_name = findTypeIfInProtocols(declaring_type);
+
+			// We really only care if the method is being called from outside of this class.
+			ITypeBinding this_class = curType();
+			if( type_name.isSome() && !declaring_type.equals(this_class) ) {
+				// OUTPUT
+				reportUse(node.resolveMethodBinding(), type_name.unwrap(), 
+						  this_class, node);
+			}
+		}
+		
+		private void reportUse(IMethodBinding method_called, String class_defining_method, 
+				ITypeBinding this_class, ASTNode node) {
+			// FQ Methodname, type_name, method_called_from, resource name, line no., 
+			String method_called_ = method_called.getDeclaringClass().getQualifiedName() + "." + method_called.getName();
+			
+			// Identify the closest resource to the ASTNode,
+			ASTNode root = node.getRoot();
+			IResource resource;
+			
+			if( root.getNodeType() != ASTNode.COMPILATION_UNIT ) System.err.println("Problem: No compilation unit.");
+			
+			CompilationUnit cu = (CompilationUnit) root;
+			IJavaElement je = cu.getJavaElement();
+			resource = je.getResource();
+			cu.getPackage();
+
+			String resource_name = resource.getName();
+			int line_no = cu.getLineNumber(node.getStartPosition());
+
+			// Now we can output.
+			// This type, isAnonymous, resource, line number, class called, method called
+			String this_type = mostRecentType();
+			String is_anon = Boolean.toString(isAnonymous());
+			String output_str = this_type + ", " + is_anon + ", " + resource_name + ", " + line_no + 
+				method_called.getDeclaringClass().getQualifiedName() + ", " + method_called_;
+			//reporter.reportUserProblem(output_str, node, getName());
+			System.out.println("ProtocolClassCalled: " + output_str);
+		}
 	}
 	
 	/**
@@ -122,83 +212,5 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			
 			return Option.none();
 		}
-	}
-	
-	// Note this class is not static deliberately.
-	private class CallSiteVisitor extends ASTVisitor {
-		final private MethodDeclaration methodDeclaration;
-		public CallSiteVisitor(MethodDeclaration d) {
-			this.methodDeclaration = d;
-		}
-		
-		// Avoid going down into sub-types, since they will be visited by the top level analysis.
-		@Override public boolean visit(AnonymousClassDeclaration node) { return false; }
-		@Override public boolean visit(TypeDeclaration node) { return false; }
-
-
-		@Override
-		public void endVisit(ClassInstanceCreation node) {
-			// Is this method defined in a class that is
-			// in the protocol set? Are any of its parents?
-			ITypeBinding declaring_type = node.resolveConstructorBinding().getDeclaringClass();
-			Option<String> type_name = findTypeIfInProtocols(declaring_type);
-			
-			// We really only care if the method is being called from outside of this class.
-			ITypeBinding this_class = methodDeclaration.resolveBinding().getDeclaringClass();
-			if( type_name.isSome() && !declaring_type.equals(this_class) ) {
-				// OUTPUT
-				reportUse(node.resolveConstructorBinding(), type_name.unwrap(), 
-						  this_class, 
-						  this.methodDeclaration, node);
-			}
-		}
-
-		@Override
-		public void endVisit(MethodInvocation node) {
-			// Is this method defined in a class that is
-			// in the protocol set? Are any of its parents?
-			ITypeBinding declaring_type = node.resolveMethodBinding().getDeclaringClass();
-			Option<String> type_name = findTypeIfInProtocols(declaring_type);
-
-			// We really only care if the method is being called from outside of this class.
-			ITypeBinding this_class = methodDeclaration.resolveBinding().getDeclaringClass();
-			if( type_name.isSome() && !declaring_type.equals(this_class) ) {
-				// OUTPUT
-				reportUse(node.resolveMethodBinding(), type_name.unwrap(), 
-						  this_class, 
-						  this.methodDeclaration, node);
-			}
-		}
-		
-		private void reportUse(IMethodBinding method_called, String class_defining_method, 
-				ITypeBinding this_class, MethodDeclaration this_method, ASTNode node) {
-			// FQ Methodname, type_name, method_called_from, resource name, line no., 
-			String method_called_ = method_called.getDeclaringClass().getQualifiedName() + "." + method_called.getName();
-			// Calling class
-			String this_class_ = this_class.getName() == null ? "XXX" : this_class.getQualifiedName();
-			// Method called from
-			// Can't believe I HAVE to call getFullyQualifiedName for the unqialified name...
-			String this_method_ = this_class_ + "." + this_method.getName().getFullyQualifiedName();
-			
-			// Identify the closest resource to the ASTNode,
-			ASTNode root = node.getRoot();
-			IResource resource;
-			
-			if( root.getNodeType() != ASTNode.COMPILATION_UNIT ) System.err.println("Problem: No compilation unit.");
-			
-			CompilationUnit cu = (CompilationUnit) root;
-			IJavaElement je = cu.getJavaElement();
-			resource = je.getResource();
-			cu.getPackage();
-
-			String resource_name = resource.getName();
-			int line_no = cu.getLineNumber(node.getStartPosition());
-
-			// Now we can output.
-			String output_str = method_called_ + ", " + class_defining_method + ", " + 
-				this_method_ + ", " + resource_name + ", " + line_no;
-			reporter.reportUserProblem(output_str, node, getName());
-			System.out.println("ProtocolClassCalled: " + output_str);
-		}
-	}
+	}	
 }
