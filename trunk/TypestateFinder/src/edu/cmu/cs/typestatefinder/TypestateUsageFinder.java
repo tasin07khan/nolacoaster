@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -120,10 +121,19 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			currentType.push(node.resolveBinding());
 			return true;
 		}
-
+		
+		@Override
+		public boolean visit(EnumDeclaration node) {
+			currentType.push(node.resolveBinding());
+			return true;
+		}
+		
+		@Override public void endVisit(EnumDeclaration node) { this.currentType.pop(); }
 		@Override public void endVisit(AnonymousClassDeclaration node) {this.currentType.pop();}
 		@Override public void endVisit(TypeDeclaration node) {this.currentType.pop();}
+
 		
+
 		@Override
 		public void endVisit(ClassInstanceCreation node) {
 			// Is this method defined in a class that is
@@ -179,7 +189,7 @@ public final class TypestateUsageFinder extends AbstractCompilationUnitAnalysis 
 			// This type, isAnonymous, resource, line number, class called, method called
 			String this_type = mostRecentType();
 			String is_anon = Boolean.toString(isAnonymous());
-			String output_str = this_type + ", " + is_anon + ", " + resource_name + ", " + line_no + 
+			String output_str = this_type + ", " + is_anon + ", " + resource_name + ", " + line_no + ", " +
 				method_called.getDeclaringClass().getQualifiedName() + ", " + method_called_;
 			//reporter.reportUserProblem(output_str, node, getName());
 			System.out.println("ProtocolClassCalled: " + output_str);
