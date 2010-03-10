@@ -124,11 +124,10 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 					}
 					// We want method name and method accessibility
 					IMethodBinding current_method = getCurrentMethod(node);
-					String output = cu.getPackage().getName() + ", " + resource.getName() + ", " +
+					String output = "TypestateFinder: " + cu.getPackage().getName() + ", " + resource.getName() + ", " +
 						cu.getLineNumber(node.getStartPosition()) + ", " + class_name + ", " +
 						class_name+"."+current_method.getName()+", "+
 						class_name+"."+current_method.getKey()+", "+
-						class_name+"."+current_method.toString()+", "+
 						accessibility(current_method.getModifiers());
 					System.out.println(output);
 				}
