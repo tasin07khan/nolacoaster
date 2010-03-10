@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.FieldAccess;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
@@ -65,6 +66,29 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 			this.fieldAnalysis = fieldAnalysis;
 		}
 		
+		private IMethodBinding getCurrentMethod(ASTNode node) {
+			ASTNode current = node.getParent();
+			while( !(current instanceof MethodDeclaration) ) {
+				if( current == null ) throw new IllegalArgumentException("Node not inside a method: " + node);
+			}
+			return ((MethodDeclaration)current).resolveBinding();
+		}
+		
+		private String accessibility(int modifier) {
+			if( Modifier.isPrivate(modifier) ) {
+				return "private";
+			}
+			else if( Modifier.isProtected(modifier) ) {
+				return "protected";
+			}
+			else if( Modifier.isPublic(modifier) ) {
+				return "public";
+			}
+			else {
+				return "default";
+			}
+		}
+		
 		@Override
 		public void endVisit(ThrowStatement node) {
 			if( this.checkExistsAboveUs ) {
@@ -97,9 +121,14 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 					} else {
 						class_name = this.definingClassBinding.getQualifiedName();
 					}
-					
+					// We want method name and method accessibility
+					IMethodBinding current_method = getCurrentMethod(node);
 					String output = cu.getPackage().getName() + ", " + resource.getName() + ", " +
-						cu.getLineNumber(node.getStartPosition()) + ", " + class_name;
+						cu.getLineNumber(node.getStartPosition()) + ", " + class_name + ", " +
+						class_name+"."+current_method.getName()+", "+
+						class_name+"."+current_method.getKey()+", "+
+						class_name+"."+current_method.toString()+", "+
+						accessibility(current_method.getModifiers());
 					System.out.println(output);
 				}
 				else {

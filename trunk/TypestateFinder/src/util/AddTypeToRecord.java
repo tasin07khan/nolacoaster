@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import edu.rice.cs.plt.tuple.Option;
 
@@ -18,8 +16,58 @@ import edu.rice.cs.plt.tuple.Option;
  * @author Nels E. Beckman
  *
  */
-public final class UniqueClassCounter {
+public final class AddTypeToRecord {
 
+	static class FalseInput extends InputRecord {
+		public FalseInput() {
+			super(-1, "", "");
+		}
+		@Override public boolean equals(Object o) { return o == this; }
+		@Override public int hashCode() { return System.identityHashCode(this); }
+	}
+	
+	static class OutputRecord extends InputRecord {
+		private final String typeName;
+		
+		public OutputRecord(InputRecord input, String typeName) {
+			super(input);
+			this.typeName = typeName;
+		}
+
+		public OutputRecord(InputRecord input) {
+			super(input);
+			this.typeName = "XXX UNKNOWN XXX";
+		}
+		
+		public String getType() { return this.typeName; }
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = super.hashCode();
+			result = prime * result
+					+ ((typeName == null) ? 0 : typeName.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			OutputRecord other = (OutputRecord) obj;
+			if (typeName == null) {
+				if (other.typeName != null)
+					return false;
+			} else if (!typeName.equals(other.typeName))
+				return false;
+			return true;
+		}
+	}
+	
 	static class InputRecord {
 		private final int lineNo;
 		private final String packageName;
@@ -32,13 +80,16 @@ public final class UniqueClassCounter {
 			this.fileName = fileName;
 		}
 
+		protected InputRecord(InputRecord copy) {
+			this.lineNo = copy.lineNo;
+			this.packageName = copy.packageName;
+			this.fileName = copy.fileName;
+		}
 		
 		@Override
 		public String toString() {
 			return packageName +", " + fileName + ", " + lineNo;
 		}
-
-
 
 		@Override
 		public int hashCode() {
@@ -46,6 +97,7 @@ public final class UniqueClassCounter {
 			int result = 1;
 			result = prime * result
 					+ ((fileName == null) ? 0 : fileName.hashCode());
+			result = prime * result + lineNo;
 			result = prime * result
 					+ ((packageName == null) ? 0 : packageName.hashCode());
 			return result;
@@ -65,38 +117,42 @@ public final class UniqueClassCounter {
 					return false;
 			} else if (!fileName.equals(other.fileName))
 				return false;
+			if (lineNo != other.lineNo)
+				return false;
 			if (packageName == null) {
 				if (other.packageName != null)
 					return false;
 			} else if (!packageName.equals(other.packageName))
 				return false;
 			return true;
-		}
+		}		
 	}
 	
 	public static void main(String[] args) throws IOException {
 	
 		
-		HashSet<InputRecord> input_records = buildInputRecords();
+		Map<InputRecord, OutputRecord> input_records = buildInputRecords();
 		// Now we've got all the input records.
 		// build the output record.
 		
-		File classes_file = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\jsl_tf_run_r65.txt");
+		File classes_file = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\azureus_tf_run_r65_com_packages.txt");
 		FileReader freader = new FileReader(classes_file);
 		BufferedReader reader = new BufferedReader(freader);
 		
-		List<String> classes_with_protocols = new LinkedList<String>();
+		//List<String> classes_with_protocols = new LinkedList<String>();
 		
 		String cur = reader.readLine();
 		while( cur != null ) {
 			cur = cur.trim();
 			if( !"".equals(cur) ) {
 				InputRecord class_rec = buildInputRecordFromClass(cur);
-				if( input_records.contains(class_rec) ) {
+				if( input_records.containsKey(class_rec) ) {
 					// Remove it and add it to the output
-					input_records.remove(class_rec);
-					String class_name = classNameFromClassRecord(cur);
-					classes_with_protocols.add(class_name);
+//					input_records.remove(class_rec);
+					try {
+						String class_name = classNameFromClassRecord(cur);
+						input_records.put(class_rec, new OutputRecord(class_rec, class_name));
+					} catch( ArrayIndexOutOfBoundsException aioobe ) {/* Do nothing, probably a dup.*/ }
 				}
 			}
 			
@@ -104,18 +160,8 @@ public final class UniqueClassCounter {
 		}
 		
 		// Print all class names & number
-		System.out.println("Classes with protocls (" + classes_with_protocols.size() +"):");
-		for( String class_name : classes_with_protocols ) {
-			System.out.println(class_name);
-		}
-		System.out.println("");
-		System.out.println("");
-		
-		
-		// Print all protocols that weren't found.
-		System.out.println("Protocols that weren't found:");
-		for( InputRecord rec : input_records ) {
-			System.out.println(rec.toString());
+		for( Map.Entry<InputRecord, OutputRecord> entry  : input_records.entrySet() ) {
+			System.out.println(entry.getValue().getType().toString() + ", " + entry.getKey().toString());
 		}
 	}
 	
@@ -135,19 +181,20 @@ public final class UniqueClassCounter {
 	private static Option<InputRecord> inputLineToInputRecord(String line) {
 		String[] fields = line.split(",");
 		
-		if( fields.length < 6 ) return Option.none();
+	//	if( fields.length < 6 ) return Option.none();
 		
-		String package_name = fields[2].trim().toLowerCase();
-		String file_name = fields[3].trim().toLowerCase();
-		String trim = fields[4].replaceAll("li(n|m)e", "").trim();
+		String package_name = fields[1].trim().toLowerCase();
+		String file_name = fields[2].trim().toLowerCase();
+		String trim = fields[3].replaceAll("li?(n|m)(e|d)", "").trim();
 		int line_no;
-		try {
+//		try {
 			line_no = Integer.parseInt(trim);
-		} catch(NumberFormatException nfe) {
-			return Option.none();
-		}
+//		} catch(NumberFormatException nfe) {
+//			return Option.none();
+//		}
 		
-		if( fields[5].trim().toLowerCase().contains("yes") ) {
+		if( fields[6].trim().toLowerCase().contains("yes") || 
+			 fields[6].trim().toLowerCase().contains("n/a")) {
 			InputRecord result = new InputRecord(line_no, package_name, file_name);
 			return Option.some(result);
 		}
@@ -156,19 +203,24 @@ public final class UniqueClassCounter {
 		}
 	}
 	
-	private static HashSet<InputRecord> buildInputRecords() throws IOException {
-		File results_file = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\jsl.csv");
+	private static Map<InputRecord, OutputRecord> buildInputRecords() throws IOException {
+		File results_file = new File("C:\\Users\\nbeckman\\workspace\\TypestateFinder\\azureus.csv");
 		FileReader results_reader = new FileReader(results_file);
 		BufferedReader results_reader_br = new BufferedReader(results_reader);
 		
-		HashSet<InputRecord> input_records = new LinkedHashSet<InputRecord>();
+		Map<InputRecord, OutputRecord> input_records = new LinkedHashMap<InputRecord, OutputRecord>();
 		
 		// Read results.csv into the map
 		String cur = results_reader_br.readLine();
 		while( cur!=null ) {
 			Option<InputRecord> record_ = inputLineToInputRecord(cur);
-			if( record_.isSome() ) {
-				input_records.add(record_.unwrap());
+			if( record_.isNone() || input_records.containsKey(record_.unwrap()) ) {
+				FalseInput falseInput = new FalseInput();
+				input_records.put(falseInput, new OutputRecord(falseInput));				
+			}
+			else {
+				InputRecord rec = record_.unwrap();
+				input_records.put(rec, new OutputRecord(rec));
 			}
 			cur = results_reader_br.readLine();
 		}
