@@ -67,9 +67,10 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 		}
 		
 		private IMethodBinding getCurrentMethod(ASTNode node) {
-			ASTNode current = node.getParent();
-			while( !(current instanceof MethodDeclaration) ) {
-				if( current == null ) throw new IllegalArgumentException("Node not inside a method: " + node);
+			ASTNode current;
+			for( current = node.getParent(); !(current instanceof MethodDeclaration); current = current.getParent() ) {
+				if( current == null ) 
+					throw new IllegalArgumentException("Node not inside a method: " + node);
 			}
 			return ((MethodDeclaration)current).resolveBinding();
 		}
