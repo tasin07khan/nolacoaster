@@ -22,6 +22,8 @@ import edu.cmu.cs.crystal.util.Box;
 
 public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 
+	/** Remove a string signature for the given method. This string signature is 
+	 *  unique for a method, and does not overlap with methods that is overloads. */
 	public static String methodSig(IMethodBinding method, String type_name) {
 		StringBuilder result = new StringBuilder(type_name);
 		result.append(".").append(method.getName()).append("(");
@@ -29,6 +31,13 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 			result.append(param_type.getQualifiedName()).append(";");
 		}
 		return result.append(")").toString();
+	}
+	
+	/** Given a type name with static arguments, removes the static arguments. */
+	public static String removeStaticArgs(String type_name) {
+		if( !type_name.contains("<") ) return type_name;
+		
+		return type_name.substring(0, type_name.indexOf('<'));
 	}
 	
 	@Override
@@ -125,6 +134,9 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 					} else {
 						class_name = this.definingClassBinding.getQualifiedName();
 					}
+					
+					class_name = removeStaticArgs(class_name);
+					
 					// We want method name and method accessibility
 					IMethodBinding current_method = getCurrentMethod(node);
 					String output = "TypestateFinder: " + cu.getPackage().getName() + ", " + resource.getName() + ", " +
