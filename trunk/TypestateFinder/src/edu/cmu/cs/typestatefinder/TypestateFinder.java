@@ -1,5 +1,9 @@
 package edu.cmu.cs.typestatefinder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -31,6 +35,27 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 			result.append(removeStaticArgs(param_type.getErasure().getQualifiedName())).append(";");
 		}
 		return result.append(")").toString();
+	}
+	
+	public static String overridenSigs(IMethodBinding method, ITypeBinding cur_class) {
+		if( cur_class.getQualifiedName().equals(Object.class.getName()) ) return "";
+		
+		StringBuilder result = new StringBuilder("");
+		
+		List<ITypeBinding> super_types = new ArrayList<ITypeBinding>(cur_class.getInterfaces().length+1);
+		if( cur_class.getSuperclass() != null ) super_types.add(cur_class.getSuperclass());
+		super_types.addAll(Arrays.asList(cur_class.getInterfaces()));
+				
+		for( ITypeBinding super_type : super_types ) {
+			for( IMethodBinding super_meth : super_type.getDeclaredMethods() ) {
+				if( method.overrides(super_meth) ) {
+					result.append(methodSig(super_meth, removeStaticArgs(super_type.getQualifiedName())));
+					result.append("; ");
+				}
+			}
+			result.append(overridenSigs(method, super_type));
+		}
+		return result.toString();
 	}
 	
 	/** Given a type name with static arguments, removes the static arguments. */
@@ -142,7 +167,8 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 					String output = "TypestateFinder: " + cu.getPackage().getName() + ", " + resource.getName() + ", " +
 						cu.getLineNumber(node.getStartPosition()) + ", " + class_name + ", " +
 						methodSig(current_method, class_name) + ", " +
-						accessibility(current_method.getModifiers());
+						accessibility(current_method.getModifiers()) + ", " +
+						overridenSigs(current_method, this.definingClassBinding);
 					System.out.println(output);
 				}
 				else {
