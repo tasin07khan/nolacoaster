@@ -28,7 +28,7 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 		StringBuilder result = new StringBuilder(type_name);
 		result.append(".").append(method.getName()).append("(");
 		for( ITypeBinding param_type : method.getParameterTypes() ) {
-			result.append(removeStaticArgs(param_type.getQualifiedName())).append(";");
+			result.append(removeStaticArgs(param_type.getErasure().getQualifiedName())).append(";");
 		}
 		return result.append(")").toString();
 	}
