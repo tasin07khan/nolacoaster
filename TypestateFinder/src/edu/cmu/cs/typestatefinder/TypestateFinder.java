@@ -8,18 +8,12 @@ import org.eclipse.jdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.jdt.core.dom.CatchClause;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
-import org.eclipse.jdt.core.dom.FieldAccess;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.IfStatement;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
-import org.eclipse.jdt.core.dom.QualifiedName;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.ThisExpression;
 import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -28,6 +22,15 @@ import edu.cmu.cs.crystal.util.Box;
 
 public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 
+	public static String methodSig(IMethodBinding method, String type_name) {
+		StringBuilder result = new StringBuilder(type_name);
+		result.append(".").append(method.getName()).append("(");
+		for( ITypeBinding param_type : method.getParameterTypes() ) {
+			result.append(param_type.getQualifiedName()).append(";");
+		}
+		return result.append(")").toString();
+	}
+	
 	@Override
 	public void analyzeCompilationUnit(CompilationUnit d) {
 		d.accept(new ASTVisitor() {
@@ -126,8 +129,7 @@ public class TypestateFinder extends AbstractCompilationUnitAnalysis {
 					IMethodBinding current_method = getCurrentMethod(node);
 					String output = "TypestateFinder: " + cu.getPackage().getName() + ", " + resource.getName() + ", " +
 						cu.getLineNumber(node.getStartPosition()) + ", " + class_name + ", " +
-						class_name+"."+current_method.getName()+", "+
-						class_name+"."+current_method.getKey()+", "+
+						methodSig(current_method, class_name) + ", " +
 						accessibility(current_method.getModifiers());
 					System.out.println(output);
 				}
