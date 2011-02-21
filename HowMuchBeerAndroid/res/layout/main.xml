@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/scrollView1" xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout 
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <TextView android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/attendees_prompts"></TextView>
+    <EditText android:layout_width="match_parent" android:id="@+id/editText1" android:layout_height="wrap_content" android:text="10"></EditText>
+    <TextView android:id="@+id/textView2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/craziness_prompt"></TextView>
+    <Spinner android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/spinner1"></Spinner>
+    <TextView android:id="@+id/textView3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/safe_prompt"></TextView>
+    <Spinner android:layout_width="match_parent" android:layout_height="wrap_content" android:id="@+id/spinner2"></Spinner>
+    <Button android:id="@+id/button1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/lookup_button"></Button>
+    <TextView android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=" "></TextView>
+</LinearLayout>
+</ScrollView>
