@@ -3,6 +3,7 @@ package com.howmuchbeer.mobile;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 public class HowMuchBeerActivity extends Activity {
@@ -24,6 +25,10 @@ public class HowMuchBeerActivity extends Activity {
         ArrayAdapter<CharSequence> safe_adapter = ArrayAdapter.createFromResource(
                 this, R.array.safe_values, android.R.layout.simple_spinner_item);
         safe_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        safe_spinner.setAdapter(safe_adapter);        
+        safe_spinner.setAdapter(safe_adapter);    
+        
+        // Register buttons
+        Button launch_button = (Button)findViewById(R.id.button1);
+        launch_button.setOnClickListener(new LaunchButtonListener(this));
     }
 }
