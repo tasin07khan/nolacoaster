@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, HowMuchBeerActivity!</string>
+    <string name="app_name">How Much Beer?</string>
+    <string name="craziness_prompt">How crazy will you party be?</string>
+    <string name="safe_prompt">Do you want to save money, or play it safe?</string>
+    <string name="attendees_prompts">How many people are coming?</string>
+    <string name="lookup_button">How Much Beer?</string>
+    <string-array name="craziness_values">
+        <item>Normal</item>
+        <item>Wild</item>
+        <item>Chill</item>
+    </string-array>
+    <string-array name="safe_values">
+        <item>Neither</item>
+        <item>Save Money (less beer)</item>
+        <item>Play it safe (more beer)</item>
+    </string-array>
+</resources>
