@@ -42,17 +42,23 @@ public class BasicAssortment implements ContainerAssortment {
 
 					@Override
 					public String next() {
+						int index = 0;
 						for (Container c : CONTAINERS) {
 							if( c.sizeInOunces() < ounces_left )  {
 								long quantity = (long) (ounces_left / c.sizeInOunces());
 								ounces_left = (long) (ounces_left % c.sizeInOunces());
+								
+								// Check min case...
+								if(index == CONTAINERS.size()-1 && ounces_left > 0) {
+									ounces_left = 0;
+									quantity++;
+								}
+								
 								return quantity + " " + c.pluralizedName();
 							}
+							index++;
 						}
-						// The min case, just return one of the smallest size
-						ounces_left = 0;
-						Container least = CONTAINERS.get(CONTAINERS.size() - 1);
-						return "1 " + least.pluralizedName();
+						throw new RuntimeException("I think this is impossible.");
 					}
 
 					@Override
