@@ -4,7 +4,9 @@
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
 
 <html>
-<head><title>How Much Beer?</title></head>
+<head><title>How Much Beer?</title>
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+</head>
 
 <style type="text/css">
 p.thanks
@@ -14,6 +16,18 @@ border-width: 2px;
 border-color: #002200;
 background-color: #aaeeaa;
 color: #002200;
+padding: 5px;
+}
+
+div.quote
+{
+padding-left:2em;
+padding-right:4em;
+}
+
+input.small
+{
+width: 30px;
 }
 </style>
 
@@ -55,6 +69,10 @@ function validateAfter()
 
 <body>
 
+
+<div style="padding:0;margin:0;background:#123456"> 
+<div style="height:100%;margin-left:15%;width:650px;background:#ABCDEF;border-left:2px solid #567890;border-right:10px solid #567890;padding:1em"> 
+<center><img src="/images/howmuchbeerlogo.png"/></center>
 <%
 if ("thanks".equals(request.getParameter("result"))) {
 %>
@@ -67,10 +85,11 @@ if ("thanks".equals(request.getParameter("result"))) {
 <p>Find out how much beer to buy:
 
 <form name="beforeForm" action="/result.jsp" method="get" onsubmit="return validateBefore()">
-"I'm going to have <input type="text" name="attendees"/> people, and I think it's going to be a
+<div class="quote">
+"I'm going to have <input class="small" type="text" name="attendees"/> people, and I think it's going to be a
 <select name="craziness"><option value="NORMAL">normal</option>
 <option value="CHILL">chill</option><option value="wild">wild</option>
-</select> party."
+</select> party."</div>
 <p><input type="submit" value="How much?" />
 </form>
 
@@ -80,10 +99,11 @@ if ("thanks".equals(request.getParameter("result"))) {
 <p>Tell us how much you drank!
 
 <form name="afterForm" action="/after" method="post" onsubmit="return validateAfter()">
+<div class="quote">
 <p>"It was a <select name="craziness"><option value="NORMAL">normal</option>
 <option value="CHILL">chill</option><option value="wild">wild</option>
-</select> party. We had <input type="text" name="attendees"/> people show
-up, and we drank <input type="text" name="quantity"/><select name="container">
+</select> party. We had <input class="small" type="text" name="attendees"/> people show
+up, and we drank <input class="small" type="text" name="quantity"/><select name="container">
 <option value="CASE_24">cases (24)</option><option value="BOTTLE_12">bottles (12oz)</option>
 <option value="CASE_30">cases (30)</option><option value="SIX_PACK">six packs</option>
 <option value="TWELVE_PACK">twelve packs</option><option value="KEG">kegs</option>
@@ -92,8 +112,10 @@ up, and we drank <input type="text" name="quantity"/><select name="container">
 <option value="BOTTLE_24">bottles (24oz)</option><option value="HALF_KEG">'half' kegs</option>
 <option value="CORNY_KEG">corny kegs</option><option value="POWER_HOUR">power hours</option>
 <option value="OUNCE">ounces</option><option value="GALLON">gallons</option>
-</select> of beer!"
+</select> of beer!"</div>
 <p><input type="submit" value="Tell Us" />
 </form>
+</div>
+</div>
 </body>
 </html>
