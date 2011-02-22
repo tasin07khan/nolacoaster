@@ -58,7 +58,9 @@ public class BasicAssortment implements ContainerAssortment {
 							}
 							index++;
 						}
-						throw new RuntimeException("I think this is impossible.");
+						// Min case if there were no results
+						ounces_left = 0;
+						return "1 " + CONTAINERS.get(CONTAINERS.size() - 1).pluralizedName();
 					}
 
 					@Override
