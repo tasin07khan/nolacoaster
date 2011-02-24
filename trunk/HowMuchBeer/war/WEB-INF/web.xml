@@ -23,6 +23,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </servlet-mapping>
     
     <servlet>
+        <servlet-name>add_reference</servlet-name>
+        <servlet-class>com.howmuchbeer.main.AddReferenceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>add_reference</servlet-name>
+        <url-pattern>/add_reference</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
         <servlet-name>mobile</servlet-name>
         <servlet-class>com.howmuchbeer.main.MobileServlet</servlet-class>
     </servlet>
@@ -34,4 +43,5 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<welcome-file-list>
 		<welcome-file>howmuchbeer.jsp</welcome-file>
 	</welcome-file-list>
+	
 </web-app>
