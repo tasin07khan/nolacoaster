@@ -6,6 +6,8 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.users.User;
+
 import java.util.Date;
 
 /**
@@ -44,6 +46,15 @@ public class BeerEventRecord {
 	/*
 	 * Optional information, future information
 	 */
+	@Persistent
+	private User author = null; // can be null if anon
+	
+	@Persistent
+	private Boolean isCitation = Boolean.valueOf(false); // Is this a well-known reference?
+	
+	@Persistent
+	private String citation = ""; // If isCitation, what is is?
+	
 	@Persistent
 	private String ipAddress = "";  // empty string is unknown
 
@@ -124,5 +135,29 @@ public class BeerEventRecord {
 
 	public void setEnoughBeer(Boolean enoughBeer) {
 		this.enoughBeer = enoughBeer;
+	}
+
+	public User getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+	public Boolean getIsCitation() {
+		return isCitation;
+	}
+
+	public void setIsCitation(Boolean isCitation) {
+		this.isCitation = isCitation;
+	}
+
+	public String getCitation() {
+		return citation;
+	}
+
+	public void setCitation(String citation) {
+		this.citation = citation;
 	}
 }

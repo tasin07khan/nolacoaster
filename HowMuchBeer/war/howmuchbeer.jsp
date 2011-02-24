@@ -101,7 +101,7 @@ if ("thanks".equals(request.getParameter("result"))) {
 <form name="afterForm" action="/after" method="post" onsubmit="return validateAfter()">
 <div class="quote">
 <p>"It was a <select name="craziness"><option value="NORMAL">normal</option>
-<option value="CHILL">chill</option><option value="wild">wild</option>
+<option value="CHILL">chill</option><option value="WILD">wild</option>
 </select> party. We had <input class="small" type="text" name="attendees"/> people show
 up, and we drank <input class="small" type="text" name="quantity"/><select name="container">
 <option value="CASE_24">cases (24)</option><option value="BOTTLE_12">bottles (12oz)</option>
@@ -115,6 +115,15 @@ up, and we drank <input class="small" type="text" name="quantity"/><select name=
 </select> of beer!"</div>
 <p><input type="submit" value="Tell Us" />
 </form>
+<center>
+<%  UserService userService = UserServiceFactory.getUserService();
+    User user = userService.getCurrentUser();
+    String login_string = userService.isUserLoggedIn() ? "Log Out (" + user.getNickname() + ")" : "Log In";
+    String login_address = userService.isUserLoggedIn() ? 
+        userService.createLogoutURL(request.getRequestURI()) : 
+        userService.createLoginURL(request.getRequestURI()); %> 
+<table style="font-size:0.8em;"><tr><td><a href="<%=login_address%>"><%=login_string%></a></td><td><a href="https://market.android.com/details?id=com.howmuchbeer.mobile">Download the Android App</a></td></tr></table>
+</center>
 </div>
 </div>
 </body>
