@@ -12,12 +12,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Listener for the main, "How Much Beer?" button. Does the requesting
@@ -30,6 +34,63 @@ public final class LaunchButtonListener implements OnClickListener {
 	private final Activity mainActivity;
 	
 	private final ArrayAdapter<CharSequence> safe_adapter; 
+	
+	class ResponseThread extends Thread {
+		private final String url;
+		private final TextView view;
+		
+		ResponseThread(String url, TextView view) {
+			this.url = url;
+			this.view = view;
+		}
+
+		@Override
+		public void run() {
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet getMethod = new HttpGet((url));
+				HttpResponse httpResponse = client.execute(getMethod);
+				HttpEntity httpEntity = httpResponse.getEntity();
+
+				BufferedReader reader = new BufferedReader(new InputStreamReader(httpEntity.getContent()));
+
+				String line;
+				final StringBuffer contents = new StringBuffer("Results:\n");
+				while((line=reader.readLine()) != null) {
+					// Write to text box
+					contents.append(line);
+					contents.append("\n");
+				}
+				
+				mainActivity.runOnUiThread(new Runnable(){
+					@Override
+					public void run() { view.setText(contents.toString()); }
+				});
+				
+			} catch (ClientProtocolException e) {
+				mainActivity.runOnUiThread(new Runnable(){
+					@Override
+					public void run() { view.setText("Could not contact remote host. Check network connection and try again."); }
+				});
+			} catch (IOException e) {
+				mainActivity.runOnUiThread(new Runnable(){
+					@Override
+					public void run() { view.setText("Could not contact remote host. Check network connection and try again."); }
+				});
+			} finally {
+				mainActivity.runOnUiThread(new Runnable(){
+					@Override
+					public void run() {
+						// Enable button...
+						Button button = (Button)mainActivity.findViewById(R.id.button1);
+						button.setEnabled(true);
+					}
+				});
+			}
+		}
+		
+		
+	}
 	
 	public LaunchButtonListener(HowMuchBeerActivity howMuchBeerActivity) {
 		this.mainActivity = howMuchBeerActivity;
@@ -56,41 +117,58 @@ public final class LaunchButtonListener implements OnClickListener {
 		Spinner craziness_spinner = (Spinner)mainActivity.findViewById(R.id.spinner1);
 		Spinner safety_spinner = (Spinner)mainActivity.findViewById(R.id.spinner2);
 		
-		text_view.setText("Loading...");
-		try {
-			// Make GET request
-			String url = "http://www.howmuchbeer.com/mobile?craziness=";
-			url += craziness_spinner.getSelectedItem().toString();
-			url += "&attendees=";
-			url += attendees_view.getText().toString();
-			url += "&safe=";
-			url += correctSafetyName(safety_spinner.getSelectedItem().toString());
-			// http://localhost:8888/mobile?craziness=chill&attendees=4&safe=normal
-			
-			HttpClient client = new DefaultHttpClient();
-			HttpGet getMethod = new HttpGet((url));
-			HttpResponse httpResponse = client.execute(getMethod);
-			HttpEntity httpEntity = httpResponse.getEntity();
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(httpEntity.getContent()));
-
-			String line;
-			StringBuffer contents = new StringBuffer();
-			while((line=reader.readLine()) != null) {
-				// Write to text box
-				contents.append(line);
-				contents.append("\n");
-			}
-			text_view.setText(contents.toString());
-
-		} catch (ClientProtocolException e) {
-			text_view.setText("Error1");
-			e.printStackTrace();
-		} catch (IOException e) {
-			text_view.setText("Error2");
-			e.printStackTrace();
-			throw new RuntimeException(e);
+		// Validate input
+		if( !verifyAttendeesAndDisplay(attendees_view.getText().toString()) ) {
+			return;
 		}
+		
+		// Disable button...
+		Button button = (Button)mainActivity.findViewById(R.id.button1);
+		button.setEnabled(false);
+		
+		// Hide keyboard
+		InputMethodManager inputManager = (InputMethodManager)mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		inputManager.hideSoftInputFromWindow(attendees_view.getWindowToken(), 0);
+		
+		text_view.setText("Loading...");
+		// Make GET request
+		String url = "http://www.howmuchbeer.com/mobile?craziness=";
+		url += craziness_spinner.getSelectedItem().toString();
+		url += "&attendees=";
+		url += attendees_view.getText().toString();
+		url += "&safe=";
+		url += correctSafetyName(safety_spinner.getSelectedItem().toString());
+		// http://localhost:8888/mobile?craziness=chill&attendees=4&safe=normal
+
+		(new ResponseThread(url, text_view)).start();		
+	}
+	
+	/**
+	 * Verify the attendees field. Display a toast warning if it is invalid. Return false if same.
+	 * @param attendees
+	 * @return
+	 */
+	private boolean verifyAttendeesAndDisplay(String attendees) {
+		Context context = mainActivity.getApplicationContext();
+		int duration = Toast.LENGTH_SHORT;
+
+		Long attendees_;
+		try {
+			attendees_ = Long.parseLong(attendees);
+		} catch(NumberFormatException nfe) {
+			// Attendees is not a number
+			Toast toast = Toast.makeText(context, "Attendees must be a number.", duration);
+			toast.show();
+			return false;
+		}
+		
+		if( attendees_ <= 0 ) {
+			Toast toast = Toast.makeText(context, "Attendees must be greater than zero.", duration);
+			toast.show();
+			return false;
+		}
+
+		return true;
 	}
 
 }
