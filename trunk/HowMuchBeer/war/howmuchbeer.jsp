@@ -88,7 +88,7 @@ if ("thanks".equals(request.getParameter("result"))) {
 <div class="quote">
 "I'm going to have <input class="small" type="text" name="attendees"/> people, and I think it's going to be a
 <select name="craziness"><option value="NORMAL">normal</option>
-<option value="CHILL">chill</option><option value="wild">wild</option>
+<option value="CHILL">chill</option><option value="WILD">wild</option>
 </select> party."</div>
 <p><input type="submit" value="How much?" />
 </form>
