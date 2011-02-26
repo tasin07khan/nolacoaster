@@ -1,3 +1,10 @@
 body {
-	font-family: Verdana, Helvetica, Sans-serif	
+	font-family: Verdana, Helvetica, Sans-serif;
+	background-color:#123456;
+	margin: 0;
+	padding: 0;
+}
+
+.clear { 
+	clear:  both; 
 }

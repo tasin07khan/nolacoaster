@@ -71,7 +71,7 @@ function validateAfter()
 
 
 <div style="padding:0;margin:0;background:#123456"> 
-<div style="height:100%;margin-left:15%;width:650px;background:#ABCDEF;border-left:2px solid #567890;border-right:10px solid #567890;padding:1em"> 
+<div style="margin-left:15%;width:650px;background:#ABCDEF;border-left:2px solid #567890;border-right:10px solid #567890;border-bottom:5px solid #567890;padding:1em"> 
 <center><img src="/images/howmuchbeerlogo.png"/></center>
 <%
 if ("thanks".equals(request.getParameter("result"))) {
@@ -122,8 +122,14 @@ up, and we drank <input class="small" type="text" name="quantity"/><select name=
     String login_address = userService.isUserLoggedIn() ? 
         userService.createLogoutURL(request.getRequestURI()) : 
         userService.createLoginURL(request.getRequestURI()); %> 
-<table style="font-size:0.8em;"><tr><td><a href="<%=login_address%>"><%=login_string%></a></td><td><a href="https://market.android.com/details?id=com.howmuchbeer.mobile">Download the Android App</a></td></tr></table>
+<table style="font-size:0.8em;"><tr>
+  <td><a href="<%=login_address%>"><%=login_string%></a></td>
+  <td><a href="https://market.android.com/details?id=com.howmuchbeer.mobile">Download the Android App</a></td>
+  <td><a href="faq.html">FAQ</a></td>
+  <td><a href="http://www.google.com/recaptcha/mailhide/d?k=01mAXSiKYEFPKfG72kJrW5pg==&c=NCprYwPFZfHufsvwj7heYMOt2bR87buj5AcZSAUJmH8=">Contact</a></td>
+</tr></table>
 </center>
+<div class="clear"></div>
 </div>
 </div>
 </body>

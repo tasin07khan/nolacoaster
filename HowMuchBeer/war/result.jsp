@@ -30,7 +30,7 @@ margin-left: 2em;
 
 
 <div style="padding:0;margin:0;background:#123456"> 
-<div style="height:100%;margin-left:15%;width:650px;background:#ABCDEF;border-left:2px solid #567890;border-right:10px solid #567890;padding:1em"> 
+<div style="margin-left:15%;width:650px;background:#ABCDEF;border-left:2px solid #567890;border-right:10px solid #567890;border-bottom:5px solid #567890;padding:1em"> 
 <center><img src="/images/howmuchbeerlogo.png"/></center>
 <h1>Results</h1>
 
@@ -113,6 +113,7 @@ margin-left: 2em;
       }
    }
 %>
+<div class="clear"></div>
 </div>
 </div>
 </body>
