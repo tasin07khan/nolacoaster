@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.howmuchbeer.containers.Container;
 import com.howmuchbeer.containers.ContainerFactory;
 
 /**
@@ -32,21 +33,24 @@ public class AfterPartyServlet extends HttpServlet {
 		try {
 			BeerEventRecord event = extractDefaultRecord(req);
 			
-			String ip = req.getRemoteAddr();
-			event.setIpAddress(ip);
-			
-			// Was user logged in?
-			UserService userService = UserServiceFactory.getUserService();
-	        User user = userService.getCurrentUser();
-			event.setAuthor(user);
-			
-			// Persist it
-			PersistenceManager pm = PMF.get().getPersistenceManager();
-	        try {
-	            pm.makePersistent(event);
-	        } finally {
-	            pm.close();
-	        }
+			// Detect spam.
+			if(!DetectSpam(event)) {
+				String ip = req.getRemoteAddr();
+				event.setIpAddress(ip);
+
+				// Was user logged in?
+				UserService userService = UserServiceFactory.getUserService();
+				User user = userService.getCurrentUser();
+				event.setAuthor(user);
+
+				// Persist it
+				PersistenceManager pm = PMF.get().getPersistenceManager();
+				try {
+					pm.makePersistent(event);
+				} finally {
+					pm.close();
+				}
+			}
 			
 	        // Back to front page
 	        resp.sendRedirect("/?result=thanks");
@@ -55,6 +59,21 @@ public class AfterPartyServlet extends HttpServlet {
 		} catch(IllegalArgumentException iae) {
 		//	log.warning("Craziness value was not valid. " + iae);
 		}
+	}
+
+	private static final Container TWELVE_OZ_BOTTLE = ContainerFactory.containerFromName(ContainerFactory.BOTTLE_12); 
+	
+	/**
+	 * Returns true if spam was detected.
+	 */
+	private boolean DetectSpam(BeerEventRecord event) {
+		// For now we are doing something pretty dumb, which is just to see if
+		// this record is greater than some threshold.
+		double max_per_person = 20.0 * TWELVE_OZ_BOTTLE.sizeInOunces();
+		if(event.getOuncesConsumed() / event.getAttendees() > max_per_person) {
+			return true;
+		}
+		return false;
 	}
 
 	static BeerEventRecord extractDefaultRecord(HttpServletRequest req) {
