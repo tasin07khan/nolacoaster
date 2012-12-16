@@ -112,8 +112,10 @@ function intersectingRange(pos_1, width_1, pos_2, width_2) {
 }
 
 function guardBlocksTraveler(g, tr) {
-  // Make it so that if they are close, but not too close…
-  return intersectingRange(g.x_pos, g.width, tr.x_pos, tr.width) &&
+  // Don't use the entire traveler's body, so that once the traveler moves past
+  // some, it won't get stuck.
+  var traveler_width = tr.width / 4;
+  return intersectingRange(g.x_pos, g.width, tr.x_pos, traveler_width) &&
          intersectingRange(g.y_pos, g.height, tr.y_pos, tr.height);
 }
 
@@ -284,8 +286,8 @@ function processKeyUp(e) {
 
 <body id="the_body" onkeydown="processKeyDown(event);" onkeyup="processKeyUp(event)">
 <div style="position:absolute; left: 700px">
-<h1>WELCOME TO MIAMI INTERNATIONAL AIRPORT!</h1>
-<table style="font-size: 30pt; font-family: monospace">
+<img src='welcome_to_miami.png'>
+<table style="font-size: 25pt; font-family: monospace">
   <tr><td>Passports Stamped: </td><td id="score">0</td></tr>
   <tr><td>Illegal Entries: </td><td id="illegals">0</td></tr>
   <tr><td>Time: </td><td id="time">90</td></tr>
