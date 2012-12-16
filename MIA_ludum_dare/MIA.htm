@@ -1,0 +1,308 @@
+<html>
+<head><title>The US Department of Homeland Security Welcomes You to the United
+States of America</title></head>
+
+<script language="JavaScript"> 
+
+// Guard constructor.
+function Guard(yp) {
+  this.direction = 0;  // -1 is down, 0 not moving, 1 is up.
+  this.stamping = false;
+  this.y_pos = yp;
+  this.height = 100;
+  this.x_pos = 200;
+  this.width = 75;
+}
+
+// Traveler constructor. Consists of an x position and
+// a DOM element, which contains the traveler image.
+function Traveler(xp, yp, de, r) {
+  this.x_pos = xp;
+  this.width = 93;
+  this.y_pos = yp;
+  this.height = 100;
+  this.dom_element = de;
+  this.rate = r;
+  this.stamped = false;
+}
+
+// TravelerRow constructor. A traveler row contains all of the travelers in a row.
+// It must make sure that the travelers don't pass one another.
+function TravelerRow(yp) {
+  this.y_pos = yp;
+  this.height = 100;
+  this.travelers = new Array();
+}
+
+// This is the main, global Guard instance.
+var guard = new Guard(250);
+
+// The traveler rows.
+var traveler_row_1 = new TravelerRow(600);
+var traveler_row_2 = new TravelerRow(400);
+var traveler_row_3 = new TravelerRow(200);
+var traveler_row_4 = new TravelerRow(0);
+
+// Global game state variables.
+var game_started = false;
+var game_ended = false;
+var traveler_rate = 8000;
+var traveler_start = 1100;
+var score = 0;
+var illegals = 0;
+var time = 90;
+
+// Adds a new traveler to the given TravelerRow, and schedules the
+// addition of the next traveler, if the game has not yet ended.
+function addNewTraveler(tr) {
+  if (game_ended) {
+    return;
+  }
+  var traveler_speed = Math.floor(Math.random() * 3) + 1;
+
+  var dom_element = document.createElement("img");
+  dom_element.setAttribute('src', 'traveler.png');
+  dom_element.setAttribute('height', '100');
+  dom_element.setAttribute('width', '93');
+  dom_element.setAttribute('align', 'baseline');
+  dom_element.setAttribute('border', '0');
+  dom_element.setAttribute('hspace', '0');
+  dom_element.style.left = '' + traveler_start + 'px';
+  dom_element.style.top = '' + tr.y_pos + 'px';
+  dom_element.style.position = 'absolute';
+  
+  var traveler = new Traveler(traveler_start, tr.y_pos, dom_element, traveler_speed);
+ 
+  // Add to row and add to DOM.
+  tr.travelers.push(traveler);
+  document.getElementById('the_body').appendChild(dom_element);
+
+  setTimeout(function(){ addNewTraveler(tr); }, 
+             Math.floor(Math.random() * traveler_rate));
+}
+
+function moveGuard() {
+  if (guard.y_pos >= 0 && guard.y_pos <= 700) {
+    guard.y_pos = guard.y_pos + 2 * guard.direction;
+    document.getElementById('guard_container').style.top = guard.y_pos;
+  }
+  if (guard.y_pos < 0) {
+    guard.y_pos = 0;
+  }
+  if (guard.y_pos > 700) {
+    guard.y_pos = 700;
+  }
+}
+
+function animateGuard() {
+  if (guard.stamping) {
+    document.getElementById('guard_stamping').style.visibility='visible';  
+    document.getElementById('guard_normal').style.visibility='hidden';
+  } else {
+    document.getElementById('guard_stamping').style.visibility='hidden';  
+    document.getElementById('guard_normal').style.visibility='visible';
+  }
+}
+
+function intersectingRange(pos_1, width_1, pos_2, width_2) {
+  return !(pos_2 > pos_1 + width_1 || pos_1 > pos_2 + width_2);
+}
+
+function guardBlocksTraveler(g, tr) {
+  // Make it so that if they are close, but not too close…
+  return intersectingRange(g.x_pos, g.width, tr.x_pos, tr.width) &&
+         intersectingRange(g.y_pos, g.height, tr.y_pos, tr.height);
+}
+
+function detectTravelerStamping(tr) {
+  if (tr.stamped) {
+    return 0;
+  }
+
+  // These magic numbers are derived from looking at the images in GIMP.
+  if (!intersectingRange(guard.x_pos + 50, 74 - 50 + 21, tr.x_pos, 21)) {
+    return 0;
+  }
+  
+  if (intersectingRange(guard.y_pos, 21, tr.y_pos + 54, 100 - 54)) {
+    // Change image for traveler.
+    tr.dom_element.setAttribute('src', 'traveler_stamped.png');
+    tr.stamped = true;
+    return 1;
+  }
+  return 0;
+}
+
+function detectStampings(tr) {
+  var result = 0;
+  // In the given row, look at the first 5 entries at most for 
+  // collisions. Those collisions are stampings, if they are not
+  // already stamped.
+  for (var i = 0; i < tr.travelers.length && i < 5; ++i) {
+    result += detectTravelerStamping(tr.travelers[i]);
+  }
+  return result;
+}
+
+// Update positions of travelers in row, making sure they don't bunch up,
+// then draw them at their new locations.
+function updateTravelerRow(tr) {
+  // For every traveler, add the delta. 
+  var last_x_pos = 0;
+  for (var i = 0; i < tr.travelers.length; ++i) {
+    var traveler = tr.travelers[i];
+    var proposed_x_pos = traveler.x_pos - tr.travelers[i].rate;
+    if (proposed_x_pos < 0) {
+      document.getElementById('the_body').removeChild(tr.travelers[i].dom_element);
+      tr.travelers.splice(i, 1);
+      --i;
+      if (!traveler.stamped) {
+        ++illegals;
+      }
+      continue;
+    } else if (guardBlocksTraveler(guard, tr.travelers[i])) {
+      // DO NOTHING
+    } else if (last_x_pos > proposed_x_pos) {
+      // If traveler now bumps into previous, move it back.
+      tr.travelers[i].x_pos = last_x_pos;
+    } else {
+      tr.travelers[i].x_pos = proposed_x_pos;
+    }
+    // Last x pos is actually the right edge of the last element.
+    last_x_pos = tr.travelers[i].x_pos + tr.travelers[i].width;
+  }
+
+  // Now draw them at their updated positions.
+  for (var i = 0; i < tr.travelers.length; ++i) {
+    tr.travelers[i].dom_element.style.left = tr.travelers[i].x_pos;
+  }
+}
+
+// This function contains the game loop, but it is exploded. It is meant
+// to be run at regular, periodic intervals.
+function gameLoop() {
+  // Move guard
+  moveGuard();
+
+  // Animate, if needed.
+  animateGuard();
+
+  // Move travelers
+  updateTravelerRow(traveler_row_1);
+  updateTravelerRow(traveler_row_2);
+  updateTravelerRow(traveler_row_3);
+  updateTravelerRow(traveler_row_4);
+
+  // Detect stampings
+  var new_stamps = 0;
+  if (guard.stamping) {
+    new_stamps += detectStampings(traveler_row_1);
+    new_stamps += detectStampings(traveler_row_2);
+    new_stamps += detectStampings(traveler_row_3);
+    new_stamps += detectStampings(traveler_row_4);
+  }
+
+  // Update score
+  if (new_stamps > 0) {
+    score += new_stamps;
+    document.getElementById("score").innerHTML = '' + score;
+  }
+  document.getElementById("illegals").innerHTML = '' + illegals;
+
+  // End game?
+  if (!game_ended) {
+    // Schedule this function again, 5ms later.
+    setTimeout(function(){ gameLoop() }, 5);
+  }
+}
+
+function getKeyCode(e) {
+  return e ? e.which : event.keyCode;
+}
+
+function updateTime() {
+  --time;  
+  document.getElementById('time').innerHTML = '' + time;
+  if (time > 0) {
+    setTimeout(function(){ updateTime(); }, 1000);
+  } else {
+    game_ended = true;
+  }
+}
+
+function processKeyDown(e) {
+  if (!game_started && getKeyCode(e) == 32) {
+    // Start the game, schedule the first game loop call.
+    game_started = true;
+    setTimeout(function(){ gameLoop() }, 5);
+    setTimeout(function(){ addNewTraveler(traveler_row_1); }, 
+               Math.floor(Math.random() * traveler_rate));
+    setTimeout(function(){ addNewTraveler(traveler_row_2); }, 
+               Math.floor(Math.random() * traveler_rate));
+    setTimeout(function(){ addNewTraveler(traveler_row_3); }, 
+               Math.floor(Math.random() * traveler_rate));
+    setTimeout(function(){ addNewTraveler(traveler_row_4); }, 
+               Math.floor(Math.random() * traveler_rate));
+    setTimeout(function(){ updateTime(); }, 1000);
+  } else if (!game_ended) {
+    // Alter the guard's movement state.
+    if (getKeyCode(e) == 32) {  // SPACE (highest priority)
+      guard.direction = 0;
+      guard.stamping = true;
+    } else if (getKeyCode(e) == 40 && !guard.stamping) {  // UP
+      guard.direction = 1;
+    } else if (getKeyCode(e) == 38 && !guard.stamping) {  // DOWN
+      guard.direction = -1;
+    }
+  }
+}
+
+function processKeyUp(e) {
+  if (getKeyCode(e) == 38 || getKeyCode(e) == 40) {
+    // Only stop the guard if we are actually releasing the arrow keys.
+    guard.direction = 0;
+  } else if (getKeyCode(e) == 32) {
+    guard.stamping = false;
+  }
+}
+
+</script>
+
+
+<body id="the_body" onkeydown="processKeyDown(event);" onkeyup="processKeyUp(event)">
+<h1 style="position:absolute; left: 700px">WELCOME TO MIAMI INTERNATIONAL AIRPORT!</h1>
+<table style="position:absolute; left: 750px; top:80px">
+  <tr><td>Passports Stamped: </td><td id="score">0</td></tr>
+  <tr><td>Illegal Entries: </td><td id="illegals">0</td></tr>
+  <tr><td>Time: </td><td id="time">90</td></tr>
+</table>
+
+<!-- The guard is a div containing two images, one for each frame of the 
+     animation. -->
+<div id="guard_container" style="z-index: 1; left: 200px; position: absolute; top: 250px">
+  <img id="guard_normal" style="position:absolute" height=100 width=75 align=baseline border=0 hspace=0 
+       src="guard_normal.png">
+  <img id="guard_stamping" style="position:absolute; visibility:hidden" height=100 
+       width=127 align=baseline border=0 hspace=0 src="guard_stamping.png">
+</div
+
+
+<!-- All tables go here. They never move. Bottom to top. -->
+<p><img style="z-index: 0; left: 300px; position: absolute; top: 700px" 
+	height=100 width=108 align=baseline border=0 hspace=0 src="passport_table.png">
+</p>
+
+<p><img style="z-index: 0; left: 300px; position: absolute; top: 500px" 
+	height=100 width=108 align=baseline border=0 hspace=0 src="passport_table.png">
+</p>
+
+<p><img style="z-index: 0; left: 300px; position: absolute; top: 300px" 
+	height=100 width=108 align=baseline border=0 hspace=0 src="passport_table.png">
+</p>
+
+<p><img style="z-index: 0; left: 300px; position: absolute; top: 100px" 
+	height=100 width=108 align=baseline border=0 hspace=0 src="passport_table.png">
+</p>
+
+</body>
+</html>
