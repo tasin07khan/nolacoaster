@@ -242,6 +242,7 @@ function updateTime() {
 function processKeyDown(e) {
   if (!game_started && getKeyCode(e) == 32) {
     // Start the game, schedule the first game loop call.
+    document.getElementById('instructions').style.visibility = 'hidden';
     game_started = true;
     setTimeout(function(){ gameLoop() }, 5);
     setTimeout(function(){ addNewTraveler(traveler_row_1); }, 
@@ -289,7 +290,7 @@ function processKeyUp(e) {
   <tr><td>Illegal Entries: </td><td id="illegals">0</td></tr>
   <tr><td>Time: </td><td id="time">90</td></tr>
 </table>
-<p style="font-family: monospace">(Hit space to begin 
+<p style="font-family: monospace" id="instructions">(Hit space to begin 
   and to stamp. Use arrows to move.)</p>
 </div>
 
