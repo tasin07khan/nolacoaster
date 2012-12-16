@@ -225,6 +225,32 @@ function getKeyCode(e) {
   return e ? e.which : event.keyCode;
 }
 
+function getFinalRating(score, illegals) {
+  // If your score is lower than 40, there is a special score for
+  // having more passports stamped than illegal entries.
+  if (score >= 90) {
+    return "JavaScript Hacker???!!!";
+  } else if (score >= 70) {
+    return "Janet Napolitano";
+  } else if (score >= 50) {
+    return "John S. Pistole";
+  } else if (score >= 45) {
+    return "Hero to our Nation";
+  } else if (score >= 40) {
+    return "Grade B Bureaucrat";
+  } 
+
+  if (score > illegals) {
+    return "Solid TSA Agent";
+  } else if (score >= 30) {
+    return "Rent-a-cop";
+  } else if (score >= 20) {
+    return "Typical Government Layabout";
+  } else {
+    return "iPad Thief";
+  }
+}
+
 function updateTime() {
   --time;  
   document.getElementById('time').innerHTML = '' + time;
@@ -237,7 +263,9 @@ function updateTime() {
     game_ended = true;
     document.getElementById('final_scoreboard').style.visibility = 'visible';
     document.getElementById('final_score').innerHTML = '' + score;
-    document.getElementById('final_illegals').innerHTML = '' + illegals;    
+    document.getElementById('final_illegals').innerHTML = '' + illegals;
+    document.getElementById('final_rating').innerHTML = 
+        '' + getFinalRating(score, illegals);    
   }
 }
 
@@ -311,6 +339,7 @@ function processKeyUp(e) {
     <table style="font-size: 25px;">
       <tr><td>Passports Stamped: </td><td id="final_score"></td></tr>
       <tr><td>Illegal Entries: </td><td id="final_illegals"></td></tr>
+      <tr><td>Your Rating: </td><td id="final_rating"></td></tr>
     </table>
   </div>
 </div>
