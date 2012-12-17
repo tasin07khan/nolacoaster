@@ -55,6 +55,12 @@ var time = 90;
 // Sound resource, for the minor sound effects we have.
 var stamping_sound = new Audio("stamp_sound.wav");
 
+// I created this to give us a 'poisson' process, but I didn't notice too much
+// of a difference, and it seemed a little worse (often empty spaces).
+function expRandom(rate) {
+  return - Math.log(1.0 - Math.random()) / (1 / rate);
+}
+
 // Adds a new traveler to the given TravelerRow, and schedules the
 // addition of the next traveler, if the game has not yet ended.
 function addNewTraveler(tr) {
@@ -86,7 +92,7 @@ function addNewTraveler(tr) {
 
 function moveGuard() {
   if (guard.y_pos >= 0 && guard.y_pos <= 700) {
-    guard.y_pos = guard.y_pos + 2 * guard.direction;
+    guard.y_pos = guard.y_pos + 3 * guard.direction;
     document.getElementById('guard_container').style.top = guard.y_pos;
   }
   if (guard.y_pos < 0) {
@@ -228,12 +234,16 @@ function getKeyCode(e) {
 function getFinalRating(score, illegals) {
   // If your score is lower than 40, there is a special score for
   // having more passports stamped than illegal entries.
-  if (score >= 90) {
+  if (score >= 100) {
     return "JavaScript Hacker???!!!";
   } else if (score >= 70) {
     return "Janet Napolitano";
-  } else if (score >= 50) {
+  } else if (score >= 60) {
     return "John S. Pistole";
+  } else if (score >= 55) {
+    return "Grade A Bureaucrat";
+  } else if (score >= 50) {
+    return "Powerful Paper Pusher";
   } else if (score >= 45) {
     return "Hero to our Nation";
   } else if (score >= 40) {
