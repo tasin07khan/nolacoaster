@@ -79,7 +79,18 @@ public class FullscreenActivity extends Activity {
 	// we use the AccountManager to let the user choose an account.	
 	private String mAccountName;
 	
+	// The filename of the spreadsheet that holds the budget. It's
+	// chosen initially by the ChooseFileActivity, and stored.
+	private String mSpreadsheetFile;
+	
+	// The preference name for the stored account, picked initially and used forevermore
+	// after that.
 	private static final String kAccountPreferencesName = "ACCOUNT_PREFERENCES_NAME";
+	// The name of the spreadsheet, picked initially and used forevermore.
+	// TODO(nbeckman): Allow this to be changed.
+	// TODO(nbeckman): Wouldn't we rather store a doc ID or something? Something we are
+	//                 not afraid of collisions?
+	private static final String kBudgetSpreadsheetPreferencesName = "BUDGET_SPREADSHEET_PREFERENCES_NAME";
 	
 	private static final int kAccountChoiceIntent = 9;
 	private static final int kModifySpreadSheetIntent = 10;
@@ -160,11 +171,19 @@ public class FullscreenActivity extends Activity {
         SharedPreferences settings = getPreferences(MODE_PRIVATE);
         if (settings.contains(kAccountPreferencesName)) {
         	this.mAccountName = settings.getString(kAccountPreferencesName, "nobody@google.com");
-        	this.launchChooseFileActivity();
+
+        	// Now, see if we have chosen a speadsheet file.
+        	if (settings.contains(kBudgetSpreadsheetPreferencesName)) {
+        		this.mSpreadsheetFile = settings.getString(mSpreadsheetFile, "");
+        		// TODO(nbeckman): From this point we need to populate the UI...
+        	} else {
+        		this.launchChooseFileActivity();	
+        	}
         } else {
-			Intent intent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
-	       	         false, null, null, null, null);
-	       	startActivityForResult(intent, kAccountChoiceIntent);
+        	Intent intent = 
+        			AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"},
+        					false, null, null, null, null);
+        	startActivityForResult(intent, kAccountChoiceIntent);
         }
     }
 
@@ -220,24 +239,33 @@ public class FullscreenActivity extends Activity {
     }
 
     protected void onActivityResult(final int requestCode, final int resultCode,
-            final Intent data) {
-        if (requestCode == kAccountChoiceIntent && resultCode == RESULT_OK) {
-            final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            this.mAccountName = accountName;
-            // Account chosen for the first time. Store it to the preferences.
-            SharedPreferences settings = getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(kAccountPreferencesName, accountName);
-            editor.commit();
-            
-            // Now move on to choosing a budget file.
-            this.launchChooseFileActivity();
-        } else if (requestCode == kModifySpreadSheetIntent && resultCode == RESULT_OK) {
-      } else if (requestCode == 2 && resultCode == RESULT_OK) {
-    	  // After the user YAYs or NAYs our permission request, we are
-    	  // taken here, so if we wanted to grab the token now we could.
-      }
-      
+    		final Intent data) {
+    	if (requestCode == kAccountChoiceIntent && resultCode == RESULT_OK) {
+    		final String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+    		this.mAccountName = accountName;
+    		// Account chosen for the first time. Store it to the preferences.
+    		SharedPreferences settings = getPreferences(MODE_PRIVATE);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putString(kAccountPreferencesName, accountName);
+    		editor.commit();
+
+    		// Now move on to choosing a budget file.
+    		this.launchChooseFileActivity();
+    	} else if (requestCode == kModifySpreadSheetIntent && resultCode == RESULT_OK) {
+    	} else if (requestCode == 2 && resultCode == RESULT_OK) {
+    		// After the user YAYs or NAYs our permission request, we are
+    		// taken here, so if we wanted to grab the token now we could.
+    	} else if (requestCode == kFileChoiceIntent && resultCode == RESULT_OK) {
+    		// What file did the user choose? Save it to disk for next time so we don't
+    		// ask again.
+    		final String file_name = data.getStringExtra("result");
+    		this.mSpreadsheetFile = file_name;
+    		SharedPreferences settings = getPreferences(MODE_PRIVATE);
+    		SharedPreferences.Editor editor = settings.edit();
+    		editor.putString(kBudgetSpreadsheetPreferencesName, file_name);
+    		editor.commit();
+    		// TODO(nbeckman): From this point we need to create the UI...
+    	}
     }
 
     /**
