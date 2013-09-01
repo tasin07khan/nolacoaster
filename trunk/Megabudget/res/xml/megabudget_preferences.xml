@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/preferences_accounts_category">
+        <!-- Launch the account selection intent. -->
+                <Preference android:title="@string/change_spreadsheet_account" >
+    		<intent android:action="android.intent.action.VIEW"
+            		android:data="http://www.example.com" />
+		</Preference>
+		<!-- Launch the spreadsheet choosing intent. -->
+        <Preference android:title="@string/change_spreadsheet" >
+    		<intent android:action="android.intent.action.VIEW"
+            		android:data="http://www.example.com" />
+		</Preference>
+    </PreferenceCategory>
+    
+
+</PreferenceScreen>
