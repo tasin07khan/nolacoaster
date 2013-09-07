@@ -41,7 +41,13 @@
              know what most of these fields do. -->
         <activity
             android:name="com.nbeckman.megabudget.ChooseFileActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize" >
+        </activity>
+        <!-- This 'activity' isn't very interesting, it just allows it to handle
+             intents for authorizing users. -->
+        <activity
+            android:name="com.nbeckman.megabudget.AccountManager"
+            android:configChanges="orientation|keyboardHidden|screenSize" >
         </activity>
         <!-- Displays application settings, most importantly account and file. -->
         <activity

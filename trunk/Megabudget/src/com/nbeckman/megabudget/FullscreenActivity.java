@@ -85,12 +85,12 @@ public class FullscreenActivity extends Activity {
 	
 	// The preference name for the stored account, picked initially and used forevermore
 	// after that.
-	private static final String kAccountPreferencesName = "ACCOUNT_PREFERENCES_NAME";
+	private static final String kAccountPreferencesName = com.nbeckman.megabudget.AccountManager.kAccountPreferencesName;
 	// The name of the spreadsheet, picked initially and used forevermore.
 	// TODO(nbeckman): Allow this to be changed.
 	// TODO(nbeckman): Wouldn't we rather store a doc ID or something? Something we are
 	//                 not afraid of collisions?
-	private static final String kBudgetSpreadsheetPreferencesName = "BUDGET_SPREADSHEET_PREFERENCES_NAME";
+	private static final String kBudgetSpreadsheetPreferencesName = MegaBudgetSettingsActivity.kBudgetSpreadsheetPreferencesName;
 	
 	private static final int kAccountChoiceIntent = 9;
 	private static final int kModifySpreadSheetIntent = 10;
