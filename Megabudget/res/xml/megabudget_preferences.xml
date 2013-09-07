@@ -3,15 +3,15 @@
     <PreferenceCategory
         android:title="@string/preferences_accounts_category">
         <!-- Launch the account selection intent. -->
-                <Preference android:title="@string/change_spreadsheet_account" >
-    		<intent android:action="android.intent.action.VIEW"
-            		android:data="http://www.example.com" />
-		</Preference>
+        <Preference android:title="@string/change_spreadsheet_account"
+           		 	android:key="ACCOUNT_PREFERENCES_NAME">
+            <intent android:targetClass="com.nbeckman.megabudget.AccountManager"
+                	android:targetPackage="com.nbeckman.megabudget" />
+        </Preference>
+
 		<!-- Launch the spreadsheet choosing intent. -->
-        <Preference android:title="@string/change_spreadsheet" >
-    		<intent android:action="android.intent.action.VIEW"
-            		android:data="http://www.example.com" />
-		</Preference>
+        <Preference android:title="@string/change_spreadsheet"
+             	    android:key="BUDGET_SPREADSHEET_PREFERENCES_NAME" />
     </PreferenceCategory>
     
 

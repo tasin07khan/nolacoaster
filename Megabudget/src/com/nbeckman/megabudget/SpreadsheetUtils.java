@@ -25,7 +25,7 @@ public class SpreadsheetUtils {
 	// authorized spreadsheet access for this app, in which case the caller should
 	// handle it and do something.
 	public static SpreadsheetService setupSpreadsheetServiceInThisThread(
-			Context context, String account_name) throws UserRecoverableAuthException {
+			Context context, String account_name) throws GoogleAuthException {
     	// Turn account name into a token, which must
     	// be done in a background task, as it contacts
     	// the network.
@@ -37,9 +37,6 @@ public class SpreadsheetUtils {
 					"oauth2:https://spreadsheets.google.com/feeds https://docs.google.com/feeds");
 		} catch (IOException e) {
 			// TODO No network connection? Should handle this...
-			e.printStackTrace();
-		} catch (GoogleAuthException e) {
-			// TODO Bad credentials? What do we do?
 			e.printStackTrace();
 		}
 		
@@ -57,7 +54,7 @@ public class SpreadsheetUtils {
 	// authorized spreadsheet access for this app, in which case the caller should
 	// handle it and do something.
 	public static SpreadsheetFeed currentSpreadsheetFeedInThisThread(Context context, String account_name) 
-			throws UserRecoverableAuthException {
+			throws GoogleAuthException {
 		SpreadsheetService service = 
 				setupSpreadsheetServiceInThisThread(context, account_name);
 		try {
