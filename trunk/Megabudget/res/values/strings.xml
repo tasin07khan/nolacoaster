@@ -14,5 +14,5 @@
 	<string-array name="currency_array">
         <item>€</item>
     </string-array>
-        <string name="settings_menu_name">Settings</string>
+    <string name="settings_menu_name">Settings</string>
 </resources>
