@@ -57,6 +57,11 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		public String getName() {
 			return name;
 		}
+		
+		@Override 
+		public String toString() {
+			return getName();
+		}
 	}
 	
 	class DefaultBudgetCategory implements BudgetCategory {
@@ -71,6 +76,11 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		@Override
 		public String getName() {
 			return name;
+		}
+		
+		@Override 
+		public String toString() {
+			return getName();
 		}
 	}
 	

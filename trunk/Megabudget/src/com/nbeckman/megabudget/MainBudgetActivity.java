@@ -1,20 +1,101 @@
 package com.nbeckman.megabudget;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.WorksheetEntry;
+import com.google.gdata.data.spreadsheet.WorksheetFeed;
+import com.google.gdata.util.ServiceException;
+import com.nbeckman.megabudget.adapters.BudgetAdapter;
+import com.nbeckman.megabudget.adapters.BudgetMonth;
+import com.nbeckman.megabudget.adapters.DefaultBudgetAdapter;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 // My second shot at a 'main' activity for the the megabudget app.
 // The original one had all this cool junk for making the app
 // fullscreen which made it hard for me to add new buttons and stuff.
 public class MainBudgetActivity extends Activity {
+	
+	private static final int kMonthSpinnerID = 1;
+	
+	private MonthLoaderManager month_loader_manager_ = null;
+	
+	private BudgetAdapter budget_adapter_ = null;
+	private SpreadsheetService spreadsheet_service_ = null;
+	private WorksheetFeed worksheet_feed_ = null;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_budget);
+
+        // Make sure we are logged in, and have a spreadsheet chosen.
+        // TODO: Just want to try months, this will be hacked up.
+        // Like, do I really want this asyn task here?
+        (new AsyncTask<String, String, Boolean>(){
+        	@Override
+        	protected Boolean doInBackground(String... arg0) {
+        		final String account = AccountManager.getStoredAccount(MainBudgetActivity.this);
+    			// Can't be called in UI thread.
+    			try {
+    				spreadsheet_service_ = 
+    						SpreadsheetUtils.setupSpreadsheetServiceInThisThread(MainBudgetActivity.this, account);
+        			final String spreadsheet_url = ChooseFileActivity.getStoredSpreadsheetURL(MainBudgetActivity.this);
+        			// Must be done in background thread.
+        			worksheet_feed_ = spreadsheet_service_.getFeed(
+        					new URL(spreadsheet_url), WorksheetFeed.class);
+        			return true;
+				} catch (GoogleAuthException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ServiceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			return false;
+        	}
+        	
+        	@Override
+        	protected void onPostExecute(Boolean success) {
+        		if (!success) {
+        			return;
+        		}
+        		
+        		List<WorksheetEntry> worksheets = worksheet_feed_.getEntries();
+        		WorksheetEntry worksheet = worksheets.get(0);
+        		// END PART I KNOW IS HACKED UP
+
+        		budget_adapter_ = new DefaultBudgetAdapter(worksheet, spreadsheet_service_);
+
+        		// Set up the loader manager to load months into the months spinner.
+        		final Spinner month_spinner = (Spinner)findViewById(R.id.month_spinner);
+        		ArrayAdapter<BudgetMonth> month_spinner_adapter = 
+        				new ArrayAdapter<BudgetMonth>(MainBudgetActivity.this, android.R.layout.simple_list_item_1);
+        		// This must be done in the foreground thread.
+        		month_spinner.setAdapter(month_spinner_adapter);
+        		month_loader_manager_  = 
+        				new MonthLoaderManager(MainBudgetActivity.this, budget_adapter_, month_spinner_adapter);
+        		getLoaderManager().initLoader(kMonthSpinnerID, null, month_loader_manager_);
+        	}}).execute();
     }
     
     @Override
