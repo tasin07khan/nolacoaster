@@ -8,7 +8,6 @@ import android.content.Context;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.util.ServiceException;
@@ -36,7 +35,10 @@ public class SpreadsheetUtils {
 					account_name, 
 					"oauth2:https://spreadsheets.google.com/feeds https://docs.google.com/feeds");
 		} catch (IOException e) {
-			// TODO No network connection? Should handle this...
+			// TODO(nbeckman): This is a real problem. This is the exception that is
+			// thrown when the user is not connected to the Internet. And this is
+			// likely going to be the first place that we notice it, as we ensure that
+			// we have a user to get the spreadsheet from. Consider rethrowing this.
 			e.printStackTrace();
 		}
 		

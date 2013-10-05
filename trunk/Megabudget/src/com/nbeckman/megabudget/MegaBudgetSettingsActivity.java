@@ -65,7 +65,11 @@ public class MegaBudgetSettingsActivity extends Activity {
 					PreferenceManager.getDefaultSharedPreferences(getActivity());
 			final String value = shared_pref.getString(key, "");
 			final Preference pref = findPreference(key);
-			pref.setSummary(value);
+			if (pref != null) {
+				// Not all keys in the shared preferences store have a corresponding
+				// Preference view.
+				pref.setSummary(value);
+			}
 		}
 		
 		@Override

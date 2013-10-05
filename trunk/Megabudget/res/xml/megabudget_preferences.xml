@@ -11,7 +11,10 @@
 
 		<!-- Launch the spreadsheet choosing intent. -->
         <Preference android:title="@string/change_spreadsheet"
-             	    android:key="BUDGET_SPREADSHEET_PREFERENCES_NAME" />
+             	    android:key="BUDGET_SPREADSHEET_PREFERENCES_NAME" >
+            <intent android:targetClass="com.nbeckman.megabudget.ChooseFileActivity"
+                	android:targetPackage="com.nbeckman.megabudget" />
+        </Preference>
     </PreferenceCategory>
     
 
