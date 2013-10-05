@@ -15,13 +15,6 @@ public class MainBudgetActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_budget);
-        
-        
-        
-        // Display the preferences fragment. TODO TERRIRBLE THIS JUST GOES OVER ABOVE
-//        getFragmentManager().beginTransaction()
-//                .replace(android.R.id.content, new MegaBudgetSettingsFragment())
-//                .commit();
     }
     
     @Override
@@ -37,7 +30,6 @@ public class MainBudgetActivity extends Activity {
 		// Someone clicked on _something_ in the menu, and since
 		// we have only one item, we assume it was the settings
 		// menu. Launch it... 
-		// TODO(nbeckman): And let is set its own results?
 		Intent intent = new Intent();
 	    intent.setClass(this, MegaBudgetSettingsActivity.class);
 	    startActivity(intent);
