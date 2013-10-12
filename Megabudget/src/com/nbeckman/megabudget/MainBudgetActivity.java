@@ -3,10 +3,12 @@ package com.nbeckman.megabudget;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.data.spreadsheet.WorksheetFeed;
 import com.google.gdata.util.ServiceException;
@@ -23,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 // My second shot at a 'main' activity for the the megabudget app.
 // The original one had all this cool junk for making the app
@@ -36,6 +39,8 @@ public class MainBudgetActivity extends Activity {
 	private BudgetAdapter budget_adapter_ = null;
 	private SpreadsheetService spreadsheet_service_ = null;
 	private WorksheetFeed worksheet_feed_ = null;
+	private List<BudgetMonth> months_ = new ArrayList<BudgetMonth>(0);
+	private CellEntry month_total_cell_ = null;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,16 @@ public class MainBudgetActivity extends Activity {
         			// Must be done in background thread.
         			worksheet_feed_ = spreadsheet_service_.getFeed(
         					new URL(spreadsheet_url), WorksheetFeed.class);
+            		List<WorksheetEntry> worksheets = worksheet_feed_.getEntries();
+            		WorksheetEntry worksheet = worksheets.get(0);
+            		budget_adapter_ = new DefaultBudgetAdapter(worksheet, spreadsheet_service_);
+            		
+            		months_ = budget_adapter_.getMonths();
+            		if (months_.size() > 0) {
+            			// Initially, the total of the first month is displayed.
+            			// If another month is chosen, we can display that total.
+                		month_total_cell_ = budget_adapter_.getMonthTotalCell(months_.get(0));
+            		}
         			return true;
 				} catch (GoogleAuthException e) {
 					// TODO Auto-generated catch block
@@ -80,11 +95,7 @@ public class MainBudgetActivity extends Activity {
         			return;
         		}
         		
-        		List<WorksheetEntry> worksheets = worksheet_feed_.getEntries();
-        		WorksheetEntry worksheet = worksheets.get(0);
         		// END PART I KNOW IS HACKED UP
-
-        		budget_adapter_ = new DefaultBudgetAdapter(worksheet, spreadsheet_service_);
 
         		// Set up the loader manager to load months into the months spinner.
         		final Spinner month_spinner = (Spinner)findViewById(R.id.month_spinner);
@@ -95,6 +106,16 @@ public class MainBudgetActivity extends Activity {
         		month_loader_manager_  = 
         				new MonthLoaderManager(MainBudgetActivity.this, budget_adapter_, month_spinner_adapter);
         		getLoaderManager().initLoader(kMonthSpinnerID, null, month_loader_manager_);
+        		
+        		// Write total to total text box.
+        		// TODO(nbeckman): I need a better way of storing, what is the current month..
+        		if (month_total_cell_ != null) {
+        			// Initially, the total of the first month is displayed.
+        			// If another month is chosen, we can display that total.
+            		final String month_total = month_total_cell_.getCell().getValue();
+            		final TextView total_textbox = (TextView)findViewById(R.id.monthTotalDisplay);
+            		total_textbox.setText(month_total);
+        		}
         	}}).execute();
     }
     

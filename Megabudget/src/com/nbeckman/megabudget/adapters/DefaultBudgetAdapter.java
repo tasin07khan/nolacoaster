@@ -93,39 +93,48 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		this.spreadsheetService = spreadsheetService;
 	}
 	
+	private List<CellEntry> cachedMonthCells = null;
+	private List<CellEntry> cachedMonthCells() {
+		if (cachedMonthCells == null) {
+			try {
+				// Create a URL to grab all the months; every column in row
+				// kMonthRow starting after column kMonthStartCol.
+				URL cellFeedUrl = new URI(worksheetFeed.getCellFeedUrl().toString()
+						+ "?min-row="
+						+ Integer.toString(kMonthRow)
+						+ "&max-row="
+						+ Integer.toString(kMonthRow)
+						+ "&min-col="
+						+ Integer.toString(kMonthStartCol)).toURL();
+				CellFeed cellFeed = spreadsheetService.getFeed(cellFeedUrl, CellFeed.class);
+				cachedMonthCells = cellFeed.getEntries();
+				return cachedMonthCells;
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return new ArrayList<CellEntry>(0);
+		}
+		return cachedMonthCells;
+	}
+	
 	@Override
 	public List<BudgetMonth> getMonths() {
-		// Create a URL to grab all the months; every column in row
-		// kMonthRow starting after column kMonthStartCol.
-		try {
-			URL cellFeedUrl = new URI(worksheetFeed.getCellFeedUrl().toString()
-					+ "?min-row="
-					+ Integer.toString(kMonthRow)
-					+ "&max-row="
-					+ Integer.toString(kMonthRow)
-					+ "&min-col="
-					+ Integer.toString(kMonthStartCol)).toURL();
-			CellFeed cellFeed = spreadsheetService.getFeed(cellFeedUrl, CellFeed.class);
-			ArrayList<BudgetMonth> result = new ArrayList<BudgetMonth>(cellFeed.getTotalResults());
-			for (CellEntry cell : cellFeed.getEntries()) {
-				result.add(new DefaultBudgetMonth(cell.getCell().getValue(),
-						cell.getCell().getCol()));
-			}
-			return result;
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		ArrayList<BudgetMonth> result = new ArrayList<BudgetMonth>(cachedMonthCells().size());
+		for (CellEntry cell : cachedMonthCells()) {
+			result.add(new DefaultBudgetMonth(
+					cell.getCell().getValue(), cell.getCell().getCol()));
 		}
-		return new ArrayList<BudgetMonth>(0);
+		return result;
 	}
 
 	// A cached list of CellEntries that correspond to
