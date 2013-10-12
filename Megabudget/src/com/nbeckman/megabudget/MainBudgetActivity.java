@@ -17,6 +17,7 @@ import com.nbeckman.megabudget.adapters.BudgetMonth;
 import com.nbeckman.megabudget.adapters.DefaultBudgetAdapter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,6 +48,15 @@ public class MainBudgetActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_budget);
 
+        // Show a process dialog since loading the categories and
+        // stuff can be slow.
+        // TODO(nbeckman): This thing is like completely modal, so do something
+        // better...
+        final ProgressDialog progress_dialog = new ProgressDialog(this);
+        progress_dialog.setTitle("Loading Spreadsheet");
+        progress_dialog.setMessage("Wait while loading spreadsheet...");
+        progress_dialog.show();
+        
         // Make sure we are logged in, and have a spreadsheet chosen.
         // TODO: Just want to try months, this will be hacked up.
         // Like, do I really want this asyn task here?
@@ -116,6 +126,8 @@ public class MainBudgetActivity extends Activity {
             		final TextView total_textbox = (TextView)findViewById(R.id.monthTotalDisplay);
             		total_textbox.setText(month_total);
         		}
+                // Dismiss progress dialog.
+                progress_dialog.dismiss();
         	}}).execute();
     }
     
