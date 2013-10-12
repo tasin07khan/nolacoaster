@@ -42,7 +42,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	private static final int kMonthRow = 1;
 	
 	// The string name that will appear in the Total category.
-	private static final String kCellInputValue = "Total";
+	private static final String kTotalCellInputValue = "Total";
 	
 	class DefaultBudgetMonth implements BudgetMonth {
 		final String name;
@@ -183,7 +183,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		if (cachedTotalCategoryCell == null) {
 			List<CellEntry> cells = cachedCategoryCells();
 			for (CellEntry cell : cells) {
-				if (kCellInputValue.equals(cell.getCell().getInputValue()) &&
+				if (kTotalCellInputValue.equals(cell.getCell().getInputValue()) &&
 						kCategoryStartCol == cell.getCell().getCol()) {
 					cachedTotalCategoryCell = cell;
 					return cachedTotalCategoryCell;
@@ -196,8 +196,36 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	
 	@Override
 	public List<BudgetCategory> getCategories() {
-		// TODO Auto-generated method stub
-		return null;
+		final ArrayList<BudgetCategory> result = 
+				new ArrayList<BudgetCategory>(cachedCategoryCells().size());
+		
+		// Go through all of the cells. Look at the row:
+		// 1 - A major category, create a category and store the name as last major.
+		// 2 - Ignore.
+		// 3 - A minor category, concatenate name with last major.
+		String last_major_category = "";
+		for (CellEntry cell : cachedCategoryCells()) {
+			final int col = cell.getCell().getCol();
+			String category_name;
+			final String cell_value = cell.getCell().getValue();
+			if ("".equals(cell_value)) {
+				continue;
+			} else if (kTotalCellInputValue.equals(cell_value)) {
+				// Don't do 'Total' or go any further.
+				break;
+			} else if (col == kCategoryStartCol) {
+				category_name = cell.getCell().getValue();
+				last_major_category = category_name;
+			} else if (col == kCategoryEndCol) {
+				category_name = last_major_category +
+						" - " + cell.getCell().getValue();
+			} else {
+				continue;
+			}
+			result.add(new DefaultBudgetCategory(
+					category_name, cell.getCell().getRow()));
+		}
+		return result;
 	}
 
 	@Override

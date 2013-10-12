@@ -13,6 +13,7 @@ import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.data.spreadsheet.WorksheetFeed;
 import com.google.gdata.util.ServiceException;
 import com.nbeckman.megabudget.adapters.BudgetAdapter;
+import com.nbeckman.megabudget.adapters.BudgetCategory;
 import com.nbeckman.megabudget.adapters.BudgetMonth;
 import com.nbeckman.megabudget.adapters.DefaultBudgetAdapter;
 
@@ -34,8 +35,11 @@ import android.widget.TextView;
 public class MainBudgetActivity extends Activity {
 	
 	private static final int kMonthSpinnerID = 1;
+	private static final int kCategorySpinnerID = 2;
 	
+	// TODO(nbeckman): Not sure we even need to save these.
 	private MonthLoaderManager month_loader_manager_ = null;
+	private CategoryLoaderManager category_loader_manager_ = null;
 	
 	private BudgetAdapter budget_adapter_ = null;
 	private SpreadsheetService spreadsheet_service_ = null;
@@ -101,6 +105,8 @@ public class MainBudgetActivity extends Activity {
         	
         	@Override
         	protected void onPostExecute(Boolean success) {
+                // Dismiss progress dialog.
+                progress_dialog.dismiss();
         		if (!success) {
         			return;
         		}
@@ -117,6 +123,16 @@ public class MainBudgetActivity extends Activity {
         				new MonthLoaderManager(MainBudgetActivity.this, budget_adapter_, month_spinner_adapter);
         		getLoaderManager().initLoader(kMonthSpinnerID, null, month_loader_manager_);
         		
+        		// Set up the loader manager to load categories into the category spinner.
+        		final Spinner category_spinner = (Spinner)findViewById(R.id.category_spinner);
+        		ArrayAdapter<BudgetCategory> category_spinner_adapter = 
+        				new ArrayAdapter<BudgetCategory>(MainBudgetActivity.this, android.R.layout.simple_list_item_1);
+        		// This must be done in the foreground thread.
+        		category_spinner.setAdapter(category_spinner_adapter);
+        		category_loader_manager_  = 
+        				new CategoryLoaderManager(MainBudgetActivity.this, budget_adapter_, category_spinner_adapter);
+        		getLoaderManager().initLoader(kCategorySpinnerID, null, category_loader_manager_);
+        		
         		// Write total to total text box.
         		// TODO(nbeckman): I need a better way of storing, what is the current month..
         		if (month_total_cell_ != null) {
@@ -126,8 +142,6 @@ public class MainBudgetActivity extends Activity {
             		final TextView total_textbox = (TextView)findViewById(R.id.monthTotalDisplay);
             		total_textbox.setText(month_total);
         		}
-                // Dismiss progress dialog.
-                progress_dialog.dismiss();
         	}}).execute();
     }
     
