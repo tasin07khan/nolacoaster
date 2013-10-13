@@ -13,6 +13,7 @@ import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.CellFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
+import com.nbeckman.megabudget.DollarsAndCents;
 
 // The default budget category is an adapter for the budget
 // format I use for my own personal budget. It encodes the following
@@ -29,7 +30,6 @@ import com.google.gdata.util.ServiceException;
 // so let's consider just grabbing the entire worksheet and then doing everything
 // else on the resulting feed.
 public class DefaultBudgetAdapter implements BudgetAdapter {
-
 	// The first row that could contain a category.
 	private static final int kCategoryStartRow = 2;
 	// The start and end columns for the categories
@@ -312,4 +312,37 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		return null;
 	}
 
+	@Override
+	public void AddValue(int col, int row, DollarsAndCents amount) {
+		// Query the given row & column, get the current amount, add
+		// the given amount, and update the input value of the cell.
+		try {
+			URL cellFeedUrl = new URI(worksheetFeed.getCellFeedUrl().toString()
+					+ "?min-row="
+					+ Integer.toString(row)
+					+ "&max-row="
+					+ Integer.toString(row)
+					+ "&min-col="
+					+ Integer.toString(col)
+					+ "&max-col="
+					+ Integer.toString(col)).toURL();
+			CellFeed cellFeed = spreadsheetService.getFeed(cellFeedUrl, CellFeed.class);
+			if (cellFeed.getTotalResults() != 1) {
+				return;
+			}
+			
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
