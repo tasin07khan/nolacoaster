@@ -3,7 +3,6 @@ package com.nbeckman.megabudget.adapters;
 import java.util.List;
 
 import com.google.gdata.data.spreadsheet.CellEntry;
-import com.nbeckman.megabudget.DollarsAndCents;
 
 // BudgetAdapter is the one planned source for expansion in this
 // application. Understanding that most other people may not use
@@ -25,6 +24,7 @@ public interface BudgetAdapter {
 	// For a given month and budget category, return the
 	// spreadsheet cell where the current value can be
 	// found.
+	// TODO(nbeckman): No longer sure this is needed.
 	public CellEntry getCell(BudgetMonth month, BudgetCategory category);
 	
 	// For a given month, returns the spreadsheet cell for
@@ -32,8 +32,8 @@ public interface BudgetAdapter {
 	public CellEntry getMonthTotalCell(BudgetMonth month);
 	
 	// Update the given column and row of the spreadsheet by
-	// adding in the given 'dollars' and 'cents.' A dollar is just
-	// the amount before the decimal point, and cents the amount
-	// after. (In case your budget is in EUR or something.)
-	public void AddValue(int col, int row, DollarsAndCents amount);
+	// adding in the given amount. (It's a double. I'm worried
+	// that I'll need to change this.)
+	public void AddValue(
+			BudgetMonth month, BudgetCategory category, double amount);
 }

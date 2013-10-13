@@ -19,7 +19,7 @@
         android:layout_height="wrap_content" >
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/expense_amount_textbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -40,7 +40,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/add_expense_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_expense_text" />
