@@ -7,13 +7,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.CellFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
-import com.nbeckman.megabudget.DollarsAndCents;
 
 // The default budget category is an adapter for the budget
 // format I use for my own personal budget. It encodes the following
@@ -313,9 +313,11 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	}
 
 	@Override
-	public void AddValue(int col, int row, DollarsAndCents amount) {
+	public void AddValue(BudgetMonth month, BudgetCategory category, double amount) {
 		// Query the given row & column, get the current amount, add
 		// the given amount, and update the input value of the cell.
+		final int col = ((DefaultBudgetMonth)month).column;
+		final int row = ((DefaultBudgetCategory)category).row;
 		try {
 			URL cellFeedUrl = new URI(worksheetFeed.getCellFeedUrl().toString()
 					+ "?min-row="
@@ -330,7 +332,17 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 			if (cellFeed.getTotalResults() != 1) {
 				return;
 			}
-			
+			final CellEntry cell = cellFeed.getEntries().get(0);
+			// TODO(nbeckman): If cell is not a double, this will fail. FIXME
+			final double current_value = 
+					"".equals(cell.getCell().getValue()) ?
+							0.0 :
+							cell.getCell().getDoubleValue();
+			final double new_value = current_value + amount;
+			// TODO(nbeckman): Hardcoded locale. Get from spreadsheet.
+			final String new_string = String.format(Locale.FRANCE, "%.2f", new_value);
+			cell.changeInputValueLocal(new_string);
+			cell.update();
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
