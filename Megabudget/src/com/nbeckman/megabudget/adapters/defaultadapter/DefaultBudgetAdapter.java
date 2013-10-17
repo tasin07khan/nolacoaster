@@ -1,4 +1,4 @@
-package com.nbeckman.megabudget.adapters;
+package com.nbeckman.megabudget.adapters.defaultadapter;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -14,6 +14,9 @@ import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.CellFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
+import com.nbeckman.megabudget.adapters.BudgetAdapter;
+import com.nbeckman.megabudget.adapters.BudgetCategory;
+import com.nbeckman.megabudget.adapters.BudgetMonth;
 
 // The default budget category is an adapter for the budget
 // format I use for my own personal budget. It encodes the following

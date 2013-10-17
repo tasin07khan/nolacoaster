@@ -32,7 +32,7 @@ import com.google.gdata.util.ServiceException;
 import com.nbeckman.megabudget.adapters.BudgetAdapter;
 import com.nbeckman.megabudget.adapters.BudgetCategory;
 import com.nbeckman.megabudget.adapters.BudgetMonth;
-import com.nbeckman.megabudget.adapters.DefaultBudgetAdapter;
+import com.nbeckman.megabudget.adapters.defaultadapter.DefaultBudgetAdapter;
 
 // My second shot at a 'main' activity for the the megabudget app.
 // The original one had all this cool junk for making the app
