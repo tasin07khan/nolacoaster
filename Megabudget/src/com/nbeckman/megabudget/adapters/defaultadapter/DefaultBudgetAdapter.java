@@ -330,15 +330,22 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 					+ "&min-col="
 					+ Integer.toString(col)
 					+ "&max-col="
-					+ Integer.toString(col)).toURL();
+					+ Integer.toString(col)
+					// The original version of this program did not have this parameter, and
+					// would never update empty cells, because getTotalResults would return 0
+					// below. So we need this.
+					+ "&return-empty=true").toURL();
 			CellFeed cellFeed = spreadsheetService.getFeed(cellFeedUrl, CellFeed.class);
 			if (cellFeed.getTotalResults() != 1) {
 				return;
 			}
 			final CellEntry cell = cellFeed.getEntries().get(0);
 			// TODO(nbeckman): If cell is not a double, this will fail. FIXME
+			// We are proposing to update the input value, so we get the
+			// current input value. This basically means that these cells
+			// cannot be formulas. I think that's okay.
 			final double current_value = 
-					"".equals(cell.getCell().getValue()) ?
+					"".equals(cell.getCell().getInputValue()) ?
 							0.0 :
 							cell.getCell().getDoubleValue();
 			final double new_value = current_value + amount;
