@@ -2,6 +2,8 @@ package com.nbeckman.megabudget;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import android.content.Context;
@@ -9,6 +11,7 @@ import android.content.Context;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.util.ServiceException;
 
@@ -80,5 +83,34 @@ public class SpreadsheetUtils {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	// Given a row and a column, plus the cell feed url for a particular
+	// worksheet, returns a new URL for that cell.
+	public static URL cellUrl(URL cell_feed_url, int row, int col) {
+		try {
+			URL cellFeedUrl = new URI(cell_feed_url.toString()
+					+ "?min-row="
+					+ Integer.toString(row)
+					+ "&max-row="
+					+ Integer.toString(row)
+					+ "&min-col="
+					+ Integer.toString(col)
+					+ "&max-col="
+					+ Integer.toString(col)).toURL();
+			return cellFeedUrl;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		// Who cares? Can this even happen? So dumb.
+		return null;
+	}
+	
+	// Returns a URL for the given CellEntry.
+	public static URL cellUrl(URL cell_feed_url, CellEntry cell_entry) {
+		return cellUrl(
+			cell_feed_url, cell_entry.getCell().getRow(), cell_entry.getCell().getCol());
 	}
 }

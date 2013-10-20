@@ -103,6 +103,10 @@ public class MainBudgetActivity extends Activity {
 				}
 				@Override
 				protected void onPostExecute(String result) {
+					if (expenses_poster_ != null) {
+						expenses_poster_.forceUpdateUI();
+					}
+					
 					// Renable text box again.
 					progress_dialog.dismiss();
 					expense_textbox.setEnabled(true);

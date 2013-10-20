@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -19,6 +20,7 @@ import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.CellFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
+import com.nbeckman.megabudget.SpreadsheetUtils;
 import com.nbeckman.megabudget.adapters.BudgetAdapter;
 import com.nbeckman.megabudget.adapters.BudgetCategory;
 import com.nbeckman.megabudget.adapters.BudgetMonth;
@@ -55,10 +57,12 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	
 	class DefaultBudgetMonth implements BudgetMonth {
 		final String name;
+		final String cell_feed_url;
 		final int column;
 		
-		public DefaultBudgetMonth(String name, int column) {
+		public DefaultBudgetMonth(String name, String cell_feed_url, int column) {
 			this.name = name;
+			this.cell_feed_url = cell_feed_url;
 			this.column = column;
 		}
 
@@ -75,10 +79,12 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	
 	class DefaultBudgetCategory implements BudgetCategory {
 		final String name;
+		final String cell_feed_url;
 		final int row;
 		
-		public DefaultBudgetCategory(String name, int row) {
+		public DefaultBudgetCategory(String name, String cell_feed_url, int row) {
 			this.name = name;
+			this.cell_feed_url = cell_feed_url;
 			this.row = row;
 		}
 
@@ -104,6 +110,10 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		this.dbHelper = new DefaultAdapterDbHelper(context);
 		this.worksheetFeed = feed;
 		this.spreadsheetService = spreadsheetService;
+		
+//		// TODO
+//		final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+//		db.delete(ExpenseEntry.TABLE_NAME, "1", null);
 	}
 	
 	private List<CellEntry> cachedMonthCells = null;
@@ -144,8 +154,12 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	public List<BudgetMonth> getMonths() {
 		ArrayList<BudgetMonth> result = new ArrayList<BudgetMonth>(cachedMonthCells().size());
 		for (CellEntry cell : cachedMonthCells()) {
+			final String cell_url =
+				SpreadsheetUtils.cellUrl(worksheetFeed.getCellFeedUrl(), cell).toString();
 			result.add(new DefaultBudgetMonth(
-					cell.getCell().getValue(), cell.getCell().getCol()));
+					cell.getCell().getValue(),
+					cell_url,
+					cell.getCell().getCol()));
 		}
 		return result;
 	}
@@ -235,8 +249,10 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 			} else {
 				continue;
 			}
+			final String cell_url =
+					SpreadsheetUtils.cellUrl(worksheetFeed.getCellFeedUrl(), cell).toString();
 			result.add(new DefaultBudgetCategory(
-					category_name, cell.getCell().getRow()));
+					category_name, cell_url, cell.getCell().getRow()));
 		}
 		return result;
 	}
@@ -377,11 +393,27 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	
 	@Override
 	public void AddValue(BudgetMonth month, BudgetCategory category, double amount) {
-		// Query the given row & column, get the current amount, add
-		// the given amount, and update the input value of the cell.
-		final int col = ((DefaultBudgetMonth)month).column;
-		final int row = ((DefaultBudgetCategory)category).row;
-		AddValueToSpreadsheet(row, col, amount);
+		if (!(month instanceof DefaultBudgetMonth)) {
+			System.err.println("Month was not a DefaultBudgetMonth: " + month.toString());
+			return;
+		}
+		if (!(category instanceof DefaultBudgetCategory)) {
+			System.err.println("Category was not a DefaultBudgetCategory: " + category.toString());
+			return;
+		}
+		DefaultBudgetMonth m = (DefaultBudgetMonth)month;
+		DefaultBudgetCategory c = (DefaultBudgetCategory)category;
+		
+		// Create a new database entry for this expense. The DB handler will post it later.
+		SQLiteDatabase db = this.dbHelper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(ExpenseEntry.COLUMN_NAME_CATEGORY_FEED_URL, c.cell_feed_url);
+		values.put(ExpenseEntry.COLUMN_NAME_CATEGORY_NAME, c.getName());
+		values.put(ExpenseEntry.COLUMN_NAME_DATE_ADDED, System.currentTimeMillis() / 1000L);
+		values.put(ExpenseEntry.COLUMN_NAME_EXPENSE_AMOUNT, amount);
+		values.put(ExpenseEntry.COLUMN_NAME_MONTH_FEED_URL, m.cell_feed_url);
+		values.put(ExpenseEntry.COLUMN_NAME_MONTH_NAME, m.getName());
+		db.insert(ExpenseEntry.TABLE_NAME, null, values);
 	}
 
 	@Override
@@ -394,7 +426,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	public boolean PostOneExpense() {
 		// Get the oldest expense by ID if there is one, and then
 		// post it.
-		final SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		final SQLiteDatabase db = this.dbHelper.getWritableDatabase();
 		// Projection: Until it matters, just return all the columns.
 		final String[] projection = null;
 		final String sortOrder =
