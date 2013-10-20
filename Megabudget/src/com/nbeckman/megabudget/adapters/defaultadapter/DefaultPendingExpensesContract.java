@@ -1,5 +1,7 @@
 package com.nbeckman.megabudget.adapters.defaultadapter;
 
+import com.nbeckman.megabudget.adapters.defaultadapter.DefaultBudgetCategoryContract.CategoryEntry;
+
 import android.provider.BaseColumns;
 
 // A 'contract' for the SQLLite database table that holds
@@ -22,13 +24,13 @@ public final class DefaultPendingExpensesContract {
 	public static final String SQL_CREATE_TABLE =
 	    "CREATE TABLE " + ExpenseEntry.TABLE_NAME + " (" +
 	    ExpenseEntry._ID + " INTEGER PRIMARY KEY," +
-	    ExpenseEntry.COLUMN_NAME_EXPENSE_ID + INTEGER_TYPE + COMMA_SEP +
 	    ExpenseEntry.COLUMN_NAME_EXPENSE_AMOUNT + REAL_TYPE + COMMA_SEP +
 	    ExpenseEntry.COLUMN_NAME_MONTH_FEED_URL + TEXT_TYPE + COMMA_SEP +
 	    ExpenseEntry.COLUMN_NAME_MONTH_NAME + TEXT_TYPE + COMMA_SEP +
 	    ExpenseEntry.COLUMN_NAME_CATEGORY_FEED_URL + TEXT_TYPE + COMMA_SEP +
 	    ExpenseEntry.COLUMN_NAME_CATEGORY_NAME + TEXT_TYPE + COMMA_SEP +
-	    " )";
+	    ExpenseEntry.COLUMN_NAME_DATE_ADDED + INTEGER_TYPE +
+	    ");";
 	
 	// How to delete this table
 	static final String SQL_DELETE_TABLE =
@@ -36,13 +38,10 @@ public final class DefaultPendingExpensesContract {
 	
 	// Inner class that defines the table contents.
     public static abstract class ExpenseEntry implements BaseColumns {
-    	public static final String TABLE_NAME = "budget_months";
+		public static final String TABLE_NAME = "outstanding_expenses";
     	
     	// Each constant starting with COLUMN_NAME_ is a new column.
     	
-    	// There is nothing interesting about expense IDs. I will try to
-    	// assign them uniquely, in order.
-    	public static final String COLUMN_NAME_EXPENSE_ID = "expense_id";
     	// A 'real' value holding the expense amount. 
     	public static final String COLUMN_NAME_EXPENSE_AMOUNT = "expense_amount";
     	// The URL of the cell feed of the expense's month.
@@ -55,5 +54,9 @@ public final class DefaultPendingExpensesContract {
     	// The name of this category. This can be used to verify that the meaning of this
     	// cell hasn't changed since the user added the expense.
     	public static final String COLUMN_NAME_CATEGORY_NAME = "category_name";
+    	// The time (unix epoch) that this expense was added. Also used as an ID...
+    	// Perhaps not a good idea.
+    	public static final String COLUMN_NAME_DATE_ADDED = "date_added";
+
     }
 }

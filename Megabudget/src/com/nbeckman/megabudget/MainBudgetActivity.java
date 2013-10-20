@@ -147,10 +147,10 @@ public class MainBudgetActivity extends Activity {
         
         // Make sure we are logged in, and have a spreadsheet chosen.
         // TODO: Just want to try months, this will be hacked up.
-        // Like, do I really want this asyn task here?
-        (new AsyncTask<String, String, Boolean>(){
+        // Like, do I really want this async task here?
+        (new AsyncTask<String, String, InterfaceUpdateData>(){
         	@Override
-        	protected Boolean doInBackground(String... arg0) {
+        	protected InterfaceUpdateData doInBackground(String... arg0) {
         		final String account = AccountManager.getStoredAccount(MainBudgetActivity.this);
     			// Can't be called in UI thread.
     			try {
@@ -162,7 +162,7 @@ public class MainBudgetActivity extends Activity {
         					new URL(spreadsheet_url), WorksheetFeed.class);
             		List<WorksheetEntry> worksheets = worksheet_feed_.getEntries();
             		WorksheetEntry worksheet = worksheets.get(0);
-            		budget_adapter_ = new DefaultBudgetAdapter(worksheet, spreadsheet_service_);
+            		budget_adapter_ = new DefaultBudgetAdapter(getBaseContext(), worksheet, spreadsheet_service_);
             		
             		months_ = budget_adapter_.getMonths();
             		if (months_.size() > 0) {
@@ -175,7 +175,9 @@ public class MainBudgetActivity extends Activity {
             		if (categories.size() > 0) {
             			selected_category_cell_ = categories.get(0);
             		}
-        			return true;
+            		final long num_outstanding_expenses =
+            			budget_adapter_.NumOutstandingExpenses();
+        			return new InterfaceUpdateData(num_outstanding_expenses);
 				} catch (GoogleAuthException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -189,19 +191,25 @@ public class MainBudgetActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-    			return false;
+    			return null;
         	}
         	
         	@Override
-        	protected void onPostExecute(Boolean success) {
+        	protected void onPostExecute(InterfaceUpdateData update) {
                 // Dismiss progress dialog.
                 progress_dialog.dismiss();
-        		if (!success) {
+        		if (update == null) {
         			return;
         		}
         		
         		// END PART I KNOW IS HACKED UP
-
+        		if (update.getNumOutstandingExpenses() != null) {
+        			final TextView outstanding_expenses_text_view =
+        				(TextView)findViewById(R.id.expensesToPostValue);
+        			outstanding_expenses_text_view.setText(
+        				update.getNumOutstandingExpenses().toString());
+        		}
+        		
         		// Set up the loader manager to load months into the months spinner.
         		final Spinner month_spinner = (Spinner)findViewById(R.id.month_spinner);
         		ArrayAdapter<BudgetMonth> month_spinner_adapter = 

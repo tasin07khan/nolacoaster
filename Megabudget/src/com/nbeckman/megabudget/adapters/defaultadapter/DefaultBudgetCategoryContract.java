@@ -21,8 +21,9 @@ public final class DefaultBudgetCategoryContract {
 	    CategoryEntry._ID + " INTEGER PRIMARY KEY," +
 	    CategoryEntry.COLUMN_NAME_FEED_URL_ID + TEXT_TYPE + COMMA_SEP +
 	    CategoryEntry.COLUMN_NAME_CATEGORY_NAME + TEXT_TYPE + COMMA_SEP +
-	    CategoryEntry.COLUMN_NAME_ROW + INTEGER_TYPE + COMMA_SEP +
-	    " )";
+	    CategoryEntry.COLUMN_NAME_NUM_UPDATES + INTEGER_TYPE + COMMA_SEP +
+	    CategoryEntry.COLUMN_NAME_ROW + INTEGER_TYPE +
+	    ");";
 	
 	// How to delete this table
 	static final String SQL_DELETE_TABLE =
@@ -32,13 +33,14 @@ public final class DefaultBudgetCategoryContract {
     public static abstract class CategoryEntry implements BaseColumns {
     	public static final String TABLE_NAME = "budget_categories";
     	
-    	// Each constant starting with COLUMN_NAME_ is a new column.
-    	
     	// I am using the Cell Feed URL as the ID, because it is unique, and I am pretty sure, constant
     	// across time. (This is the URL of the cell that contains the category name.)
     	public static final String COLUMN_NAME_FEED_URL_ID = "feed_url";
     	// The name of this category.
     	public static final String COLUMN_NAME_CATEGORY_NAME = "category_name";
+    	// The number of times this category has been updated. We will sort the results
+    	// by this so that the commonly-used categories are at the top of the spinner.
+    	public static final String COLUMN_NAME_NUM_UPDATES = "num_updates";
     	// The corresponding row in the spreadsheet.
     	public static final String COLUMN_NAME_ROW = "row";
     }

@@ -15,4 +15,7 @@
         <item>€</item>
     </string-array>
     <string name="settings_menu_name">Settings</string>
+    <string name="expenses_to_post_text">Expenses waiting to post: </string>
+    <string name="expenses_to_post_default"> &#8230;</string>
+    <string name="choose_your_budget_file">Choose your budget file</string>
 </resources>

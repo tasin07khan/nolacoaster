@@ -14,7 +14,7 @@
         android:id="@+id/textView1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text="Choose your budget file"
+        android:text="@string/choose_your_budget_file"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 <!-- 
