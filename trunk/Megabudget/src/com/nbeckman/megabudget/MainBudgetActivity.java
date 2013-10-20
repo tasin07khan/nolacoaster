@@ -46,6 +46,10 @@ public class MainBudgetActivity extends Activity {
 	private MonthLoaderManager month_loader_manager_ = null;
 	private CategoryLoaderManager category_loader_manager_ = null;
 	
+	// I'm anticipating having several callbacks for checking/posting
+	// the latest spreadsheet information. Here is the first one:
+	private OutstandingExpensesPoster expenses_poster_ = null;
+	
 	private BudgetAdapter budget_adapter_ = null;
 	private SpreadsheetService spreadsheet_service_ = null;
 	private WorksheetFeed worksheet_feed_ = null;
@@ -164,6 +168,13 @@ public class MainBudgetActivity extends Activity {
             		WorksheetEntry worksheet = worksheets.get(0);
             		budget_adapter_ = new DefaultBudgetAdapter(getBaseContext(), worksheet, spreadsheet_service_);
             		
+            		// Start callback thread that will periodically try to post outstanding expenses.
+            		final TextView outstanding_expenses = (TextView)findViewById(R.id.expensesToPostValue);
+            		expenses_poster_ = new OutstandingExpensesPoster(
+            			outstanding_expenses, 
+            			budget_adapter_);
+            		expenses_poster_.start();
+            		
             		months_ = budget_adapter_.getMonths();
             		if (months_.size() > 0) {
             			selected_month_cell_ = months_.get(0);
@@ -243,6 +254,16 @@ public class MainBudgetActivity extends Activity {
     }
     
     @Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// Kill all of the rando background threads we may 
+		// have running.
+		if (this.expenses_poster_ != null) {
+			this.expenses_poster_.stop();
+		}
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	// Just the code to make my list of menu items come up.
         MenuInflater inflater = getMenuInflater();

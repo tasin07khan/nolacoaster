@@ -22,7 +22,6 @@ import com.google.gdata.util.ServiceException;
 import com.nbeckman.megabudget.adapters.BudgetAdapter;
 import com.nbeckman.megabudget.adapters.BudgetCategory;
 import com.nbeckman.megabudget.adapters.BudgetMonth;
-import com.nbeckman.megabudget.adapters.defaultadapter.DefaultBudgetCategoryContract.CategoryEntry;
 import com.nbeckman.megabudget.adapters.defaultadapter.DefaultPendingExpensesContract.ExpenseEntry;
 
 // The default budget category is an adapter for the budget
@@ -392,7 +391,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 	}
 	
 	@Override
-	public void PostOneExpense() {
+	public boolean PostOneExpense() {
 		// Get the oldest expense by ID if there is one, and then
 		// post it.
 		final SQLiteDatabase db = this.dbHelper.getReadableDatabase();
@@ -410,7 +409,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 			    sortOrder,             
 			    "1");  // Return just the oldest row.
 		if (!cursor.moveToFirst() || cursor.getCount() == 0) {
-			return;
+			return false;
 		}
 		final double amount_to_add =
 			cursor.getDouble(
@@ -427,12 +426,12 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		try {
 			CellFeed row_cell_feed = spreadsheetService.getFeed(new URL(row_url), CellFeed.class);
 			if (row_cell_feed.getTotalResults() != 1) {
-				return;
+				return false;
 			}
 			final CellEntry row_cell = row_cell_feed.getEntries().get(0);
 			CellFeed col_cell_feed = spreadsheetService.getFeed(new URL(col_url), CellFeed.class);
 			if (col_cell_feed.getTotalResults() != 1) {
-				return;
+				return false;
 			}
 			final CellEntry col_cell = col_cell_feed.getEntries().get(0);
 			if (this.AddValueToSpreadsheet(
@@ -453,8 +452,9 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 				String[] selectionArgs = { String.valueOf(row_id) };
 				// Issue SQL statement.
 				db.delete(ExpenseEntry.TABLE_NAME, selection, selectionArgs);
+				return true;
 			} else {
-				return;
+				return false;
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -463,5 +463,6 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 }
