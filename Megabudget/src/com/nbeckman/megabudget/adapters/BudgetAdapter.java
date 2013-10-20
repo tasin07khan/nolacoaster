@@ -37,12 +37,13 @@ public interface BudgetAdapter {
 	public void AddValue(
 			BudgetMonth month, BudgetCategory category, double amount);
 	
-	// Post one stored expense to the spreadsheet.
+	// Post one stored expense to the spreadsheet. Returns true if one
+	// expense was posted.
 	//
 	// BLOCKING:
 	// This call is expected to contact the spreadsheet service and
 	// possibly read from/write to the local database.
-	public void PostOneExpense();
+	public boolean PostOneExpense();
 	
 	// Return the number of expenses waiting to be posted.
 	//
