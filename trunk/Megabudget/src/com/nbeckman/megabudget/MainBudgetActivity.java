@@ -86,13 +86,6 @@ public class MainBudgetActivity extends Activity {
 			// Text box cannot be edited while we are changing the value.
 			expense_textbox.setEnabled(false);
 			
-			// Another progress dialog...
-	        final ProgressDialog progress_dialog = new ProgressDialog(MainBudgetActivity.this);
-	        // TODO(nbeckman): Pull out these strings.
-	        progress_dialog.setTitle("Updating " + selected_category_cell_.getName());
-	        progress_dialog.setMessage("Wait while updating spreadsheet...");
-	        progress_dialog.show();
-			
 			final double final_expense_amount = expense_amount;
 			(new AsyncTask<String, String, String>(){
 				@Override
@@ -106,9 +99,7 @@ public class MainBudgetActivity extends Activity {
 					if (expenses_poster_ != null) {
 						expenses_poster_.forceUpdateUI();
 					}
-					
 					// Renable text box again.
-					progress_dialog.dismiss();
 					expense_textbox.setEnabled(true);
 					expense_textbox.setText("");
 					expense_textbox.setHint(R.string.expense_amount_hint);
