@@ -37,10 +37,9 @@ public class OutstandingExpensesPoster {
 		if (future_ != null) {
 			future_.cancel(false);
 		}
-		
 		// Schedule a single thread to execute the update()
 		// method every kPeriod kTimeUnits.
-		ScheduledFuture<?> future = 
+		future_ = 
 				this.executor_.scheduleWithFixedDelay(new Runnable() {
 			@Override
 			public void run() {
@@ -55,16 +54,26 @@ public class OutstandingExpensesPoster {
 		}
 	}
 	
+	// Forces an update to the UI, posting the current number of
+	// outstanding expenses.
+	public void forceUpdateUI() {
+		updateUI();
+	}
+
+	private void updateUI() {
+		final long num_expenses = 
+				budget_adapater_.NumOutstandingExpenses();
+		num_expenses_text_view_.post(new Runnable(){
+			@Override
+			public void run() {
+				num_expenses_text_view_.setText(" " + Long.toString(num_expenses));
+			}
+		});
+	}
+	
 	private void update() {
 		if (budget_adapater_.PostOneExpense()) {
-			final long num_expenses = 
-				budget_adapater_.NumOutstandingExpenses();
-			num_expenses_text_view_.post(new Runnable(){
-				@Override
-				public void run() {
-					num_expenses_text_view_.setText(" " + Long.toString(num_expenses));
-				}
-			});
+			updateUI();
 		}
 	}
 }
