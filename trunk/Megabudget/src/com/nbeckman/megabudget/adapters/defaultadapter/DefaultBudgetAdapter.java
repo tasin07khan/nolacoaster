@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
+
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.CellEntry;
 import com.google.gdata.data.spreadsheet.CellFeed;
@@ -17,6 +22,8 @@ import com.google.gdata.util.ServiceException;
 import com.nbeckman.megabudget.adapters.BudgetAdapter;
 import com.nbeckman.megabudget.adapters.BudgetCategory;
 import com.nbeckman.megabudget.adapters.BudgetMonth;
+import com.nbeckman.megabudget.adapters.defaultadapter.DefaultBudgetCategoryContract.CategoryEntry;
+import com.nbeckman.megabudget.adapters.defaultadapter.DefaultPendingExpensesContract.ExpenseEntry;
 
 // The default budget category is an adapter for the budget
 // format I use for my own personal budget. It encodes the following
@@ -87,11 +94,15 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		}
 	}
 	
+	private final DefaultAdapterDbHelper dbHelper;
 	private final WorksheetEntry worksheetFeed;
 	private final SpreadsheetService spreadsheetService;
 	
 	public DefaultBudgetAdapter(
-			WorksheetEntry feed, SpreadsheetService spreadsheetService) {
+			Context context,
+			WorksheetEntry feed, 
+			SpreadsheetService spreadsheetService) {
+		this.dbHelper = new DefaultAdapterDbHelper(context);
 		this.worksheetFeed = feed;
 		this.spreadsheetService = spreadsheetService;
 	}
@@ -315,12 +326,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 		return null;
 	}
 
-	@Override
-	public void AddValue(BudgetMonth month, BudgetCategory category, double amount) {
-		// Query the given row & column, get the current amount, add
-		// the given amount, and update the input value of the cell.
-		final int col = ((DefaultBudgetMonth)month).column;
-		final int row = ((DefaultBudgetCategory)category).row;
+	private boolean AddValueToSpreadsheet(int row, int col, double amount) {
 		try {
 			URL cellFeedUrl = new URI(worksheetFeed.getCellFeedUrl().toString()
 					+ "?min-row="
@@ -337,7 +343,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 					+ "&return-empty=true").toURL();
 			CellFeed cellFeed = spreadsheetService.getFeed(cellFeedUrl, CellFeed.class);
 			if (cellFeed.getTotalResults() != 1) {
-				return;
+				return false;
 			}
 			final CellEntry cell = cellFeed.getEntries().get(0);
 			// TODO(nbeckman): If cell is not a double, this will fail. FIXME
@@ -353,6 +359,7 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 			final String new_string = String.format(Locale.FRANCE, "%.2f", new_value);
 			cell.changeInputValueLocal(new_string);
 			cell.update();
+			return true;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -364,6 +371,96 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 			e.printStackTrace();
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	@Override
+	public void AddValue(BudgetMonth month, BudgetCategory category, double amount) {
+		// Query the given row & column, get the current amount, add
+		// the given amount, and update the input value of the cell.
+		final int col = ((DefaultBudgetMonth)month).column;
+		final int row = ((DefaultBudgetCategory)category).row;
+		AddValueToSpreadsheet(row, col, amount);
+	}
+
+	@Override
+	public long NumOutstandingExpenses() {
+		final SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		return DatabaseUtils.queryNumEntries(db, ExpenseEntry.TABLE_NAME);
+	}
+	
+	@Override
+	public void PostOneExpense() {
+		// Get the oldest expense by ID if there is one, and then
+		// post it.
+		final SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+		// Projection: Until it matters, just return all the columns.
+		final String[] projection = null;
+		final String sortOrder =
+				ExpenseEntry.COLUMN_NAME_DATE_ADDED + " ASC";
+		final Cursor cursor = db.query(
+				ExpenseEntry.TABLE_NAME, 
+			    projection,                              
+			    "",                 
+			    new String[0],                        
+			    null,                           
+			    null,                           
+			    sortOrder,             
+			    "1");  // Return just the oldest row.
+		if (!cursor.moveToFirst() || cursor.getCount() == 0) {
+			return;
+		}
+		final double amount_to_add =
+			cursor.getDouble(
+				cursor.getColumnIndexOrThrow(
+					ExpenseEntry.COLUMN_NAME_EXPENSE_AMOUNT));
+		final String row_url = 
+			cursor.getString(
+				cursor.getColumnIndexOrThrow(
+					ExpenseEntry.COLUMN_NAME_CATEGORY_FEED_URL));
+		final String col_url = 
+			cursor.getString(
+				cursor.getColumnIndexOrThrow(
+					ExpenseEntry.COLUMN_NAME_MONTH_FEED_URL));
+		try {
+			CellFeed row_cell_feed = spreadsheetService.getFeed(new URL(row_url), CellFeed.class);
+			if (row_cell_feed.getTotalResults() != 1) {
+				return;
+			}
+			final CellEntry row_cell = row_cell_feed.getEntries().get(0);
+			CellFeed col_cell_feed = spreadsheetService.getFeed(new URL(col_url), CellFeed.class);
+			if (col_cell_feed.getTotalResults() != 1) {
+				return;
+			}
+			final CellEntry col_cell = col_cell_feed.getEntries().get(0);
+			if (this.AddValueToSpreadsheet(
+					row_cell.getCell().getRow(), 
+					col_cell.getCell().getCol(), 
+					amount_to_add)) {
+				// Now delete that row so we don't process it again.
+				// Technically we've got no atomicity here... Hopefully
+				// the network operation is much more likely to fail than
+				// this.
+				final long row_id = 
+						cursor.getLong(
+							cursor.getColumnIndexOrThrow(
+								ExpenseEntry._ID));
+				// Define 'where' part of query.
+				String selection = ExpenseEntry._ID + " LIKE ?";
+				// Specify arguments in placeholder order.
+				String[] selectionArgs = { String.valueOf(row_id) };
+				// Issue SQL statement.
+				db.delete(ExpenseEntry.TABLE_NAME, selection, selectionArgs);
+			} else {
+				return;
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ServiceException e) {
 			e.printStackTrace();
 		}
 	}

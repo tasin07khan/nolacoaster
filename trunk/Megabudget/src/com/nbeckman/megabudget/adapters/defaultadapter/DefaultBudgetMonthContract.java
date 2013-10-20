@@ -21,8 +21,8 @@ public final class DefaultBudgetMonthContract {
 	    MonthEntry._ID + " INTEGER PRIMARY KEY," +
 	    MonthEntry.COLUMN_NAME_FEED_URL_ID + TEXT_TYPE + COMMA_SEP +
 	    MonthEntry.COLUMN_NAME_MONTH_NAME + TEXT_TYPE + COMMA_SEP +
-	    MonthEntry.COLUMN_NAME_COL + INTEGER_TYPE + COMMA_SEP +
-	    " )";
+	    MonthEntry.COLUMN_NAME_COL + INTEGER_TYPE +
+	    ");";
 	
 	// How to delete this table
 	static final String SQL_DELETE_TABLE =
