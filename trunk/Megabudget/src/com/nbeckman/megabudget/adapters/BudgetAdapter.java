@@ -2,6 +2,8 @@ package com.nbeckman.megabudget.adapters;
 
 import java.util.List;
 
+import android.content.Loader;
+
 import com.google.gdata.data.spreadsheet.CellEntry;
 
 // BudgetAdapter is the one planned source for expansion in this
@@ -50,4 +52,12 @@ public interface BudgetAdapter {
 	// BLOCKING:
 	// This call is expected to read from/write to the local database.
 	public long NumOutstandingExpenses();
+
+	// Adds/removes a new observer. This class will call
+	// onContentChanged on its observers when the months
+	// database entries are changed.
+	// 
+	// TODO(nbeckman): Isn't there a better class than Loader?
+	public void AddMonthsObserver(Loader<?> observer);
+	public void RemoveMonthsObserver(Loader<?> observer);
 }

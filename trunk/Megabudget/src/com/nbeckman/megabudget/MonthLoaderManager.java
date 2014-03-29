@@ -48,9 +48,13 @@ public class MonthLoaderManager implements LoaderCallbacks<List<BudgetMonth>> {
 
 }
 
+// Implementation idea comes mostly from
+// http://www.androiddesignpatterns.com/2012/08/implementing-loaders.html
 class MonthLoader extends AsyncTaskLoader<List<BudgetMonth>> {
 
 	private final BudgetAdapter budget_adapter_;
+	
+	private List<BudgetMonth> budget_months_ = null;
 	
 	public MonthLoader(Context context, BudgetAdapter budget_adapter) {
 		super(context);
@@ -63,7 +67,38 @@ class MonthLoader extends AsyncTaskLoader<List<BudgetMonth>> {
 	}
 	
 	@Override
+	public void deliverResult(List<BudgetMonth> data) {
+		// I think here we're probably just doing what the superclass
+		// does.
+		// TODO(nbeckman): Consider removing.
+		if (this.isReset()) {
+			return;
+		}
+		if (this.isStarted()) {
+			super.deliverResult(data);
+		}
+	}
+	
+	@Override
 	protected void onStartLoading() {
-		forceLoad();
+		if (this.budget_months_ != null) {
+			this.deliverResult(budget_months_);
+		}
+		
+		this.budget_adapter_.AddMonthsObserver(this);
+		
+	    if (takeContentChanged() || budget_months_ == null) {
+	        // When the observer detects a change, it should call onContentChanged()
+	        // on the Loader, which will cause the next call to takeContentChanged()
+	        // to return true.
+	        forceLoad();
+	      }
+	}
+
+	@Override
+	protected void onStopLoading() {
+		// This is probably what the superclass does.
+		// TODO(nbeckman): Remove?	
+		cancelLoad();
 	}
 }
