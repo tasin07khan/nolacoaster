@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
@@ -496,5 +497,38 @@ public class DefaultBudgetAdapter implements BudgetAdapter {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	private List<Loader<?>> month_oberservers_ = new ArrayList<Loader<?>>();
+	@Override
+	public void AddMonthsObserver(Loader<?> observer) {
+		month_oberservers_.add(observer);
+	}
+	@Override
+	public void RemoveMonthsObserver(Loader<?> observer) {
+		month_oberservers_.remove(observer);
+	}
+	private void notifyMonthObservers() {
+		for (Loader<?> loader : this.month_oberservers_) {
+			loader.onContentChanged();
+		}
+	}
+	// TODO: Lots
+	// have a start() method that will start a periodic (?) thread
+	// it will load from the network
+	// when network load is done, call 'detect changes & update'
+	// after updates, call notifyMonthObservers()
+	
+	private void UpdateMonthsTableIfChanged(List<CellEntry> results) {
+		boolean changed = false;
+		// Store DB entries in map by name. 
+		// For each cell, see if that category is already in the DB, and
+		// if so compare the other fields. 
+		// If not, add it. 
+		// If so & other fields are the same do nothing.
+		// If so & other fields have changed, update them.
+		if (changed) {
+			this.notifyMonthObservers();
+		}
 	}
 }
