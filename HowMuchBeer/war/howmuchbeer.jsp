@@ -2,6 +2,14 @@
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
+<%@ page import="com.howmuchbeer.main.PMF" %>
+<%@ page import="com.howmuchbeer.main.Comment" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
+<%@ page import="javax.jdo.PersistenceManager" %>
+<%@ page import="javax.jdo.Query" %>
+<%@ page import="org.jsoup.Jsoup" %>
+<%@ page import="org.jsoup.safety.Whitelist" %>
 
 <html>
 <head><title>How Much Beer?</title>
@@ -89,7 +97,11 @@ function validateAfter()
 <%
 if ("thanks".equals(request.getParameter("result"))) {
 %>
-<p class="thanks">Thanks for submitting your party stats!
+<p class="thanks">Thanks for your submission!
+<%
+} else if("captchafail".equals(request.getParameter("result"))) {
+%>
+<p class="thanks">Sorry. Your response to the captcha was incorrect.
 <%
 }
 %>
@@ -142,6 +154,40 @@ up, and we drank <input class="small" type="text" name="quantity"/><select name=
   <td><a href="http://www.google.com/recaptcha/mailhide/d?k=01mAXSiKYEFPKfG72kJrW5pg==&c=NCprYwPFZfHufsvwj7heYMOt2bR87buj5AcZSAUJmH8=">Contact</a></td>
 </tr></table>
 </center>
+
+<hr>
+
+<h1>Comments</h1>
+
+<p>Leave a comment here.
+<form name="commentForm" action="/recaptcha.jsp" method="post">
+<p><textarea cols="50" rows="4" name="comment"></textarea>
+<p>Name:<input style="text" value="Anonymous" name="author"></input><input type="submit" value="Leave a comment" />
+</form>
+
+
+<p>What others have said:
+<% 
+      PersistenceManager pm = PMF.get().getPersistenceManager();
+  
+    // Do query
+    Query query = pm.newQuery(Comment.class);
+    query.setOrdering("dateOfEntry desc");
+    
+    try {
+      List<Comment> comments = (List<Comment>)query.execute();
+  
+      // Iterate, and output each book.
+      for( Comment comment : comments ) {
+        %>
+        <p><small>"<%=Jsoup.clean(comment.getComment().getValue(), Whitelist.simpleText())%>," 
+                   <i><%=Jsoup.clean(comment.getAuthor(), Whitelist.simpleText())%>, on <%=comment.getDateOfEntry()%></i></small>
+        <%
+      }
+    } finally {
+      query.closeAll();
+    }
+%>
 <div class="clear"></div>
 </div>
 </div>
